@@ -23,3 +23,9 @@ Format daty dla logow: <br/>
 ### Pyt 20.
 Poziom logowania ***DEBUG*** dla autokonfiguracji: <br/>
 `logging.level.org.springframework.boot.autoconfigure.logging=DEBUG`
+
+### Pyt 22.
+W osobnym pliku.
+
+### Pyt 23.
+Logi podczas odwiedzania endpointow (np. /actuator/health) pokazuja sie w trybie DEBUG.
