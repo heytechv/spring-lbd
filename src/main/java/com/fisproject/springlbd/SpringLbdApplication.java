@@ -1,14 +1,11 @@
 package com.fisproject.springlbd;
 
-import com.fisproject.springlbd.service.employee.EmployeeImp1;
 import com.fisproject.springlbd.service.employee.EmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 

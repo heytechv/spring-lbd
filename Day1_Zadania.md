@@ -16,3 +16,10 @@ test konczy pomyslnie (wlasciwa implementacja klasy jest uruchamiana)
 ### Pyt 14.
 TODO jakie roznice z DEBUG
 
+### Pyt 15.
+Format daty dla logow: <br/>
+`logging.pattern.dateformat=dd/MM HH:mm`
+
+### Pyt 20.
+Poziom logowania ***DEBUG*** dla autokonfiguracji: <br/>
+`logging.level.org.springframework.boot.autoconfigure.logging=DEBUG`
