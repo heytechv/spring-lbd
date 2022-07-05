@@ -18,7 +18,7 @@ public class SpringLbdApplication {
     public static final Logger LOG = LoggerFactory.getLogger(SpringLbdApplication.class);
 
     @Autowired
-    @Qualifier("eimpl1")
+//    @Qualifier("eimpl1")
     EmployeeService employeeService;
 
     @PostConstruct
