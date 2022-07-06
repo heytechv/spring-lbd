@@ -14,7 +14,10 @@ Po wybraniu wlasciwego profilu w `application.properties` (`spring.profiles.acti
 test konczy pomyslnie (wlasciwa implementacja klasy jest uruchamiana)
 
 ### Pyt 14.
-TODO jakie roznice z DEBUG
+Wyswietlanie logow w trybie DEBUG:<br/>
+`logging.level.org.springframework=DEBUG`<br/>
+Wyswietla dodatkowe informacje m.in. szczeogoly odnosnie uzytego autowire, stworzonych instancji,
+jakie endpointy sa wystawiane jako REST API, raport auto konfiguratora
 
 ### Pyt 15.
 Format daty dla logow: <br/>
@@ -23,9 +26,15 @@ Format daty dla logow: <br/>
 ### Pyt 20.
 Poziom logowania ***DEBUG*** dla autokonfiguracji: <br/>
 `logging.level.org.springframework.boot.autoconfigure.logging=DEBUG`
+<br/>
+Raport auto-konfiguracji wyswietla informacje o klasach, ktore zostaly znalezione i skonfigurowane przez SpringBoot.
+<b/>
+np. ktore z endpointow Actuatora zostaly oznaczone w konfigu i beda udostepniane na zewnatrz.
+
+
 
 ### Pyt 22.
-W osobnym pliku.
+Odpowiedz w osobnym pliku, przeslanym mailem.
 
 ### Pyt 23.
 Logi podczas odwiedzania endpointow (np. /actuator/health) pokazuja sie w trybie DEBUG.
