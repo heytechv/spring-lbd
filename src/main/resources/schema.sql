@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS UserStory;
 CREATE TABLE IF NOT EXISTS Sprint(
     id integer PRIMARY KEY AUTO_INCREMENT,
     name text NOT NULL,
-    start_date timestamp NOT NULL,
+    start_date timestamp,
     end_date timestamp,
     description text,
     status text NOT NULL

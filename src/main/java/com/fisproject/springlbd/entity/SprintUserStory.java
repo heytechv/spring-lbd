@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="SpringUserStory")
+@Table(name="SprintUserStory")
 public class SprintUserStory {
 
     @Id @GeneratedValue Long id;
