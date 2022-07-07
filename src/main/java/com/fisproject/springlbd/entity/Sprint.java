@@ -2,15 +2,26 @@ package com.fisproject.springlbd.entity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="Sprint")
 public class Sprint {
 
-    @Id @GeneratedValue private Long id;
+    @Id @GeneratedValue(strategy=GenerationType.IDENTITY) private Long id;                                              // https://stackoverflow.com/questions/39807483/sequence-hibernate-sequence-not-found-sql-statement - @GeneratedValue(...)
     private String name;
     private Timestamp start_date, end_date;
     private String description, status;
+
+    /* Sprint - jako glowny (UserStory poboczny?) */
+    @ManyToMany                                                                                                         // https://www.youtube.com/watch?v=ntN1HWKND8U&ab_channel=CodeForgeYT
+    @JoinTable(
+        name="SprintUserStory",
+            joinColumns       =@JoinColumn(name="sprint_id"),
+            inverseJoinColumns=@JoinColumn(name="user_story_id")
+    )
+    private List<UserStory> userStories = new ArrayList<>();
 
     @Column(name="id")
     public void setId(Long id) { this.id = id; }
@@ -36,4 +47,8 @@ public class Sprint {
     public void setStatus(String status) { this.status = status; }
     public String getStatus() { return status; }
 
+    @Override
+    public String toString() {
+        return getId() + " " + getName() + " " + getStart_date().toString() + " " + getEnd_date().toString() + " " + getDescription() + " " + getStatus();
+    }
 }
