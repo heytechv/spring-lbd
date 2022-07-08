@@ -15,7 +15,7 @@ public class Sprint {
     private String description, status;
 
     /* Sprint - jako glowny (UserStory poboczny?) */
-    @ManyToMany                                                                                                         // https://www.youtube.com/watch?v=ntN1HWKND8U&ab_channel=CodeForgeYT
+    @ManyToMany(fetch = FetchType.EAGER)                                                                                                         // https://www.youtube.com/watch?v=ntN1HWKND8U&ab_channel=CodeForgeYT
     @JoinTable(
         name="SPRINT_USER_STORY",
             joinColumns       =@JoinColumn(name="sprint_id"),

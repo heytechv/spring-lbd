@@ -12,4 +12,5 @@ public interface SprintService {
     public abstract void addSprint(String name, Timestamp start_date, Timestamp end_date, String description, String status) throws SQLException;
     public abstract List<UserStory> getUserStoryListById(Long id);
     public abstract List<Sprint> getSprintListBetweenDate(Timestamp start_range, Timestamp end_range);
+    public abstract Integer getStoryPointsById(Long id);
 }

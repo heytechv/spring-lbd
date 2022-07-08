@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS Sprint(
 
 CREATE TABLE IF NOT EXISTS UserStory(
     id integer PRIMARY KEY AUTO_INCREMENT,
-    name varchar(20) NOT NULL,
-    description varchar(255) NOT NULL,
+    name text NOT NULL,
+    description text NOT NULL,
     story_points_amount integer,
     status varchar(20) NOT NULL
 );

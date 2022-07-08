@@ -4,12 +4,14 @@ import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.service.SprintService;
 import com.fisproject.springlbd.service.UserStoryService;
+import com.fisproject.springlbd.utils.CreateRandomUserStories;
 import org.junit.jupiter.api.Test;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -24,6 +26,7 @@ class SpringLbdApplicationTests {
 
     @Autowired SprintService sprintService;
     @Autowired UserStoryService userStoryService;
+    @Autowired ApplicationContext context;
 
     /** Zad 8 Test */
     @Test void test_zad8_SprintServiceOK() throws SQLException {
@@ -98,5 +101,18 @@ class SpringLbdApplicationTests {
             System.out.println(s.getName() + " | " + s.getStart_date() + " | "+ s.getStatus());
 
         assert sprints.size() > 0;
+    }
+
+    /** Zad 11 Test */
+    @Test void test_zad11_StoryPointsById() {
+        Long id = 1L;
+
+        Integer storyPoints = sprintService.getStoryPointsById(id);
+        System.out.println("Sprint with id = "+id + " has " + storyPoints + " story points.");
+    }
+
+    /** Zad 12 Test */
+    @Test void test_zad12_createRandom() {
+        new CreateRandomUserStories().create(context, 100);
     }
 }

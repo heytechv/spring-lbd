@@ -4,9 +4,7 @@ import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.repository.SprintRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.util.ArrayUtils;
 
 import javax.transaction.Transactional;
 import java.sql.SQLException;
@@ -58,7 +56,12 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override @Transactional public List<Sprint> getSprintListBetweenDate(Timestamp start_range, Timestamp end_range) {
-        return sprintRepository.getByStartDateBetween(start_range, end_range);
+        return sprintRepository.getSprintListBetweenDates(start_range, end_range);
+    }
+
+    @Override @Transactional public Integer getStoryPointsById(Long id) {
+        Integer points = sprintRepository.getStoryPointsById(id);
+        return points != null ? points : 0;
     }
 
 
