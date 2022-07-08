@@ -1,6 +1,7 @@
 package com.fisproject.springlbd.service;
 
 import com.fisproject.springlbd.dto.UserStoryDto;
+import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.repository.UserStoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class UserStoryServiceImpl implements UserStoryService {
@@ -36,6 +38,10 @@ public class UserStoryServiceImpl implements UserStoryService {
             throw new IllegalArgumentException("[addUserStory] Missing required 'description' field!");
 
         return userStory;
+    }
+
+    @Override public List<UserStory> findAll() {
+        return (List<UserStory>) userStoryRepository.findAll();
     }
 
     @Override public Page<UserStory> findAllByPage(Integer page, Integer size) {

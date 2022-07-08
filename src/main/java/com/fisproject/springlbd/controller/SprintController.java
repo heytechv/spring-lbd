@@ -21,7 +21,7 @@ public class SprintController {
     @GetMapping("/sprints")
     public List<SprintDto> getSprintList(@RequestParam("tasks") boolean showUserStories) {
 
-        List<Sprint> sprints = sprintService.getAllSprintList();
+        List<Sprint> sprints = sprintService.findAll();
 
         return sprints.stream().map(sprint -> {
             SprintDto sprintDto = sprintService.convertEntityToDto(sprint);

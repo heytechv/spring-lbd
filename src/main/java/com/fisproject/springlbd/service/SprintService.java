@@ -14,7 +14,7 @@ public interface SprintService {
     List<UserStory> getUserStoryListById(Long id);
     List<UserStory> getUserStoryListByName(String name);
     List<Sprint> getSprintListBetweenDate(Timestamp start_range, Timestamp end_range);
-    List<Sprint> getAllSprintList();
+    List<Sprint> findAll();
     Integer getStoryPointsById(Long id);
     Page<Sprint> findAllByPageAndSort(Integer page, Integer size);
 

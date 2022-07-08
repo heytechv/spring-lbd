@@ -3,7 +3,9 @@ package com.fisproject.springlbd.entity;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name="Sprint")
@@ -21,7 +23,7 @@ public class Sprint {
             joinColumns       =@JoinColumn(name="sprint_id"),
             inverseJoinColumns=@JoinColumn(name="user_story_id")
     )
-    private List<UserStory> userStories = new ArrayList<>();
+    private Set<UserStory> userStories = new HashSet<>();
 
     @Column(name="id") public void setId(Long id) { this.id = id; }
     @Column(name="id") public Long getId() { return id; }
@@ -41,7 +43,7 @@ public class Sprint {
     @Column(name="status") public void setStatus(StatusType status) { this.status = status.toString(); }
     @Column(name="status") public String getStatus() { return status; }
 
-    public List<UserStory> getUserStories() { return userStories; }
+    public Set<UserStory> getUserStories() { return userStories; }
     public void addUserStory(UserStory userStory) { this.userStories.add(userStory); }
 
 

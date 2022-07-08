@@ -12,6 +12,7 @@ import java.util.List;
 public interface UserStoryService {
     UserStory addUserStory(String name, String description, Integer story_points_amount, UserStory.StatusType status) throws IllegalArgumentException;
     Page<UserStory> findAllByPage(Integer page, Integer size);
+    List<UserStory> findAll();
 
     /** Mapper */
     UserStoryDto convertEntityToDto(UserStory userStory);

@@ -2,7 +2,9 @@ package com.fisproject.springlbd.entity;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name="USERSTORY")
@@ -14,10 +16,10 @@ public class UserStory {
     private String status;
 
     @OneToMany(mappedBy = "userStoryLinked")
-    private List<Attachment> attachments = new ArrayList<>();
+    private Set<Attachment> attachments = new HashSet<>();
 
     @ManyToMany(mappedBy="userStories")     // tutaj nazwa zmiennej List w Sprint.java
-    private List<Sprint> sprints = new ArrayList<>();
+    private Set<Sprint> sprints = new HashSet<>();
 
     @Column(name="id") public void setId(Long id) { this.id = id; }
     @Column(name="id") public Long getId() { return id; }

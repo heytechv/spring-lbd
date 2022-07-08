@@ -6,7 +6,6 @@ import com.fisproject.springlbd.service.SprintService;
 import com.fisproject.springlbd.service.UserStoryService;
 import com.fisproject.springlbd.utils.CreateRandomSprints;
 import com.fisproject.springlbd.utils.CreateRandomUserStories;
-import org.h2.engine.User;
 import org.junit.jupiter.api.Test;
 
 import org.slf4j.Logger;
@@ -16,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -86,9 +84,7 @@ class SpringLbdApplicationTests {
     /** Zad 9 Test */
     @Test void test_zad9_SprintByIdGetUserStories() {
         List<UserStory> userStories = sprintService.getUserStoryListById(1L);
-
-        for (UserStory us : userStories)
-            System.out.println(us.getId() + " | " + us.getName() + " | " + us.getStatus());
+        userStories.forEach(us -> System.out.println(us.getId() + " | " + us.getName() + " | " + us.getStatus()));
 
         assert userStories.size() > 0;
     }
@@ -100,9 +96,7 @@ class SpringLbdApplicationTests {
                         Timestamp.valueOf("2022-07-01 00:00:00.0"),
                         Timestamp.valueOf("2022-07-07 00:00:00.0")
                 );
-
-        for (Sprint s : sprints)
-            System.out.println(s.getName() + " | " + s.getStartDate() + " | "+ s.getStatus());
+        sprints.forEach(s -> System.out.println(s.getName() + " | " + s.getStartDate() + " | "+ s.getStatus()));
 
         assert sprints.size() > 0;
     }
@@ -118,6 +112,7 @@ class SpringLbdApplicationTests {
     /** Zad 12 Test */
     @Test void test_zad12_createRandom() {
         new CreateRandomUserStories().create(context, 100);
+        userStoryService.findAll().forEach(us -> System.out.println(us.getId()+"\t|\t"+us.getName()+"\t|\t"+us.getStatus()));
     }
 
     /** Zad 14 Test */
@@ -126,9 +121,9 @@ class SpringLbdApplicationTests {
 
         Page<UserStory> userStories = userStoryService.findAllByPage(1, 10);
 
-        for (UserStory us : userStories) {
+        for (UserStory us : userStories)
             System.out.println(us.getId() + " | " + us.getName() + " | " + us.getStatus());
-        }
+
 
         assert userStories.getSize() == 10;
     }
@@ -138,11 +133,7 @@ class SpringLbdApplicationTests {
         new CreateRandomSprints().create(context, 100);
 
         Page<Sprint> sprints = sprintService.findAllByPageAndSort(0, 10);
-
-        System.out.println("id\t|\tname\t|\tstart_date");
-        for (Sprint s : sprints) {
-            System.out.println(s.getId() + "\t|\t" + s.getName() + "\t|\t" + s.getStartDate() + "\t|\t" + s.getStatus());
-        }
+        sprints.forEach(s -> System.out.println(s.getId() + "\t|\t" + s.getName() + "\t|\t" + s.getStartDate() + "\t|\t" + s.getStatus()));
     }
 
     /** Zad 16 Test */
@@ -151,18 +142,16 @@ class SpringLbdApplicationTests {
         sprintService.addSprintWithUserStoryZad16(sprintName);
 
         List<UserStory> userStories = sprintService.getUserStoryListByName(sprintName);
-        for (UserStory us : userStories)
-            System.out.println(us.getId() + " | " + us.getName() + " | " + us.getStatus());
+        userStories.forEach(us -> System.out.println(us.getId() + " | " + us.getName() + " | " + us.getStatus()));
 
         assert userStories.size() > 0;
-
     }
 
     /** rob */
     @Test void test_rob() {
         sprintService.addSprintWithUserStoryZad16("roboczy");
 
-        List<Sprint> sprints = sprintService.getAllSprintList();
+        List<Sprint> sprints = sprintService.findAll();
         sprints.forEach(sprint -> System.out.println(sprint.getName()));
 
 
