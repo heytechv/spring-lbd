@@ -64,6 +64,12 @@ public class SprintServiceImpl implements SprintService {
         return foundSprint.map(sprint -> new ArrayList<>(sprint.getUserStories())).orElse(null);    // tutaj new Array bo inaczej LazyException
     }
 
+    @Override public List<Sprint> getAllSprintList() {
+//        return Arrays.asList(sprintRepository.findAll());
+        return null;
+    }
+
+
     @Override public List<UserStory> getUserStoryListByName(String name) {
         Optional<Sprint> foundSprint = sprintRepository.findByName(name);
         return foundSprint.map(sprint -> new ArrayList<>(sprint.getUserStories())).orElse(null);
