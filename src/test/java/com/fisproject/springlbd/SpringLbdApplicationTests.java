@@ -56,9 +56,10 @@ class SpringLbdApplicationTests {
             sprintService.addSprint(
                     "SH",
                     Timestamp.valueOf("2022-07-06 00:00:00.0"),
-                    Timestamp.valueOf("2022-07-07 00:00:00.0"),
-                    "opis jakis",
-                    "PENDINGx");
+//                    Timestamp.valueOf("2022-07-07 00:00:00.0"),
+                    null,
+                    "",
+                    "PENDING");
         } catch (Exception e) {
             LOG.error(e.getMessage());
             isE = true;
@@ -71,8 +72,8 @@ class SpringLbdApplicationTests {
 
         try {
             userStoryService.addUserStory(
-                    "",
-                    "opis jakis",
+                    "jakies",
+                    "", // PUSTY!
                     1,
                     "");
         } catch (Exception e) {

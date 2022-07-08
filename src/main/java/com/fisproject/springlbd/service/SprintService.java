@@ -10,13 +10,12 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface SprintService {
-    public abstract boolean checkArgs(String name, Timestamp start_date, Timestamp end_date, String description, String status) throws SQLException;
-    public abstract void addSprint(String name, Timestamp start_date, Timestamp end_date, String description, String status) throws SQLException;
-    public abstract List<UserStory> getUserStoryListById(Long id);
-    public abstract List<UserStory> getUserStoryListByName(String name);
-    public abstract List<Sprint> getSprintListBetweenDate(Timestamp start_range, Timestamp end_range);
-    public abstract Integer getStoryPointsById(Long id);
-    public abstract Page<Sprint> findAllByPageAndSort(Integer page, Integer size);
+    void addSprint(String name, Timestamp start_date, Timestamp end_date, String description, String status) throws IllegalArgumentException;
+    List<UserStory> getUserStoryListById(Long id);
+    List<UserStory> getUserStoryListByName(String name);
+    List<Sprint> getSprintListBetweenDate(Timestamp start_range, Timestamp end_range);
+    Integer getStoryPointsById(Long id);
+    Page<Sprint> findAllByPageAndSort(Integer page, Integer size);
 
-    public abstract void addSprintWithUserStoryZad16(String sprintName) throws SQLException;
+    void addSprintWithUserStoryZad16(String sprintName) throws IllegalArgumentException;
 }

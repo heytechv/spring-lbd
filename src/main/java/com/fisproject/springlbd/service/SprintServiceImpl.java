@@ -24,26 +24,9 @@ public class SprintServiceImpl implements SprintService {
     @Autowired private SprintRepository sprintRepository;
     @Autowired private UserStoryRepository userStoryRepository;
 
-    @Override
-    public boolean checkArgs(String name, Timestamp start_date, Timestamp end_date, String description, String status) throws SQLException {
-        if (name == null || name.isEmpty())
-            throw new SQLException("[addSprint] Missing required 'name' field!");
-        if (start_date == null || end_date == null || start_date.after(end_date))
-            throw new SQLException("[addSprint] Missing required 'start_date', 'end_date' fields!");
-        if (start_date.after(end_date))
-            throw new SQLException("[addSprint] 'end_date' must be greater than 'start_date'!");
-        if (status == null || status.isEmpty())
-            throw new SQLException("[addSprint] Missing required 'status' field!");
-        if (!Arrays.asList("PENDING","IN_PROGRESS","FINISHED","CANCELED").contains(status))
-            throw new SQLException("[addSprint] Status type not found!");
-
-        return true;
-    }
 
     @Override @Transactional                                                                                            // https://www.baeldung.com/transaction-configuration-with-jpa-and-spring - @Transactional pozwala na rollback po jakimkolwiek runtime exception
-    public void addSprint(String name, Timestamp start_date, Timestamp end_date, String description, String status) throws SQLException {
-
-        checkArgs(name, start_date, end_date, description, status);
+    public void addSprint(String name, Timestamp start_date, Timestamp end_date, String description, String status) throws IllegalArgumentException {
 
         Sprint sprint = new Sprint();
         sprint.setName(name);
@@ -53,6 +36,17 @@ public class SprintServiceImpl implements SprintService {
         if (description != null) sprint.setDescription(description);
 
         sprintRepository.save(sprint);
+
+        if (name == null || name.isEmpty())
+            throw new IllegalArgumentException("[addSprint] Missing required 'name' field!");
+        if (start_date == null || end_date == null || start_date.after(end_date))
+            throw new IllegalArgumentException("[addSprint] Missing required 'start_date', 'end_date' fields!");
+        if (start_date.after(end_date))
+            throw new IllegalArgumentException("[addSprint] 'end_date' must be greater than 'start_date'!");
+        if (status == null || status.isEmpty())
+            throw new IllegalArgumentException("[addSprint] Missing required 'status' field!");
+        if (!Arrays.asList("PENDING","IN_PROGRESS","FINISHED","CANCELED").contains(status))
+            throw new IllegalArgumentException("[addSprint] Status type not found!");
     }
 
     @Override @Transactional public List<UserStory> getUserStoryListById(Long id) {
@@ -87,7 +81,6 @@ public class SprintServiceImpl implements SprintService {
         return sprintRepository.findAll(
                 PageRequest.of(page, size,
                         Sort.by("startDate")));
-
     }
 
     @Override @Transactional public void addSprintWithUserStoryZad16(String sprintName) {
@@ -107,7 +100,6 @@ public class SprintServiceImpl implements SprintService {
         sprint.setStatus("PENDING");
         sprint.addUserStory(userStory);
         sprintRepository.save(sprint);
-
     }
 
 

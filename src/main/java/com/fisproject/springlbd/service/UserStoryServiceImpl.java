@@ -19,12 +19,7 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Autowired UserStoryRepository userStoryRepository;
 
     @Override @Transactional
-    public UserStory addUserStory(String name, String description, Integer story_points_amount, String status) throws SQLException {
-
-        if (name == null || name.isEmpty())
-            throw new SQLException("[addUserStory] Missing required 'name' field!");
-        if (description == null || description.isEmpty())
-            throw new SQLException("[addUserStory] Missing required 'description' field!");
+    public UserStory addUserStory(String name, String description, Integer story_points_amount, String status) throws IllegalArgumentException {
 
         UserStory userStory = new UserStory();
         userStory.setName(name);
@@ -36,6 +31,11 @@ public class UserStoryServiceImpl implements UserStoryService {
             userStory.setStatus(status);
 
         userStoryRepository.save(userStory);
+
+        if (name == null || name.isEmpty())
+            throw new IllegalArgumentException("[addUserStory] Missing required 'name' field!");
+        if (description == null || description.isEmpty())
+            throw new IllegalArgumentException("[addUserStory] Missing required 'description' field!");
 
         return userStory;
     }

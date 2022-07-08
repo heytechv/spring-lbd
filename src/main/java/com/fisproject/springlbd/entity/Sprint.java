@@ -23,29 +23,23 @@ public class Sprint {
     )
     private List<UserStory> userStories = new ArrayList<>();
 
-    @Column(name="id")
-    public void setId(Long id) { this.id = id; }
-    public Long getId() { return id; }
+    @Column(name="id") public void setId(Long id) { this.id = id; }
+    @Column(name="id") public Long getId() { return id; }
 
-    @Column(name="name")
-    public void setName(String name) { this.name = name; }
-    public String getName() { return name; }
+    @Column(name="name") public void setName(String name) { this.name = name; }
+    @Column(name="name") public String getName() { return name; }
 
-    @Column(name="start_date")
-    public void setStartDate(Timestamp start_date) { this.startDate = start_date; }
-    public Timestamp getStartDate() { return startDate; }
+    @Column(name="start_date") public void setStartDate(Timestamp start_date) { this.startDate = start_date; }
+    @Column(name="start_date") public Timestamp getStartDate() { return startDate; }
 
-    @Column(name="end_date")
-    public void setEndDate(Timestamp end_date) { this.endDate = end_date; }
-    public Timestamp getEndDate() { return endDate; }
+    @Column(name="end_date") public void setEndDate(Timestamp end_date) { this.endDate = end_date; }
+    @Column(name="end_date") public Timestamp getEndDate() { return endDate; }
 
-    @Column(name="description")
-    public void setDescription(String description) { this.description = description; }
-    public String getDescription() { return description; }
+    @Column(name="description") public void setDescription(String description) { this.description = description; }
+    @Column(name="description") public String getDescription() { return description; }
 
-    @Column(name="status")
-    public void setStatus(String status) { this.status = status; }
-    public String getStatus() { return status; }
+    @Column(name="status") public void setStatus(String status) { this.status = status; }
+    @Column(name="status") public String getStatus() { return status; }
 
     public List<UserStory> getUserStories() { return userStories; }
     public void addUserStory(UserStory userStory) { this.userStories.add(userStory); }
