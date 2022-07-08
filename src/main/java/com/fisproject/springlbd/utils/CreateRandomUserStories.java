@@ -15,7 +15,6 @@ import java.util.UUID;
 
 public class CreateRandomUserStories {
 
-    @Transactional
     public void create(ApplicationContext context, int amount) {
 
         UserStoryRepository userStoryRepository = context.getBean(UserStoryRepository.class);

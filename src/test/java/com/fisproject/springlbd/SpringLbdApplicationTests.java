@@ -146,7 +146,7 @@ class SpringLbdApplicationTests {
     }
 
     /** Zad 16 Test */
-    @Test void test_zad16_addSprintWithUserStory() throws SQLException {
+    @Test void test_zad16_addSprintWithUserStory() throws IllegalArgumentException {
         String sprintName = "sprint_zad16";
         sprintService.addSprintWithUserStoryZad16(sprintName);
 
