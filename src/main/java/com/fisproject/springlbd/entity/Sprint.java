@@ -11,7 +11,7 @@ public class Sprint {
 
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY) private Long id;                                              // https://stackoverflow.com/questions/39807483/sequence-hibernate-sequence-not-found-sql-statement - @GeneratedValue(...)
     private String name;
-    private Timestamp start_date, end_date;
+    private Timestamp startDate, endDate;
     private String description, status;
 
     /* Sprint - jako glowny (UserStory poboczny?) */
@@ -32,12 +32,12 @@ public class Sprint {
     public String getName() { return name; }
 
     @Column(name="start_date")
-    public void setStart_date(Timestamp start_date) { this.start_date = start_date; }
-    public Timestamp getStart_date() { return start_date; }
+    public void setStartDate(Timestamp start_date) { this.startDate = start_date; }
+    public Timestamp getStartDate() { return startDate; }
 
     @Column(name="end_date")
-    public void setEnd_date(Timestamp end_date) { this.end_date = end_date; }
-    public Timestamp getEnd_date() { return end_date; }
+    public void setEndDate(Timestamp end_date) { this.endDate = end_date; }
+    public Timestamp getEndDate() { return endDate; }
 
     @Column(name="description")
     public void setDescription(String description) { this.description = description; }
