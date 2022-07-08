@@ -32,21 +32,21 @@ class SpringLbdApplicationTests {
     @Autowired ApplicationContext context;
 
     /** Zad 8 Test */
-    @Test void test_zad8_SprintServiceOK() throws SQLException {
+    @Test void test_zad8_SprintServiceOK() throws IllegalArgumentException {
         sprintService.addSprint(
                 "SH",
                 Timestamp.valueOf("2022-07-06 00:00:00.0"),
                 Timestamp.valueOf("2022-07-07 00:00:00.0"),
                 "opis jakis",
-                "PENDING");
+                Sprint.StatusType.IN_PROGRESS);
     }
 
-    @Test void test_zad8_UserStoryServiceOK() throws SQLException {
+    @Test void test_zad8_UserStoryServiceOK() throws IllegalArgumentException {
         userStoryService.addUserStory(
                 "SH",
                 "opis jakis",
                 1,
-                "");
+                null);
     }
 
     @Test void test_zad8_SprintServiceException() {
@@ -59,7 +59,7 @@ class SpringLbdApplicationTests {
 //                    Timestamp.valueOf("2022-07-07 00:00:00.0"),
                     null,
                     "",
-                    "PENDING");
+                    Sprint.StatusType.PENDING);
         } catch (Exception e) {
             LOG.error(e.getMessage());
             isE = true;
@@ -75,7 +75,7 @@ class SpringLbdApplicationTests {
                     "jakies",
                     "", // PUSTY!
                     1,
-                    "");
+                    null);
         } catch (Exception e) {
             LOG.error(e.getMessage());
             isE = true;
@@ -141,7 +141,7 @@ class SpringLbdApplicationTests {
 
         System.out.println("id\t|\tname\t|\tstart_date");
         for (Sprint s : sprints) {
-            System.out.println(s.getId() + "\t|\t" + s.getName() + "\t|\t" + s.getStartDate());
+            System.out.println(s.getId() + "\t|\t" + s.getName() + "\t|\t" + s.getStartDate() + "\t|\t" + s.getStatus());
         }
     }
 
@@ -156,7 +156,11 @@ class SpringLbdApplicationTests {
 
         assert userStories.size() > 0;
 
+    }
 
+    /** rob */
+    @Test void test_rob() {
+        System.out.println("");
     }
 
 

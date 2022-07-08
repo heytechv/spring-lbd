@@ -30,7 +30,8 @@ public class CreateRandomSprints {
             s.setDescription(UUID.randomUUID().toString());
             s.setStartDate(Timestamp.valueOf("202"+rndYear+"-0"+rndDay     +"-01 00:00:00.0"));
             s.setEndDate(Timestamp.valueOf("202"+rndYear+"-0"+(rndDay+1) +"-01 05:00:00.0"));
-            s.setStatus(Arrays.asList("PENDING","IN_PROGRESS","FINISHED","CANCELED").get(random.nextInt(4)));
+//            s.setStatus(Arrays.asList("PENDING","IN_PROGRESS","FINISHED","CANCELED").get(random.nextInt(4)));
+            s.setStatus(Arrays.asList(Sprint.StatusType.values()).get(random.nextInt(4)));
 
             sprints.add(s);
         }

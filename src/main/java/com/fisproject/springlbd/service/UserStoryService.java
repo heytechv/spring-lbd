@@ -8,6 +8,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface UserStoryService {
-    UserStory addUserStory(String name, String description, Integer story_points_amount, String status) throws IllegalArgumentException;
+    UserStory addUserStory(String name, String description, Integer story_points_amount, UserStory.StatusType status) throws IllegalArgumentException;
     Page<UserStory> findAllByPage(Integer page, Integer size);
 }

@@ -25,8 +25,9 @@ public class SprintServiceImpl implements SprintService {
     @Autowired private UserStoryRepository userStoryRepository;
 
 
+    // @Transactional needs UNCHECKED exception for rollback!
     @Override @Transactional                                                                                            // https://www.baeldung.com/transaction-configuration-with-jpa-and-spring - @Transactional pozwala na rollback po jakimkolwiek runtime exception
-    public void addSprint(String name, Timestamp start_date, Timestamp end_date, String description, String status) throws IllegalArgumentException {
+    public void addSprint(String name, Timestamp start_date, Timestamp end_date, String description, Sprint.StatusType status) throws IllegalArgumentException {
 
         Sprint sprint = new Sprint();
         sprint.setName(name);
@@ -43,9 +44,10 @@ public class SprintServiceImpl implements SprintService {
             throw new IllegalArgumentException("[addSprint] Missing required 'start_date', 'end_date' fields!");
         if (start_date.after(end_date))
             throw new IllegalArgumentException("[addSprint] 'end_date' must be greater than 'start_date'!");
-        if (status == null || status.isEmpty())
-            throw new IllegalArgumentException("[addSprint] Missing required 'status' field!");
-        if (!Arrays.asList("PENDING","IN_PROGRESS","FINISHED","CANCELED").contains(status))
+//        if (status == null || status.isEmpty())
+//            throw new IllegalArgumentException("[addSprint] Missing required 'status' field!");
+//        if (!Arrays.asList("PENDING","IN_PROGRESS","FINISHED","CANCELED").contains(status))
+        if (!Arrays.asList(Sprint.StatusType.values()).contains(status))
             throw new IllegalArgumentException("[addSprint] Status type not found!");
     }
 
@@ -89,7 +91,7 @@ public class SprintServiceImpl implements SprintService {
         userStory.setName("user_story_zad16");
         userStory.setDescription("opis user story (zad 16)");
         userStory.setStory_points_amount(12);
-        userStory.setStatus("IN_PROGRESS");
+        userStory.setStatus(UserStory.StatusType.IN_PROGRESS);
         userStoryRepository.save(userStory);
 
         Sprint sprint = new Sprint();
@@ -97,7 +99,7 @@ public class SprintServiceImpl implements SprintService {
         sprint.setStartDate(Timestamp.valueOf("2022-07-07 00:00:00.0"));
         sprint.setEndDate(Timestamp.valueOf("2022-07-08 00:00:00.0"));
         sprint.setDescription("sprint na potrzeby zad 16 :)");
-        sprint.setStatus("PENDING");
+        sprint.setStatus(Sprint.StatusType.PENDING);
         sprint.addUserStory(userStory);
         sprintRepository.save(sprint);
     }

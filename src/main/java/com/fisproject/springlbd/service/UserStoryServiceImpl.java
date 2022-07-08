@@ -19,15 +19,15 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Autowired UserStoryRepository userStoryRepository;
 
     @Override @Transactional
-    public UserStory addUserStory(String name, String description, Integer story_points_amount, String status) throws IllegalArgumentException {
+    public UserStory addUserStory(String name, String description, Integer story_points_amount, UserStory.StatusType status) throws IllegalArgumentException {
 
         UserStory userStory = new UserStory();
         userStory.setName(name);
         userStory.setDescription(description);
         if (story_points_amount != null) userStory.setStory_points_amount(story_points_amount);
 
-        userStory.setStatus("TO_DO");
-        if (status != null && Arrays.asList("TO_DO", "IN_PROGRESS", "REVIEW", "DONE").contains(status))
+        userStory.setStatus(UserStory.StatusType.TO_DO);
+        if (status != null && Arrays.asList(UserStory.StatusType.values()).contains(status))
             userStory.setStatus(status);
 
         userStoryRepository.save(userStory);

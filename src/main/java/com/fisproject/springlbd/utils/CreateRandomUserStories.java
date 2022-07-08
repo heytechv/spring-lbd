@@ -28,7 +28,7 @@ public class CreateRandomUserStories {
             us.setName(UUID.randomUUID().toString());
             us.setDescription(UUID.randomUUID().toString());
             us.setStory_points_amount(random.nextInt(10));
-            us.setStatus(Arrays.asList("TO_DO", "IN_PROGRESS", "REVIEW", "DONE").get(random.nextInt(4)));
+            us.setStatus(Arrays.asList(UserStory.StatusType.values()).get(random.nextInt(4)));
 
             userStories.add(us);
         }

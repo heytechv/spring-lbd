@@ -38,9 +38,19 @@ public class Sprint {
     @Column(name="description") public void setDescription(String description) { this.description = description; }
     @Column(name="description") public String getDescription() { return description; }
 
-    @Column(name="status") public void setStatus(String status) { this.status = status; }
+    @Column(name="status") public void setStatus(StatusType status) { this.status = status.toString(); }
     @Column(name="status") public String getStatus() { return status; }
 
     public List<UserStory> getUserStories() { return userStories; }
     public void addUserStory(UserStory userStory) { this.userStories.add(userStory); }
+
+
+    public enum StatusType {
+        PENDING,
+        IN_PROGRESS,
+        FINISHED,
+        CANCELED
+    }
+
+
 }

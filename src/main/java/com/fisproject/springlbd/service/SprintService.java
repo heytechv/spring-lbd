@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface SprintService {
-    void addSprint(String name, Timestamp start_date, Timestamp end_date, String description, String status) throws IllegalArgumentException;
+    void addSprint(String name, Timestamp start_date, Timestamp end_date, String description, Sprint.StatusType status) throws IllegalArgumentException;
     List<UserStory> getUserStoryListById(Long id);
     List<UserStory> getUserStoryListByName(String name);
     List<Sprint> getSprintListBetweenDate(Timestamp start_range, Timestamp end_range);
