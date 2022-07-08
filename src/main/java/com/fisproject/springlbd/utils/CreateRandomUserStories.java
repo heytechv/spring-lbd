@@ -32,10 +32,7 @@ public class CreateRandomUserStories {
 
             userStories.add(us);
         }
-
         userStoryRepository.saveAll(userStories);
-
     }
-
 
 }
