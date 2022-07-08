@@ -13,7 +13,6 @@ import java.util.UUID;
 
 public class CreateRandomSprints {
 
-    @Transactional
     public void create(ApplicationContext context, int amount) {
 
         SprintRepository sprintRepository = context.getBean(SprintRepository.class);

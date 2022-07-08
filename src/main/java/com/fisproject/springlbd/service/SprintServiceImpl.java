@@ -51,7 +51,7 @@ public class SprintServiceImpl implements SprintService {
             throw new IllegalArgumentException("[addSprint] Status type not found!");
     }
 
-    @Override @Transactional public List<UserStory> getUserStoryListById(Long id) {
+    @Override public List<UserStory> getUserStoryListById(Long id) {
         Optional<Sprint> foundSprint = sprintRepository.findById(id);
 
 //        foundSprint.ifPresent(story -> {
@@ -69,11 +69,11 @@ public class SprintServiceImpl implements SprintService {
         return foundSprint.map(sprint -> new ArrayList<>(sprint.getUserStories())).orElse(null);
     }
 
-    @Override @Transactional public List<Sprint> getSprintListBetweenDate(Timestamp start_range, Timestamp end_range) {
+    @Override public List<Sprint> getSprintListBetweenDate(Timestamp start_range, Timestamp end_range) {
         return sprintRepository.getSprintListBetweenDates(start_range, end_range);
     }
 
-    @Override @Transactional public Integer getStoryPointsById(Long id) {
+    @Override public Integer getStoryPointsById(Long id) {
         Integer points = sprintRepository.getStoryPointsById(id);
         return points != null ? points : 0;
     }

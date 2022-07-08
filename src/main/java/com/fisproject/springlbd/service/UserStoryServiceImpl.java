@@ -40,8 +40,7 @@ public class UserStoryServiceImpl implements UserStoryService {
         return userStory;
     }
 
-    @Override @Transactional
-    public Page<UserStory> findAllByPage(Integer page, Integer size) {
+    @Override public Page<UserStory> findAllByPage(Integer page, Integer size) {
         return userStoryRepository.findAll(PageRequest.of(page, size));
     }
 }
