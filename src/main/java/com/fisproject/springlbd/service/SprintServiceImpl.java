@@ -1,6 +1,7 @@
 package com.fisproject.springlbd.service;
 
 import com.fisproject.springlbd.entity.Sprint;
+import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.repository.SprintRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
@@ -13,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SprintServiceImpl implements SprintService {
@@ -43,9 +45,20 @@ public class SprintServiceImpl implements SprintService {
         sprintRepository.save(sprint);
     }
 
-    @Override
-    public void getUserStoryListById(Integer id) {
+    @Override @Transactional public List<UserStory> getUserStoryListById(Long id) {
+        Optional<Sprint> foundSprint = sprintRepository.findById(id);
 
+//        foundSprint.ifPresent(story -> {
+//            List<UserStory> userStories = story.getUserStories();
+//            for (UserStory userStory : userStories)
+//                System.out.println(userStory.getName());
+//        });
+
+        return foundSprint.map(sprint -> new ArrayList<>(sprint.getUserStories())).orElse(null);    // tutaj new Array bo inaczej LazyException
+    }
+
+    @Override @Transactional public List<Sprint> getSprintListBetweenDate(Timestamp start_range, Timestamp end_range) {
+        return sprintRepository.getByStartDateBetween(start_range, end_range);
     }
 
 

@@ -17,7 +17,7 @@ public class Sprint {
     /* Sprint - jako glowny (UserStory poboczny?) */
     @ManyToMany                                                                                                         // https://www.youtube.com/watch?v=ntN1HWKND8U&ab_channel=CodeForgeYT
     @JoinTable(
-        name="SprintUserStory",
+        name="SPRINT_USER_STORY",
             joinColumns       =@JoinColumn(name="sprint_id"),
             inverseJoinColumns=@JoinColumn(name="user_story_id")
     )
@@ -47,8 +47,6 @@ public class Sprint {
     public void setStatus(String status) { this.status = status; }
     public String getStatus() { return status; }
 
-    @Override
-    public String toString() {
-        return getId() + " " + getName() + " " + getStart_date().toString() + " " + getEnd_date().toString() + " " + getDescription() + " " + getStatus();
-    }
+    public List<UserStory> getUserStories() { return userStories; }
+    public void addUserStory(UserStory userStory) { this.userStories.add(userStory); }
 }

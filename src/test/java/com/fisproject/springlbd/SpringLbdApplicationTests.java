@@ -1,6 +1,7 @@
 package com.fisproject.springlbd;
 
 import com.fisproject.springlbd.entity.Sprint;
+import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.service.SprintService;
 import com.fisproject.springlbd.service.UserStoryService;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,6 +25,7 @@ class SpringLbdApplicationTests {
     @Autowired SprintService sprintService;
     @Autowired UserStoryService userStoryService;
 
+    /** Zad 8 Test */
     @Test void test_zad8_SprintServiceOK() throws SQLException {
         sprintService.addSprint(
                 "SH",
@@ -73,4 +76,27 @@ class SpringLbdApplicationTests {
         assert isE;
     }
 
+    /** Zad 9 Test */
+    @Test void test_zad9_SprintByIdGetUserStories() {
+        List<UserStory> userStories = sprintService.getUserStoryListById(1L);
+
+        for (UserStory us : userStories)
+            System.out.println(us.getName() + " | " + us.getStatus());
+
+        assert userStories.size() > 0;
+    }
+
+    /** Zad 10 Test */
+    @Test void test_zad10_SprintsBetweenDateRange() {
+        List<Sprint> sprints = sprintService
+                .getSprintListBetweenDate(
+                        Timestamp.valueOf("2022-07-01 00:00:00.0"),
+                        Timestamp.valueOf("2022-07-07 00:00:00.0")
+                );
+
+        for (Sprint s : sprints)
+            System.out.println(s.getName() + " | " + s.getStart_date() + " | "+ s.getStatus());
+
+        assert sprints.size() > 0;
+    }
 }

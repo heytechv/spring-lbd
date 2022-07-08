@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS SprintUserStory;
+DROP TABLE IF EXISTS SPRINT_USER_STORY;
 DROP TABLE IF EXISTS Sprint;
 DROP TABLE IF EXISTS UserStory;
 
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS UserStory(
     status varchar(20) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS SprintUserStory(
+CREATE TABLE IF NOT EXISTS SPRINT_USER_STORY(
     sprint_id integer NOT NULL references Sprint(id),
     user_story_id integer NOT NULL references UserStory(id)
 );
