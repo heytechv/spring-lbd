@@ -160,7 +160,11 @@ class SpringLbdApplicationTests {
 
     /** rob */
     @Test void test_rob() {
-        System.out.println("");
+        sprintService.addSprintWithUserStoryZad16("roboczy");
+
+        List<Sprint> sprints = sprintService.getAllSprintList();
+        sprints.forEach(sprint -> System.out.println(sprint.getName()));
+
 
     }
 

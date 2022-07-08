@@ -1,7 +1,6 @@
 package com.fisproject.springlbd.entity;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class UserStory {
     @Column(name="description") public String getDescription() { return description; }
 
     @Column(name="story_points_amount") public void setStory_points_amount(Integer story_points_amount) { this.story_points_amount = story_points_amount; }
-    @Column(name="story_points_amount") public Integer getStory_points_amount() { return story_points_amount; }
+    @Column(name="story_points_amount") public Integer getStoryPointsAmount() { return story_points_amount; }
 
     @Column(name="status") public void setStatus(StatusType status) { this.status = status.toString(); }
     @Column(name="status") public String getStatus() { return status; }

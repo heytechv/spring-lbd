@@ -1,5 +1,6 @@
 package com.fisproject.springlbd.service;
 
+import com.fisproject.springlbd.dto.UserStoryDto;
 import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.repository.UserStoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserStoryServiceImpl implements UserStoryService {
@@ -43,4 +41,10 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Override public Page<UserStory> findAllByPage(Integer page, Integer size) {
         return userStoryRepository.findAll(PageRequest.of(page, size));
     }
+
+    /** Mapper */
+    @Override public UserStoryDto convertEntityToDto(UserStory userStory) {
+        return new UserStoryDto(userStory.getName(), userStory.getStoryPointsAmount());
+    }
+
 }

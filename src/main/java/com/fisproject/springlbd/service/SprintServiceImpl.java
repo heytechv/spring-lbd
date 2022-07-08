@@ -1,5 +1,6 @@
 package com.fisproject.springlbd.service;
 
+import com.fisproject.springlbd.dto.SprintDto;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.repository.SprintRepository;
@@ -11,7 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,8 +65,7 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override public List<Sprint> getAllSprintList() {
-//        return Arrays.asList(sprintRepository.findAll());
-        return null;
+        return (List<Sprint>) sprintRepository.findAll();
     }
 
 
@@ -108,6 +107,11 @@ public class SprintServiceImpl implements SprintService {
         sprint.setStatus(Sprint.StatusType.PENDING);
         sprint.addUserStory(userStory);
         sprintRepository.save(sprint);
+    }
+
+    /** Mapper */
+    @Override public SprintDto convertEntityToDto(Sprint sprint) {
+        return new SprintDto(sprint.getId(), sprint.getName(), sprint.getDescription());
     }
 
 
