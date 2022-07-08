@@ -16,7 +16,6 @@ import java.util.UUID;
 public class CreateRandomUserStories {
 
     public void create(ApplicationContext context, int amount) {
-
         UserStoryRepository userStoryRepository = context.getBean(UserStoryRepository.class);
 
         ArrayList<UserStory> userStories = new ArrayList<>();
