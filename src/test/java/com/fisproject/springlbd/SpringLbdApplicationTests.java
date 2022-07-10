@@ -1,5 +1,7 @@
 package com.fisproject.springlbd;
 
+import com.fisproject.springlbd.component.StandardResponse;
+import com.fisproject.springlbd.dto.SprintZad11Dto;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.service.SprintService;
@@ -91,14 +93,14 @@ class SpringLbdApplicationTests {
 
     /** Zad 10 Test */
     @Test void test_zad10_SprintsBetweenDateRange() {
-        List<Sprint> sprints = sprintService
+        StandardResponse sprints = sprintService
                 .findBetweenDate(
                         Timestamp.valueOf("2022-07-01 00:00:00.0"),
                         Timestamp.valueOf("2022-07-07 00:00:00.0")
                 );
-        sprints.forEach(s -> System.out.println(s.getName() + " | " + s.getStartDate() + " | "+ s.getStatus()));
+        ((List<SprintZad11Dto>) sprints.getData()).forEach(s -> System.out.println(s.getName() + " | " + s.getStartDate() + " | "+ s.getStatus()));
 
-        assert sprints.size() > 0;
+        assert ((List<SprintZad11Dto>) sprints.getData()).size() > 0;
     }
 
     /** Zad 11 Test */

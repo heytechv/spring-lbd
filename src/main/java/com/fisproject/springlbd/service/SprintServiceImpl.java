@@ -2,6 +2,7 @@ package com.fisproject.springlbd.service;
 
 import com.fisproject.springlbd.component.StandardResponse;
 import com.fisproject.springlbd.dto.SprintDto;
+import com.fisproject.springlbd.dto.SprintZad11Dto;
 import com.fisproject.springlbd.dto.UserStoryZad5Dto;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
@@ -64,10 +65,6 @@ public class SprintServiceImpl implements SprintService {
     @Override public List<UserStory> getUserStoryListByName(String name) {
         Optional<Sprint> foundSprint = sprintRepository.findByName(name);
         return foundSprint.map(sprint -> new ArrayList<>(sprint.getUserStories())).orElse(null);
-    }
-
-    @Override public List<Sprint> findBetweenDate(Timestamp start_range, Timestamp end_range) {
-        return sprintRepository.getSprintListBetweenDates(start_range, end_range);
     }
 
     @Override public Integer getStoryPointsById(Long id) {
@@ -161,12 +158,44 @@ public class SprintServiceImpl implements SprintService {
                 }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, null, "ID not found"));
     }
 
+    @Override public StandardResponse updateSprintStatus(Long sprintId, Sprint.StatusType newStatus) {
+        if (!Arrays.asList(Sprint.StatusType.values()).contains(newStatus))
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            return new StandardResponse(HttpStatus.BAD_REQUEST, null, newStatus+" status not found!");
+
+        return findById(sprintId).map(sprint -> {
+                    sprint.setStatus(newStatus);
+                    save(sprint);
+                    return new StandardResponse(HttpStatus.OK, "OK", "Updated!");
+                }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, "", "id not found!"));
+    }
+
+    @Override public StandardResponse findBetweenDate(Timestamp start_range, Timestamp end_range) {
+
+        Optional<List<Sprint>> optionalSprints = sprintRepository.getSprintListBetweenDates(start_range, end_range);
+
+        if (optionalSprints.isEmpty())
+            return new StandardResponse(HttpStatus.INTERNAL_SERVER_ERROR, "", "error!");
+
+        ArrayList<SprintZad11Dto> arrayList = new ArrayList<>(optionalSprints.get().stream().map(this::convertEntityToZad10Dto).collect(Collectors.toList()));
+
+        return new StandardResponse(
+                HttpStatus.OK,
+                arrayList,
+                "ok");
+    }
+
+
 
     /** ------------------------------------------------------------------------------------ **
     /** -- Mapper -------------------------------------------------------------------------- **
     /** ------------------------------------------------------------------------------------ **/
     @Override public SprintDto convertEntityToDto(Sprint sprint) {
         return new SprintDto(sprint.getId(), sprint.getName(), sprint.getDescription(), sprint.getStatus());
+    }
+
+    @Override public SprintZad11Dto convertEntityToZad10Dto(Sprint sprint) {
+        return new SprintZad11Dto(sprint.getId(), sprint.getName(), sprint.getStartDate(), sprint.getEndDate(), sprint.getStatus());
     }
 
 

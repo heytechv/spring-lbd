@@ -19,7 +19,7 @@ public interface SprintRepository extends PagingAndSortingRepository<Sprint, Lon
     Optional<Sprint> findByName(String name);
 
     @Query("SELECT s FROM Sprint s WHERE s.startDate BETWEEN :startRange AND :endRange")                               // @Param("nazwa") i potem w sql ":nazwa"
-    List<Sprint> getSprintListBetweenDates(@Param("startRange") Timestamp start_range, @Param("endRange") Timestamp end_range);
+    Optional<List<Sprint>> getSprintListBetweenDates(@Param("startRange") Timestamp start_range, @Param("endRange") Timestamp end_range);
 
 // WAZNE! Argumenty oprocz @Param mozna przekazywac jako po prostu w sqlu '?1' ?Numer
 // Zapytanie normalnie wyglada tak:

@@ -95,20 +95,22 @@ public class HomeController {
 
     /** Zad 9 */
     @PutMapping("/sprints/status")
-    public String updateSprintStatusById(@RequestParam("sprintId") Long sprintId, @RequestParam("newStatus") Sprint.StatusType newStatus) {
+    public StandardResponse updateSprintStatusById(@RequestParam("sprintId") Long sprintId, @RequestParam("newStatus") Sprint.StatusType newStatus) {
 
-        if (!Arrays.asList(Sprint.StatusType.values()).contains(newStatus))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+//        if (!Arrays.asList(Sprint.StatusType.values()).contains(newStatus))
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+//
+//        Optional<Sprint> optionalSprint = sprintService.findById(sprintId);
+//        if (optionalSprint.isEmpty())
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+//
+//        Sprint sprint = optionalSprint.get();
+//        sprint.setStatus(newStatus);
+//        sprintService.save(sprint);
+//
+//        return HttpStatus.OK.toString();
 
-        Optional<Sprint> optionalSprint = sprintService.findById(sprintId);
-        if (optionalSprint.isEmpty())
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-
-        Sprint sprint = optionalSprint.get();
-        sprint.setStatus(newStatus);
-        sprintService.save(sprint);
-
-        return HttpStatus.OK.toString();
+        return sprintService.updateSprintStatus(sprintId, newStatus);
     }
 
     /** Zad 10
@@ -127,10 +129,10 @@ public class HomeController {
     /** Zad 11 */
     // TODO null zabezpiecz
     @GetMapping("/sprints/daterange")
-    public List<SprintZad11Dto> getSprintsInDateRange(@RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate) {
-
-        return sprintService.findBetweenDate(Timestamp.valueOf(startDate), Timestamp.valueOf(endDate))
-                .stream().map(sprint -> new SprintZad11Dto(sprint.getId(), sprint.getName(), sprint.getStartDate(), sprint.getEndDate(), sprint.getStatus())).collect(Collectors.toList());
+    public StandardResponse getSprintsInDateRange(@RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate) {
+//        return sprintService.findBetweenDate(Timestamp.valueOf(startDate), Timestamp.valueOf(endDate))
+//                .stream().map(sprint -> new SprintZad11Dto(sprint.getId(), sprint.getName(), sprint.getStartDate(), sprint.getEndDate(), sprint.getStatus())).collect(Collectors.toList());
+        return sprintService.findBetweenDate(Timestamp.valueOf(startDate), Timestamp.valueOf(endDate));
     }
 
     /** Zad 12 */
@@ -139,6 +141,8 @@ public class HomeController {
 
         return userStoryService.findAllPageAndSortByName(page, limit).stream().map(userStory -> userStoryService.convertEntityToZad5Dto(userStory)).collect(Collectors.toList());
     }
+
+    /** Zad 13 */
 
 
 
