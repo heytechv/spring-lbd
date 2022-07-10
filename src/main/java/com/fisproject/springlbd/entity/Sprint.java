@@ -11,10 +11,13 @@ import java.util.Set;
 @Table(name="Sprint")
 public class Sprint {
 
-    @Id @GeneratedValue(strategy=GenerationType.IDENTITY) private Long id;                                              // https://stackoverflow.com/questions/39807483/sequence-hibernate-sequence-not-found-sql-statement - @GeneratedValue(...)
-    private String name;
-    private Timestamp startDate, endDate;
-    private String description, status;
+    @Id @GeneratedValue(strategy=GenerationType.IDENTITY)                                                               // https://stackoverflow.com/questions/39807483/sequence-hibernate-sequence-not-found-sql-statement - @GeneratedValue(...)
+    @Column(name="id")          private Long id;
+    @Column(name="name")        private String name;
+    @Column(name="start_date")  private Timestamp startDate;
+    @Column(name="end_date")    private Timestamp endDate;
+    @Column(name="description") private String description;
+    @Enumerated(EnumType.STRING) @Column(name="status") private StatusType status;
 
     /* Sprint - jako glowny (UserStory poboczny?) */
     @ManyToMany(fetch = FetchType.EAGER)                                                                                                         // https://www.youtube.com/watch?v=ntN1HWKND8U&ab_channel=CodeForgeYT
@@ -25,33 +28,33 @@ public class Sprint {
     )
     private Set<UserStory> userStories = new HashSet<>();
 
-    @Column(name="id") public void setId(Long id) { this.id = id; }
-    @Column(name="id") public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public Long getId() { return id; }
 
-    @Column(name="name") public void setName(String name) { this.name = name; }
-    @Column(name="name") public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getName() { return name; }
 
-    @Column(name="start_date") public void setStartDate(Timestamp start_date) { this.startDate = start_date; }
-    @Column(name="start_date") public Timestamp getStartDate() { return startDate; }
+    public void setStartDate(Timestamp start_date) { this.startDate = start_date; }
+    public Timestamp getStartDate() { return startDate; }
 
-    @Column(name="end_date") public void setEndDate(Timestamp end_date) { this.endDate = end_date; }
-    @Column(name="end_date") public Timestamp getEndDate() { return endDate; }
+    public void setEndDate(Timestamp end_date) { this.endDate = end_date; }
+    public Timestamp getEndDate() { return endDate; }
 
-    @Column(name="description") public void setDescription(String description) { this.description = description; }
-    @Column(name="description") public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public String getDescription() { return description; }
 
-    @Column(name="status") public void setStatus(StatusType status) { this.status = status.toString(); }
-    @Column(name="status") public String getStatus() { return status; }
+    public void setStatus(StatusType status) { this.status = status; }
+    public StatusType getStatus() { return status; }
 
     public Set<UserStory> getUserStories() { return userStories; }
     public void addUserStory(UserStory userStory) { this.userStories.add(userStory); }
-
+    public void removeUserStory(UserStory userStory) {
+        this.userStories.remove(userStory);
+        userStory.getSprints().remove(this);
+    }
 
     public enum StatusType {
-        PENDING,
-        IN_PROGRESS,
-        FINISHED,
-        CANCELED
+        PENDING, IN_PROGRESS, FINISHED, CANCELED
     }
 
 

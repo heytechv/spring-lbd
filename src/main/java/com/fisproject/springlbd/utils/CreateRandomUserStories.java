@@ -1,13 +1,10 @@
 package com.fisproject.springlbd.utils;
 
 import com.fisproject.springlbd.entity.UserStory;
-import com.fisproject.springlbd.repository.SprintRepository;
 import com.fisproject.springlbd.repository.UserStoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -25,7 +22,7 @@ public class CreateRandomUserStories {
             UserStory us = new UserStory();
             us.setName(UUID.randomUUID().toString());
             us.setDescription(UUID.randomUUID().toString());
-            us.setStory_points_amount(random.nextInt(10));
+            us.setStoryPointsAmount(random.nextInt(10));
             us.setStatus(Arrays.asList(UserStory.StatusType.values()).get(random.nextInt(4)));
 
             userStories.add(us);

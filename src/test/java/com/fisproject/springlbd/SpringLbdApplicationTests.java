@@ -40,7 +40,7 @@ class SpringLbdApplicationTests {
     }
 
     @Test void test_zad8_UserStoryServiceOK() throws IllegalArgumentException {
-        userStoryService.addUserStory(
+        userStoryService.createUserStory(
                 "SH",
                 "opis jakis",
                 1,
@@ -69,7 +69,7 @@ class SpringLbdApplicationTests {
         boolean isE = false;
 
         try {
-            userStoryService.addUserStory(
+            userStoryService.createUserStory(
                     "jakies",
                     "", // PUSTY!
                     1,
@@ -92,7 +92,7 @@ class SpringLbdApplicationTests {
     /** Zad 10 Test */
     @Test void test_zad10_SprintsBetweenDateRange() {
         List<Sprint> sprints = sprintService
-                .getSprintListBetweenDate(
+                .findBetweenDate(
                         Timestamp.valueOf("2022-07-01 00:00:00.0"),
                         Timestamp.valueOf("2022-07-07 00:00:00.0")
                 );

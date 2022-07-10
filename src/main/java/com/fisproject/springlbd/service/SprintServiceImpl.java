@@ -22,6 +22,7 @@ import java.util.Optional;
 public class SprintServiceImpl implements SprintService {
 
     @Autowired private SprintRepository sprintRepository;
+    @Autowired private UserStoryService userStoryService;
     @Autowired private UserStoryRepository userStoryRepository;
 
 
@@ -67,14 +68,14 @@ public class SprintServiceImpl implements SprintService {
     @Override public List<Sprint> findAll() {
         return (List<Sprint>) sprintRepository.findAll();
     }
-
+    @Override public Optional<Sprint> findById(Long id) { return sprintRepository.findById(id); };
 
     @Override public List<UserStory> getUserStoryListByName(String name) {
         Optional<Sprint> foundSprint = sprintRepository.findByName(name);
         return foundSprint.map(sprint -> new ArrayList<>(sprint.getUserStories())).orElse(null);
     }
 
-    @Override public List<Sprint> getSprintListBetweenDate(Timestamp start_range, Timestamp end_range) {
+    @Override public List<Sprint> findBetweenDate(Timestamp start_range, Timestamp end_range) {
         return sprintRepository.getSprintListBetweenDates(start_range, end_range);
     }
 
@@ -90,12 +91,33 @@ public class SprintServiceImpl implements SprintService {
                         Sort.by("startDate")));
     }
 
+    @Override public void save(Sprint sprint) {
+        sprintRepository.save(sprint);
+    }
+
+    @Override public boolean addUserStoryToSprintById(Long id, UserStory userStory, boolean shouldSaveUserStory) {
+        // userStory musi byc przedtem stworzone i zapisane!
+
+        Optional<Sprint> optionalSprint = findById(id);
+        if (optionalSprint.isEmpty()) return false;
+
+        if (shouldSaveUserStory) userStoryRepository.save(userStory);
+
+        optionalSprint.ifPresent(sprint -> {
+            sprint.addUserStory(userStory);
+            sprintRepository.save(sprint);
+        });
+
+        return true;
+    }
+
+
     @Override @Transactional public void addSprintWithUserStoryZad16(String sprintName) {
 
         UserStory userStory = new UserStory();
         userStory.setName("user_story_zad16");
         userStory.setDescription("opis user story (zad 16)");
-        userStory.setStory_points_amount(12);
+        userStory.setStoryPointsAmount(12);
         userStory.setStatus(UserStory.StatusType.IN_PROGRESS);
         userStoryRepository.save(userStory);
 
@@ -111,7 +133,7 @@ public class SprintServiceImpl implements SprintService {
 
     /** Mapper */
     @Override public SprintDto convertEntityToDto(Sprint sprint) {
-        return new SprintDto(sprint.getId(), sprint.getName(), sprint.getDescription());
+        return new SprintDto(sprint.getId(), sprint.getName(), sprint.getDescription(), sprint.getStatus());
     }
 
 

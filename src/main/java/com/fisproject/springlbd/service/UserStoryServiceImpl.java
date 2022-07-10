@@ -1,7 +1,7 @@
 package com.fisproject.springlbd.service;
 
-import com.fisproject.springlbd.dto.UserStoryDto;
-import com.fisproject.springlbd.entity.Sprint;
+import com.fisproject.springlbd.dto.UserStoryZad2Dto;
+import com.fisproject.springlbd.dto.UserStoryZad5Dto;
 import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.repository.UserStoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserStoryServiceImpl implements UserStoryService {
@@ -19,18 +20,18 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Autowired UserStoryRepository userStoryRepository;
 
     @Override @Transactional
-    public UserStory addUserStory(String name, String description, Integer story_points_amount, UserStory.StatusType status) throws IllegalArgumentException {
+    public UserStory createUserStory(String name, String description, Integer story_points_amount, UserStory.StatusType status, boolean shouldSave) throws IllegalArgumentException {
 
         UserStory userStory = new UserStory();
         userStory.setName(name);
         userStory.setDescription(description);
-        if (story_points_amount != null) userStory.setStory_points_amount(story_points_amount);
+        if (story_points_amount != null) userStory.setStoryPointsAmount(story_points_amount);
 
         userStory.setStatus(UserStory.StatusType.TO_DO);
         if (status != null && Arrays.asList(UserStory.StatusType.values()).contains(status))
             userStory.setStatus(status);
 
-        userStoryRepository.save(userStory);
+        if (shouldSave) userStoryRepository.save(userStory);
 
         if (name == null || name.isEmpty())
             throw new IllegalArgumentException("[addUserStory] Missing required 'name' field!");
@@ -38,6 +39,9 @@ public class UserStoryServiceImpl implements UserStoryService {
             throw new IllegalArgumentException("[addUserStory] Missing required 'description' field!");
 
         return userStory;
+    }
+    @Override public UserStory createUserStory(String name, String description, Integer story_points_amount, UserStory.StatusType status) throws IllegalArgumentException {
+        return createUserStory(name, description, story_points_amount, status, true);
     }
 
     @Override public List<UserStory> findAll() {
@@ -48,9 +52,22 @@ public class UserStoryServiceImpl implements UserStoryService {
         return userStoryRepository.findAll(PageRequest.of(page, size));
     }
 
-    /** Mapper */
-    @Override public UserStoryDto convertEntityToDto(UserStory userStory) {
-        return new UserStoryDto(userStory.getName(), userStory.getStoryPointsAmount());
+    @Override public Optional<UserStory> findById(Long id) {
+        return userStoryRepository.findById(id);
+    }
+
+    @Override public void delete(UserStory userStory) {
+        userStory.removeFromLinkedSprints();
+        userStoryRepository.delete(userStory);
+    }
+
+    /** Mappers */
+    @Override public UserStoryZad2Dto convertEntityToZad2Dto(UserStory userStory) {
+        return new UserStoryZad2Dto(userStory.getName(), userStory.getStoryPointsAmount());
+    }
+
+    @Override public UserStoryZad5Dto convertEntityToZad5Dto(UserStory userStory) {
+        return new UserStoryZad5Dto(userStory.getName(), userStory.getStoryPointsAmount(), userStory.getStatus());
     }
 
 }
