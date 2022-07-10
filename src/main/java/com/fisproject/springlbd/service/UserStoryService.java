@@ -1,6 +1,7 @@
 package com.fisproject.springlbd.service;
 
 
+import com.fisproject.springlbd.component.StandardResponse;
 import com.fisproject.springlbd.dto.UserStoryZad2Dto;
 import com.fisproject.springlbd.dto.UserStoryZad5Dto;
 import com.fisproject.springlbd.entity.UserStory;
@@ -19,8 +20,15 @@ public interface UserStoryService {
     void delete(UserStory userStory);
 
 
+    /** ------------------------------------------------------------------------------------ **
+    /** -- Day3 - web responses ------------------------------------------------------------ **
+    /** ------------------------------------------------------------------------------------ **/
+    StandardResponse getUserStoryDescription(Long userStoryId);
+    StandardResponse getSortedUserStories(Integer page, Integer limit);
 
-    /** Mappers */
+    /** ------------------------------------------------------------------------------------ **
+    /** -- Mapper -------------------------------------------------------------------------- **
+    /** ------------------------------------------------------------------------------------ **/
     UserStoryZad2Dto convertEntityToZad2Dto(UserStory userStory);
     UserStoryZad5Dto convertEntityToZad5Dto(UserStory userStory);
 

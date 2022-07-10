@@ -1,5 +1,6 @@
 package com.fisproject.springlbd.service;
 
+import com.fisproject.springlbd.component.StandardResponse;
 import com.fisproject.springlbd.dto.UserStoryZad2Dto;
 import com.fisproject.springlbd.dto.UserStoryZad5Dto;
 import com.fisproject.springlbd.entity.UserStory;
@@ -8,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserStoryServiceImpl implements UserStoryService {
@@ -66,7 +69,29 @@ public class UserStoryServiceImpl implements UserStoryService {
         userStoryRepository.delete(userStory);
     }
 
-    /** Mappers */
+    /** ------------------------------------------------------------------------------------ **
+    /** -- Day3 - web responses ------------------------------------------------------------ **
+    /** ------------------------------------------------------------------------------------ **/
+    /** (stworzone do Zad 6) */
+    @Override public StandardResponse getUserStoryDescription(Long userStoryId) {
+        Optional<UserStory> optionalUserStory = findById(userStoryId);
+        if (optionalUserStory.isEmpty())
+            return new StandardResponse(HttpStatus.BAD_REQUEST, "", "Not found!");
+
+        return new StandardResponse(HttpStatus.OK, optionalUserStory.get().getDescription(), "foud");
+    }
+
+    @Override public StandardResponse getSortedUserStories(Integer page, Integer limit) {
+        return new StandardResponse(
+                HttpStatus.OK,
+                findAllPageAndSortByName(page, limit).stream().map(this::convertEntityToZad5Dto).collect(Collectors.toList()),
+                "found"
+        );
+    }
+
+    /** ------------------------------------------------------------------------------------ **
+    /** -- Mapper -------------------------------------------------------------------------- **
+    /** ------------------------------------------------------------------------------------ **/
     @Override public UserStoryZad2Dto convertEntityToZad2Dto(UserStory userStory) {
         return new UserStoryZad2Dto(userStory.getId(), userStory.getName(), userStory.getStoryPointsAmount());
     }
@@ -74,5 +99,6 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Override public UserStoryZad5Dto convertEntityToZad5Dto(UserStory userStory) {
         return new UserStoryZad5Dto(userStory.getId(), userStory.getName(), userStory.getStoryPointsAmount(), userStory.getStatus());
     }
+
 
 }

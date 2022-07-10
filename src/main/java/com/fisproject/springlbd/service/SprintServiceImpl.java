@@ -6,9 +6,13 @@ import com.fisproject.springlbd.dto.SprintZad11Dto;
 import com.fisproject.springlbd.dto.UserStoryZad5Dto;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
+import com.fisproject.springlbd.event.UserStoryCreatedEvent;
 import com.fisproject.springlbd.repository.SprintRepository;
 import com.fisproject.springlbd.repository.UserStoryRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -28,6 +32,8 @@ public class SprintServiceImpl implements SprintService {
     @Autowired private UserStoryService userStoryService;
     @Autowired private UserStoryRepository userStoryRepository;
 
+
+    private final Logger LOG = LoggerFactory.getLogger(SprintServiceImpl.class);
 
     // @Transactional needs UNCHECKED exception for rollback!
     @Override @Transactional                                                                                            // https://www.baeldung.com/transaction-configuration-with-jpa-and-spring - @Transactional pozwala na rollback po jakimkolwiek runtime exception
@@ -124,6 +130,24 @@ public class SprintServiceImpl implements SprintService {
     /** -- Day3 - web responses ------------------------------------------------------------ **
     /** ------------------------------------------------------------------------------------ **/
 
+    /** (stworzone do Zad 2) */
+    @Override public StandardResponse getSprints(boolean showUserStories) {
+        List<Sprint> sprints = findAll();
+
+        return new StandardResponse(HttpStatus.OK, sprints.stream().map(sprint -> {
+            SprintDto sprintDto = convertEntityToDto(sprint);
+            if (showUserStories)
+                sprintDto.setUserStoryDtos(
+                        sprint.getUserStories().stream().map(userStory -> userStoryService.convertEntityToZad2Dto(userStory)).collect(Collectors.toList())
+                );
+            else
+                sprintDto.setUserStoryDtos(new ArrayList<>());
+
+            return sprintDto;
+        }).collect(Collectors.toList()), "found");
+    }
+
+
     /** (stworzone do Zad 4) */
     @Override public StandardResponse getStoryPointsAmount(Long sprintId) {
         Optional<Sprint> optionalSprint = findById(sprintId);
@@ -144,6 +168,7 @@ public class SprintServiceImpl implements SprintService {
         return new StandardResponse(HttpStatus.OK, pointSum, "ID found.");
     }
 
+    /** (stworzone do Zad 5) */
     @Override public StandardResponse getUserStories(Long sprintId) {
         Optional<Sprint> optionalSprint = findById(sprintId);
         return optionalSprint
@@ -158,6 +183,7 @@ public class SprintServiceImpl implements SprintService {
                 }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, null, "ID not found"));
     }
 
+    /** (stworzone do Zad 9) */
     @Override public StandardResponse updateSprintStatus(Long sprintId, Sprint.StatusType newStatus) {
         if (!Arrays.asList(Sprint.StatusType.values()).contains(newStatus))
 //            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -170,6 +196,7 @@ public class SprintServiceImpl implements SprintService {
                 }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, "", "id not found!"));
     }
 
+    /** (stworzone do Zad 11) */
     @Override public StandardResponse findBetweenDate(Timestamp start_range, Timestamp end_range) {
 
         Optional<List<Sprint>> optionalSprints = sprintRepository.getSprintListBetweenDates(start_range, end_range);
@@ -183,6 +210,29 @@ public class SprintServiceImpl implements SprintService {
                 HttpStatus.OK,
                 arrayList,
                 "ok");
+    }
+
+
+    /** ------------------------------------------------------------------------------------ **
+    /** -- EventListener ------------------------------------------------------------------- **
+    /** ------------------------------------------------------------------------------------ **/
+    @EventListener public void handleAddStoryEvent(UserStoryCreatedEvent event) {
+        System.out.println("JEST FAJNIE");
+
+        Optional<UserStory> optionalUserStory = userStoryService.findById(event.getUserStoryId());
+        if (optionalUserStory.isEmpty()) {
+            LOG.error("Problem z evenetem!");
+            return;
+        }
+
+        List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll(Sort.by("startDate"));
+        for (Sprint sprint : sprints) {
+            if (sprint.getStatus() == Sprint.StatusType.PENDING) {
+                addUserStory(sprint.getId(), optionalUserStory.get(), true);
+                LOG.info("Dodano do Sprinta o nazwie {} z id = {}", sprint.getName(), sprint.getId());
+                break;
+            }
+        }
     }
 
 

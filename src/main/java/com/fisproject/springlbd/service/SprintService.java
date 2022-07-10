@@ -30,6 +30,7 @@ public interface SprintService {
     /** ------------------------------------------------------------------------------------ **
     /** -- Day3 - web responses ------------------------------------------------------------ **
     /** ------------------------------------------------------------------------------------ **/
+    StandardResponse getSprints(boolean showUserStories);
     StandardResponse getStoryPointsAmount(Long sprintId);
 
     StandardResponse getUserStories(Long sprintId);

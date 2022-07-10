@@ -6,11 +6,13 @@ import com.fisproject.springlbd.dto.SprintZad11Dto;
 import com.fisproject.springlbd.dto.UserStoryZad5Dto;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
+import com.fisproject.springlbd.event.UserStoryCreatedEvent;
 import com.fisproject.springlbd.service.SprintService;
 import com.fisproject.springlbd.service.UserStoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,27 +29,17 @@ public class HomeController {
     @Autowired SprintService sprintService;
     @Autowired UserStoryService userStoryService;
 
+    @Autowired ApplicationEventPublisher publisher;
+
+
+    /** Zad 2 */
     @GetMapping("/sprints")
-    public List<SprintDto> getSprintList(@RequestParam("tasks") boolean showUserStories) {
+    public StandardResponse getSprintList(@RequestParam(value="tasks", required=false, defaultValue="false") boolean showUserStories) {
         LOG.warn("called /sprints");
-
-        List<Sprint> sprints = sprintService.findAll();
-
-        return sprints.stream().map(sprint -> {
-            SprintDto sprintDto = sprintService.convertEntityToDto(sprint);
-            if (showUserStories)
-                sprintDto.setUserStoryDtos(
-                        sprint.getUserStories().stream().map(userStory -> userStoryService.convertEntityToZad2Dto(userStory)).collect(Collectors.toList())
-                );
-            else
-                sprintDto.setUserStoryDtos(new ArrayList<>());
-
-            return sprintDto;
-        }).collect(Collectors.toList());
-
-//        return sprints;
+        return sprintService.getSprints(showUserStories);
     }
 
+    /** Zad 3 */
     @PostMapping("/sprints/addstory")
     public String addNewUserStoryToSprintById(@RequestParam("sprintId") Long sprintId) {
         LOG.warn("called /sprints/addstory");
@@ -64,6 +56,12 @@ public class HomeController {
         if (!sprintService.addUserStory(sprintId, userStory, true))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
+
+        /** Zad 18 - Event */
+        publisher.publishEvent(new UserStoryCreatedEvent(userStory.getId()));
+
+
+
         return HttpStatus.OK.toString();
     }
 
@@ -71,24 +69,21 @@ public class HomeController {
     @GetMapping("/sprints/storypoints")
     public StandardResponse getStoryPoints(@RequestParam("sprintId") Long sprintId) {
         LOG.warn("called /sprints/storypoints");
-
         return sprintService.getStoryPointsAmount(sprintId);
     }
 
+    /** Zad 5 */
     @GetMapping("/sprints/userstories")
     public StandardResponse getUserStoryListFromSprint(@RequestParam("sprintId") Long sprintId) {
         LOG.warn("called /sprints/userstories");
-
         return sprintService.getUserStories(sprintId);
     }
 
+    /** Zad 6 */
     @GetMapping("/userstories/description")
-    public String getUserStoryDescription(@RequestParam("userStoryId") Long userStoryId) {
-        Optional<UserStory> optionalUserStory = userStoryService.findById(userStoryId);
-        if (optionalUserStory.isEmpty())
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-
-        return optionalUserStory.get().getDescription();
+    public StandardResponse getUserStoryDescription(@RequestParam("userStoryId") Long userStoryId) {
+        LOG.warn("called /userstories/description");
+        return userStoryService.getUserStoryDescription(userStoryId);
     }
 
     /* TODO Zad 7 i 8 */
@@ -96,20 +91,7 @@ public class HomeController {
     /** Zad 9 */
     @PutMapping("/sprints/status")
     public StandardResponse updateSprintStatusById(@RequestParam("sprintId") Long sprintId, @RequestParam("newStatus") Sprint.StatusType newStatus) {
-
-//        if (!Arrays.asList(Sprint.StatusType.values()).contains(newStatus))
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-//
-//        Optional<Sprint> optionalSprint = sprintService.findById(sprintId);
-//        if (optionalSprint.isEmpty())
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-//
-//        Sprint sprint = optionalSprint.get();
-//        sprint.setStatus(newStatus);
-//        sprintService.save(sprint);
-//
-//        return HttpStatus.OK.toString();
-
+        LOG.warn("called /sprints/status");
         return sprintService.updateSprintStatus(sprintId, newStatus);
     }
 
@@ -130,25 +112,15 @@ public class HomeController {
     // TODO null zabezpiecz
     @GetMapping("/sprints/daterange")
     public StandardResponse getSprintsInDateRange(@RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate) {
-//        return sprintService.findBetweenDate(Timestamp.valueOf(startDate), Timestamp.valueOf(endDate))
-//                .stream().map(sprint -> new SprintZad11Dto(sprint.getId(), sprint.getName(), sprint.getStartDate(), sprint.getEndDate(), sprint.getStatus())).collect(Collectors.toList());
+        LOG.warn("called /sprints/daterange");
         return sprintService.findBetweenDate(Timestamp.valueOf(startDate), Timestamp.valueOf(endDate));
     }
 
     /** Zad 12 */
     @GetMapping("/userstories/sorted")
-    public List<UserStoryZad5Dto> getSortedUserStories(@RequestParam("page") int page, @RequestParam("limit") int limit) {
-
-        return userStoryService.findAllPageAndSortByName(page, limit).stream().map(userStory -> userStoryService.convertEntityToZad5Dto(userStory)).collect(Collectors.toList());
+    public StandardResponse getSortedUserStories(@RequestParam("page") int page, @RequestParam("limit") int limit) {
+        return userStoryService.getSortedUserStories(page, limit);
     }
-
-    /** Zad 13 */
-
-
-
-
-
-
 
 
 }

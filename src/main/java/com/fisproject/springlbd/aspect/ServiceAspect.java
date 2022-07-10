@@ -27,7 +27,8 @@ public class ServiceAspect {
     @AfterReturning(pointcut = "execution(* com.fisproject.springlbd.service.SprintServiceImpl.*(..))", returning = "result")
     public void after(JoinPoint joinPoint, Object result) {
         LOG.info("ServiceAspect After (result):");
-        LOG.info("\t{}", result.toString());
+        if (result != null)
+            LOG.info("\t{}", result.toString());
     }
 
 }
