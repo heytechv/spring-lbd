@@ -15,7 +15,9 @@ public interface UserStoryService {
     Page<UserStory> findAllByPage(Integer page, Integer size);
     List<UserStory> findAll();
     Optional<UserStory> findById(Long id);
+    Page<UserStory> findAllPageAndSortByName(Integer page, Integer limit);
     void delete(UserStory userStory);
+
 
 
     /** Mappers */

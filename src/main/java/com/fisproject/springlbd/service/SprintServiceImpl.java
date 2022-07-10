@@ -1,6 +1,8 @@
 package com.fisproject.springlbd.service;
 
+import com.fisproject.springlbd.component.StandardResponse;
 import com.fisproject.springlbd.dto.SprintDto;
+import com.fisproject.springlbd.dto.UserStoryZad5Dto;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.repository.SprintRepository;
@@ -9,14 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SprintServiceImpl implements SprintService {
@@ -45,23 +47,12 @@ public class SprintServiceImpl implements SprintService {
             throw new IllegalArgumentException("[addSprint] Missing required 'start_date', 'end_date' fields!");
         if (start_date.after(end_date))
             throw new IllegalArgumentException("[addSprint] 'end_date' must be greater than 'start_date'!");
-//        if (status == null || status.isEmpty())
-//            throw new IllegalArgumentException("[addSprint] Missing required 'status' field!");
-//        if (!Arrays.asList("PENDING","IN_PROGRESS","FINISHED","CANCELED").contains(status))
         if (!Arrays.asList(Sprint.StatusType.values()).contains(status))
             throw new IllegalArgumentException("[addSprint] Status type not found!");
     }
 
     @Override public List<UserStory> getUserStoryListById(Long id) {
         Optional<Sprint> foundSprint = sprintRepository.findById(id);
-
-//        foundSprint.ifPresent(story -> {
-//            List<UserStory> userStories = story.getUserStories();
-//            for (UserStory userStory : userStories)
-//                System.out.println(userStory.getName());
-//        });
-
-
         return foundSprint.map(sprint -> new ArrayList<>(sprint.getUserStories())).orElse(null);    // tutaj new Array bo inaczej LazyException
     }
 
@@ -84,7 +75,7 @@ public class SprintServiceImpl implements SprintService {
         return points != null ? points : 0;
     }
 
-    @Override public Page<Sprint> findAllByPageAndSort(Integer page, Integer size) {
+    @Override public Page<Sprint> findAllPageAndSortByDate(Integer page, Integer size) {
         // https://www.baeldung.com/spring-data-jpa-pagination-sorting
         return sprintRepository.findAll(
                 PageRequest.of(page, size,
@@ -95,7 +86,7 @@ public class SprintServiceImpl implements SprintService {
         sprintRepository.save(sprint);
     }
 
-    @Override public boolean addUserStoryToSprintById(Long id, UserStory userStory, boolean shouldSaveUserStory) {
+    @Override public boolean addUserStory(Long id, UserStory userStory, boolean shouldSaveUserStory) {
         // userStory musi byc przedtem stworzone i zapisane!
 
         Optional<Sprint> optionalSprint = findById(id);
@@ -131,7 +122,49 @@ public class SprintServiceImpl implements SprintService {
         sprintRepository.save(sprint);
     }
 
-    /** Mapper */
+
+    /** ------------------------------------------------------------------------------------ **
+    /** -- Day3 - web responses ------------------------------------------------------------ **
+    /** ------------------------------------------------------------------------------------ **/
+
+    /** (stworzone do Zad 4) */
+    @Override public StandardResponse getStoryPointsAmount(Long sprintId) {
+        Optional<Sprint> optionalSprint = findById(sprintId);
+
+        if (optionalSprint.isEmpty())
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            return new StandardResponse(HttpStatus.BAD_REQUEST, null, "ID not found!");
+
+        int pointSum = 0;
+        Optional<Set<UserStory>> optionalUserStories = optionalSprint.map(Sprint::getUserStories);
+        if (optionalUserStories.isPresent()) {
+            for (UserStory us : optionalUserStories.get()) {
+                if (us.getStoryPointsAmount() == null) continue;
+                pointSum += us.getStoryPointsAmount();
+            }
+        }
+
+        return new StandardResponse(HttpStatus.OK, pointSum, "ID found.");
+    }
+
+    @Override public StandardResponse getUserStories(Long sprintId) {
+        Optional<Sprint> optionalSprint = findById(sprintId);
+        return optionalSprint
+                .map(sprint -> {
+                    List<UserStoryZad5Dto> userStoryZad5Dtos = sprint.getUserStories()
+                            .stream().map(userStory -> userStoryService.convertEntityToZad5Dto(userStory)).collect(Collectors.toList());
+
+                    return new StandardResponse(
+                            HttpStatus.OK,
+                            userStoryZad5Dtos,
+                            "Found.");
+                }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, null, "ID not found"));
+    }
+
+
+    /** ------------------------------------------------------------------------------------ **
+    /** -- Mapper -------------------------------------------------------------------------- **
+    /** ------------------------------------------------------------------------------------ **/
     @Override public SprintDto convertEntityToDto(Sprint sprint) {
         return new SprintDto(sprint.getId(), sprint.getName(), sprint.getDescription(), sprint.getStatus());
     }

@@ -7,6 +7,7 @@ import com.fisproject.springlbd.repository.UserStoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -56,6 +57,10 @@ public class UserStoryServiceImpl implements UserStoryService {
         return userStoryRepository.findById(id);
     }
 
+    @Override public Page<UserStory> findAllPageAndSortByName(Integer page, Integer limit) {
+        return userStoryRepository.findAll(PageRequest.of(page, limit, Sort.by("name")));
+    }
+
     @Override public void delete(UserStory userStory) {
         userStory.removeFromLinkedSprints();
         userStoryRepository.delete(userStory);
@@ -63,11 +68,11 @@ public class UserStoryServiceImpl implements UserStoryService {
 
     /** Mappers */
     @Override public UserStoryZad2Dto convertEntityToZad2Dto(UserStory userStory) {
-        return new UserStoryZad2Dto(userStory.getName(), userStory.getStoryPointsAmount());
+        return new UserStoryZad2Dto(userStory.getId(), userStory.getName(), userStory.getStoryPointsAmount());
     }
 
     @Override public UserStoryZad5Dto convertEntityToZad5Dto(UserStory userStory) {
-        return new UserStoryZad5Dto(userStory.getName(), userStory.getStoryPointsAmount(), userStory.getStatus());
+        return new UserStoryZad5Dto(userStory.getId(), userStory.getName(), userStory.getStoryPointsAmount(), userStory.getStatus());
     }
 
 }

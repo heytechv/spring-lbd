@@ -1,5 +1,6 @@
 package com.fisproject.springlbd.controller;
 
+import com.fisproject.springlbd.component.StandardResponse;
 import com.fisproject.springlbd.dto.SprintDto;
 import com.fisproject.springlbd.dto.SprintZad11Dto;
 import com.fisproject.springlbd.dto.UserStoryZad5Dto;
@@ -19,9 +20,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-public class SprintController {
+public class HomeController {
 
-    final Logger LOG = LoggerFactory.getLogger(SprintController.class);
+    final Logger LOG = LoggerFactory.getLogger(HomeController.class);
 
     @Autowired SprintService sprintService;
     @Autowired UserStoryService userStoryService;
@@ -60,51 +61,25 @@ public class SprintController {
         if (userStory == null)
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
 
-        if (!sprintService.addUserStoryToSprintById(sprintId, userStory, true))
+        if (!sprintService.addUserStory(sprintId, userStory, true))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         return HttpStatus.OK.toString();
     }
 
+    /** Zad 4 */
     @GetMapping("/sprints/storypoints")
-    public Integer getStoryPoints(@RequestParam("sprintId") Long sprintId) {
+    public StandardResponse getStoryPoints(@RequestParam("sprintId") Long sprintId) {
         LOG.warn("called /sprints/storypoints");
 
-        Optional<Sprint> optionalSprint = sprintService.findById(sprintId);
-        if (optionalSprint.isEmpty())
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-
-        int pointSum = 0;
-        Optional<Set<UserStory>> optionalUserStories = optionalSprint.map(Sprint::getUserStories);
-        if (optionalUserStories.isEmpty()) return pointSum;
-
-        for (UserStory us : optionalUserStories.get()) {
-            if (us.getStoryPointsAmount() == null) continue;
-            pointSum += us.getStoryPointsAmount();
-        }
-
-        return pointSum;
+        return sprintService.getStoryPointsAmount(sprintId);
     }
 
     @GetMapping("/sprints/userstories")
-    public List<UserStoryZad5Dto> getUserStoryListFromSprint(@RequestParam("sprintId") Long sprintId) {
-
+    public StandardResponse getUserStoryListFromSprint(@RequestParam("sprintId") Long sprintId) {
         LOG.warn("called /sprints/userstories");
 
-        Optional<Sprint> optionalSprint = sprintService.findById(sprintId);
-        if (optionalSprint.isEmpty())
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-
-        Optional<Set<UserStory>> optionalUserStories = optionalSprint.map(Sprint::getUserStories);
-
-        if (optionalUserStories.isEmpty()) return new ArrayList<>();
-
-        Set<UserStory> userStories = optionalUserStories.get();
-        List<UserStoryZad5Dto> userStoryDtos =
-                userStories.stream().map(userStory ->
-                        userStoryService.convertEntityToZad5Dto(userStory)).collect(Collectors.toList());
-
-        return userStoryDtos;
+        return sprintService.getUserStories(sprintId);
     }
 
     @GetMapping("/userstories/description")
@@ -150,12 +125,23 @@ public class SprintController {
     }
 
     /** Zad 11 */
+    // TODO null zabezpiecz
     @GetMapping("/sprints/daterange")
     public List<SprintZad11Dto> getSprintsInDateRange(@RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate) {
 
         return sprintService.findBetweenDate(Timestamp.valueOf(startDate), Timestamp.valueOf(endDate))
                 .stream().map(sprint -> new SprintZad11Dto(sprint.getId(), sprint.getName(), sprint.getStartDate(), sprint.getEndDate(), sprint.getStatus())).collect(Collectors.toList());
     }
+
+    /** Zad 12 */
+    @GetMapping("/userstories/sorted")
+    public List<UserStoryZad5Dto> getSortedUserStories(@RequestParam("page") int page, @RequestParam("limit") int limit) {
+
+        return userStoryService.findAllPageAndSortByName(page, limit).stream().map(userStory -> userStoryService.convertEntityToZad5Dto(userStory)).collect(Collectors.toList());
+    }
+
+
+
 
 
 

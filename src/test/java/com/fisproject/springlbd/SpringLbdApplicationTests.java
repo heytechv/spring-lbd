@@ -132,7 +132,7 @@ class SpringLbdApplicationTests {
     @Test void test_zad15_paginationSort() {
         new CreateRandomSprints().create(context, 100);
 
-        Page<Sprint> sprints = sprintService.findAllByPageAndSort(0, 10);
+        Page<Sprint> sprints = sprintService.findAllPageAndSortByDate(0, 10);
         sprints.forEach(s -> System.out.println(s.getId() + "\t|\t" + s.getName() + "\t|\t" + s.getStartDate() + "\t|\t" + s.getStatus()));
     }
 

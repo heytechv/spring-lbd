@@ -1,5 +1,7 @@
 package com.fisproject.springlbd.entity;
 
+import com.fisproject.springlbd.dto.SprintDto;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ public class Sprint {
         this.userStories.remove(userStory);
         userStory.getSprints().remove(this);
     }
+
 
     public enum StatusType {
         PENDING, IN_PROGRESS, FINISHED, CANCELED

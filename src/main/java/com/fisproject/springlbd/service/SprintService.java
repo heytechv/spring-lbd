@@ -1,6 +1,7 @@
 package com.fisproject.springlbd.service;
 
 
+import com.fisproject.springlbd.component.StandardResponse;
 import com.fisproject.springlbd.dto.SprintDto;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
@@ -15,18 +16,26 @@ public interface SprintService {
     List<UserStory> getUserStoryListById(Long id);
     List<UserStory> getUserStoryListByName(String name);
     List<Sprint> findBetweenDate(Timestamp start_range, Timestamp end_range);
-    Page<Sprint> findAllByPageAndSort(Integer page, Integer size);
+    Page<Sprint> findAllPageAndSortByDate(Integer page, Integer size);
     List<Sprint> findAll();
     Optional<Sprint> findById(Long id);
     Integer getStoryPointsById(Long id);
 
-    boolean addUserStoryToSprintById(Long id, UserStory userStory, boolean shouldSaveUserStory);
+    boolean addUserStory(Long id, UserStory userStory, boolean shouldSaveUserStory);
 
     void addSprintWithUserStoryZad16(String sprintName) throws IllegalArgumentException;
 
     void save(Sprint sprint);
 
-    /** Mapper */
+    /** ------------------------------------------------------------------------------------ **
+    /** -- Day3 - web responses ------------------------------------------------------------ **
+    /** ------------------------------------------------------------------------------------ **/
+    StandardResponse getStoryPointsAmount(Long sprintId);
+    StandardResponse getUserStories(Long sprintId);
+
+    /** ------------------------------------------------------------------------------------ **
+    /** -- Mapper -------------------------------------------------------------------------- **
+    /** ------------------------------------------------------------------------------------ **/
     SprintDto convertEntityToDto(Sprint sprint);
 
 }
