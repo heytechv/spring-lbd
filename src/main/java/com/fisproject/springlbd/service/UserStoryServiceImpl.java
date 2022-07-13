@@ -82,7 +82,7 @@ public class UserStoryServiceImpl implements UserStoryService {
         if (optionalUserStory.isEmpty())
             return new StandardResponse(HttpStatus.BAD_REQUEST, "", "Not found!");
 
-        return new StandardResponse(HttpStatus.OK, optionalUserStory.get().getDescription(), "foud");
+        return new StandardResponse(HttpStatus.OK, optionalUserStory.get().getDescription(), "found");
     }
 
     @Override public StandardResponse getSortedUserStories(Integer page, Integer limit) {

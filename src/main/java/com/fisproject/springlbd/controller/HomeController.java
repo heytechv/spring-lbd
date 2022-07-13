@@ -40,7 +40,7 @@ public class HomeController {
 
     /** Zad 3 */
     @PostMapping("/sprints/addstory")
-    public String addNewUserStoryToSprintById(@RequestParam("sprintId") Long sprintId) {
+    public StandardResponse addNewUserStoryToSprintById(@RequestParam("sprintId") Long sprintId) {
         LOG.warn("called /sprints/addstory");
 
         UserStory userStory = userStoryService.createUserStory(
@@ -50,16 +50,18 @@ public class HomeController {
                 UserStory.StatusType.TO_DO,
                 false);
         if (userStory == null)
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new StandardResponse(HttpStatus.INTERNAL_SERVER_ERROR, "", "error");
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
 
         if (!sprintService.addUserStory(sprintId, userStory, true))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            return new StandardResponse(HttpStatus.BAD_REQUEST, "", "id not found");
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
 
         /** Zad 18 - Event */
         publisher.publishEvent(new UserStoryCreatedEvent(userStory.getId()));
 
-        return HttpStatus.OK.toString();
+        return new StandardResponse(HttpStatus.OK, "", "added");
     }
 
     /** Zad 4 */
