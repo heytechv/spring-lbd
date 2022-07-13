@@ -42,7 +42,8 @@ Result:
       "userStoryDtos": [
         
       ]
-    }]
+    }],
+  "message": "found"
 }
 ```
 
@@ -119,7 +120,8 @@ Result:
       "status": "DONE",
       "storyPointsAmount": 2
     }
-  ]
+  ],
+  "message": "found"
 }
 ```
 
