@@ -88,6 +88,7 @@ Result:
 
 ### `GET /sprints/userstories`
 Get list of UserStory from Sprint located by id.
+- http://localhost:8080/sprints/userstories?sprintId=1
 <table>
     <tr>
         <td>Param</td>
@@ -100,6 +101,27 @@ Get list of UserStory from Sprint located by id.
         <td>Yes</td>
     </tr>
 </table>
+
+Result:
+```json
+{
+  "status": "OK",
+  "data": [
+    {
+      "id": 6,
+      "name": "stronaName",
+      "status": "TO_DO",
+      "storyPointsAmount": 22
+    },
+    {
+      "id": 4,
+      "name": "UserStory4",
+      "status": "DONE",
+      "storyPointsAmount": 2
+    }
+  ]
+}
+```
 
 ### `GET /userstories/description`
 Get list description from UserStory located by id.
