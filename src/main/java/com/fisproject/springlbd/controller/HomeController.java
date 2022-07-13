@@ -97,6 +97,7 @@ public class HomeController {
     }
 
     /** Zad 8 */
+    // TODO binary FILE nie string :/
     @GetMapping("/userstories/attachments")
     public StandardResponse getAttachments(@RequestParam("userStoryId") Long userStoryId) {
         LOG.warn("called /userstories/attachments");
@@ -104,7 +105,7 @@ public class HomeController {
     }
 
     /** Zad 9 */
-    @PutMapping("/sprints/status")
+    @PutMapping("/sprints/updatestatus")
     public StandardResponse updateSprintStatusById(@RequestParam("sprintId") Long sprintId, @RequestParam("newStatus") Sprint.StatusType newStatus) {
         LOG.warn("called /sprints/status");
         return sprintService.updateSprintStatus(sprintId, newStatus);
@@ -112,7 +113,7 @@ public class HomeController {
 
     /** Zad 10
      * <a href="https://www.youtube.com/watch?v=vYNdjtf7iAQ&ab_channel=ThorbenJanssen">...</a> */
-    @DeleteMapping("/userstories")
+    @DeleteMapping("/userstories/deleteuserstory")
     public StandardResponse deleteUserStory(@RequestParam("userStoryId") Long userStoryId) {
         Optional<UserStory> optionalUserStory = userStoryService.findById(userStoryId);
         if (optionalUserStory.isEmpty())

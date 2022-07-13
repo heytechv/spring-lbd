@@ -210,10 +210,8 @@ public class SprintServiceImpl implements SprintService {
 
         ArrayList<SprintZad11Dto> arrayList = new ArrayList<>(optionalSprints.get().stream().map(this::convertEntityToZad10Dto).collect(Collectors.toList()));
 
-        return new StandardResponse(
-                HttpStatus.OK,
-                arrayList,
-                "ok");
+//        return new StandardResponse(HttpStatus.OK, arrayList, "ok");
+        return new StandardResponse(HttpStatus.OK, arrayList, "ok");
     }
 
 

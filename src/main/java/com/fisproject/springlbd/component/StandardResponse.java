@@ -1,5 +1,6 @@
 package com.fisproject.springlbd.component;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
