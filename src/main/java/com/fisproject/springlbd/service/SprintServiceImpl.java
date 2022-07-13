@@ -230,9 +230,12 @@ public class SprintServiceImpl implements SprintService {
             if (sprint.getStatus() == Sprint.StatusType.PENDING) {
                 addUserStory(sprint.getId(), optionalUserStory.get(), true);
                 LOG.info("Dodano do Sprinta o nazwie {} z id = {}", sprint.getName(), sprint.getId());
-                break;
+                return;
             }
         }
+
+        LOG.info("Nie znaleziono  Sprinta o statusie PENDING :/");
+
     }
 
 

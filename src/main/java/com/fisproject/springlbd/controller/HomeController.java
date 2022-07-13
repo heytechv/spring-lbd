@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -120,6 +122,17 @@ public class HomeController {
     @GetMapping("/userstories/sorted")
     public StandardResponse getSortedUserStories(@RequestParam("page") int page, @RequestParam("limit") int limit) {
         return userStoryService.getSortedUserStories(page, limit);
+    }
+
+    /** Zad 22 */
+    @GetMapping("/usershow")
+    public StandardResponse getLoggedUser() {
+        Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
+
+
+//        return auth.getName() + " " + auth.getAuthorities();
+
+        return new StandardResponse(HttpStatus.OK, auth.getName() + " " + auth.getAuthorities(), "show logger user");
     }
 
 
