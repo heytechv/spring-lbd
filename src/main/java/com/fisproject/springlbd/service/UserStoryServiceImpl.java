@@ -1,9 +1,12 @@
 package com.fisproject.springlbd.service;
 
 import com.fisproject.springlbd.component.StandardResponse;
+import com.fisproject.springlbd.dto.AttachmentDto;
 import com.fisproject.springlbd.dto.UserStoryZad2Dto;
 import com.fisproject.springlbd.dto.UserStoryZad5Dto;
+import com.fisproject.springlbd.entity.Attachment;
 import com.fisproject.springlbd.entity.UserStory;
+import com.fisproject.springlbd.repository.AttachmentRepository;
 import com.fisproject.springlbd.repository.UserStoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +25,7 @@ import java.util.stream.Collectors;
 public class UserStoryServiceImpl implements UserStoryService {
 
     @Autowired UserStoryRepository userStoryRepository;
+    @Autowired AttachmentRepository attachmentRepository;
 
     @Override @Transactional
     public UserStory createUserStory(String name, String description, Integer story_points_amount, UserStory.StatusType status, boolean shouldSave) throws IllegalArgumentException {
@@ -87,6 +91,43 @@ public class UserStoryServiceImpl implements UserStoryService {
                 findAllPageAndSortByName(page, limit).stream().map(this::convertEntityToZad5Dto).collect(Collectors.toList()),
                 "found"
         );
+    }
+
+    /** (stworzone do Zad 7) */
+    @Override public StandardResponse addAttachment(Long userStoryId, Attachment attachment, boolean shouldSaveAttachment) {
+        Optional<UserStory> optionalUserStory = userStoryRepository.findById(userStoryId);
+
+        if (optionalUserStory.isEmpty())
+            return new StandardResponse(HttpStatus.BAD_REQUEST, "", "User story with that id not found");
+
+        if (shouldSaveAttachment) {
+            attachment.setUserStoryLinked(optionalUserStory.get());
+            attachmentRepository.save(attachment);
+        }
+
+
+        optionalUserStory.ifPresent(userStory -> {
+            userStory.addAttachment(attachment);
+            userStoryRepository.save(userStory);
+        });
+
+        return new StandardResponse(HttpStatus.OK, "", "dodano");
+    }
+
+    /** (stworzone do Zad 8) */
+    @Override public StandardResponse getAttachmentList(Long userStoryId) {
+        Optional<UserStory> optionalUserStory = userStoryRepository.findById(userStoryId);
+
+        if (optionalUserStory.isEmpty())
+            return new StandardResponse(HttpStatus.BAD_REQUEST, "", "User story with that id not found");
+
+        return optionalUserStory
+                .map(userStory -> {
+                    List<AttachmentDto> attachmentDtoList = userStory.getAttachments()
+                            .stream().map(attachment -> new AttachmentDto(attachment.getId(), attachment.getBinaryFile())).collect(Collectors.toList());
+
+                    return new StandardResponse(HttpStatus.OK, attachmentDtoList, "found");
+                }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, "", "not found"));
     }
 
     /** ------------------------------------------------------------------------------------ **

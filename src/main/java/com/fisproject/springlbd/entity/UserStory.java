@@ -44,6 +44,11 @@ public class UserStory {
         }
     }
 
+    public Set<Attachment> getAttachments() { return attachments; }
+    public void addAttachment(Attachment attachment) { this.attachments.add(attachment); }
+    public void removeAttachment(Attachment attachment) {
+        this.attachments.remove(attachment);
+    }
 
 
     public enum StatusType {

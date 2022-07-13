@@ -4,9 +4,11 @@ import com.fisproject.springlbd.component.StandardResponse;
 import com.fisproject.springlbd.dto.SprintDto;
 import com.fisproject.springlbd.dto.SprintZad11Dto;
 import com.fisproject.springlbd.dto.UserStoryZad5Dto;
+import com.fisproject.springlbd.entity.Attachment;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.event.UserStoryCreatedEvent;
+import com.fisproject.springlbd.repository.AttachmentRepository;
 import com.fisproject.springlbd.repository.SprintRepository;
 import com.fisproject.springlbd.repository.UserStoryRepository;
 import org.slf4j.Logger;
@@ -30,6 +32,8 @@ public class SprintServiceImpl implements SprintService {
 
     @Autowired private SprintRepository sprintRepository;
     @Autowired private UserStoryService userStoryService;
+    @Autowired private AttachmentRepository attachmentRepository;
+
     @Autowired private UserStoryRepository userStoryRepository;
 
 

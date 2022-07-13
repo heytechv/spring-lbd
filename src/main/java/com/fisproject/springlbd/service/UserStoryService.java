@@ -4,6 +4,7 @@ package com.fisproject.springlbd.service;
 import com.fisproject.springlbd.component.StandardResponse;
 import com.fisproject.springlbd.dto.UserStoryZad2Dto;
 import com.fisproject.springlbd.dto.UserStoryZad5Dto;
+import com.fisproject.springlbd.entity.Attachment;
 import com.fisproject.springlbd.entity.UserStory;
 import org.springframework.data.domain.Page;
 
@@ -25,6 +26,8 @@ public interface UserStoryService {
     /** ------------------------------------------------------------------------------------ **/
     StandardResponse getUserStoryDescription(Long userStoryId);
     StandardResponse getSortedUserStories(Integer page, Integer limit);
+    StandardResponse addAttachment(Long userStoryId, Attachment attachment, boolean shouldSaveAttachment);
+    StandardResponse getAttachmentList(Long userStoryId);
 
     /** ------------------------------------------------------------------------------------ **
     /** -- Mapper -------------------------------------------------------------------------- **

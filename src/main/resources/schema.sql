@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS SPRINT_USER_STORY(
 
 -- https://stackoverflow.com/questions/4450432/sql-server-how-to-store-binary-data-e-g-word-file
 CREATE TABLE IF NOT EXISTS Attachment(
+    id integer PRIMARY KEY AUTO_INCREMENT,
     user_story_id integer NOT NULL references UserStory(id),
     binary_file varbinary
 );

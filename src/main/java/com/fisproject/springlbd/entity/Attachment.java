@@ -7,21 +7,21 @@ import javax.persistence.*;
 public class Attachment {
 
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id") private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_story_id")
-    private Sprint userStoryLinked;
+    private UserStory userStoryLinked;
+
+    @Column(name = "binary_file")
     private byte[] binaryFile;
 
     public void setId(Long id) { this.id = id; }
     public Long getId() { return id; }
 
-    @Column(name = "user_story_id")
-    public void setUserStoryLinked(Sprint userStoryId) { this.userStoryLinked =userStoryId; }
-    public Sprint getUserStoryLinked() { return userStoryLinked; }
+    public void setUserStoryLinked(UserStory userStoryId) { this.userStoryLinked =userStoryId; }
+    public UserStory getUserStoryLinked() { return userStoryLinked; }
 
-    @Column(name = "binary_file")
     public void setBinaryFile(byte[] binaryFile) { this.binaryFile=binaryFile; }
     public byte[] getBinaryFile() { return binaryFile; }
 

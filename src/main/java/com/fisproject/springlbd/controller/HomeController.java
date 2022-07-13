@@ -1,9 +1,7 @@
 package com.fisproject.springlbd.controller;
 
 import com.fisproject.springlbd.component.StandardResponse;
-import com.fisproject.springlbd.dto.SprintDto;
-import com.fisproject.springlbd.dto.SprintZad11Dto;
-import com.fisproject.springlbd.dto.UserStoryZad5Dto;
+import com.fisproject.springlbd.entity.Attachment;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.event.UserStoryCreatedEvent;
@@ -21,7 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 public class HomeController {
@@ -62,8 +59,6 @@ public class HomeController {
         /** Zad 18 - Event */
         publisher.publishEvent(new UserStoryCreatedEvent(userStory.getId()));
 
-
-
         return HttpStatus.OK.toString();
     }
 
@@ -88,7 +83,25 @@ public class HomeController {
         return userStoryService.getUserStoryDescription(userStoryId);
     }
 
-    /* TODO Zad 7 i 8 */
+    /** Zad 7 */
+    @PostMapping("/userstories/addattachment")
+    public StandardResponse addAttachmentToSprint(@RequestParam("userStoryId") Long userStoryId) {
+
+        LOG.warn("called /userstories/addattachment");
+        Attachment attachment = new Attachment();
+        attachment.setBinaryFile("siema".getBytes());
+        // we do not save
+        // let service do it for us
+
+        return userStoryService.addAttachment(userStoryId, attachment, true);
+    }
+
+    /** Zad 8 */
+    @GetMapping("/userstories/attachments")
+    public StandardResponse getAttachments(@RequestParam("userStoryId") Long userStoryId) {
+        LOG.warn("called /userstories/attachments");
+        return userStoryService.getAttachmentList(userStoryId);
+    }
 
     /** Zad 9 */
     @PutMapping("/sprints/status")
@@ -100,18 +113,17 @@ public class HomeController {
     /** Zad 10
      * <a href="https://www.youtube.com/watch?v=vYNdjtf7iAQ&ab_channel=ThorbenJanssen">...</a> */
     @DeleteMapping("/userstories")
-    public String deleteUserStory(@RequestParam("userStoryId") Long userStoryId) {
+    public StandardResponse deleteUserStory(@RequestParam("userStoryId") Long userStoryId) {
         Optional<UserStory> optionalUserStory = userStoryService.findById(userStoryId);
         if (optionalUserStory.isEmpty())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         userStoryService.delete(optionalUserStory.get());
 
-        return HttpStatus.OK.toString();
+        return new StandardResponse(HttpStatus.OK, "", "deleted");
     }
 
     /** Zad 11 */
-    // TODO null zabezpiecz
     @GetMapping("/sprints/daterange")
     public StandardResponse getSprintsInDateRange(@RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate) {
         LOG.warn("called /sprints/daterange");
@@ -125,13 +137,9 @@ public class HomeController {
     }
 
     /** Zad 22 */
-    @GetMapping("/usershow")
+    @GetMapping("/whoami")
     public StandardResponse getLoggedUser() {
         Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
-
-
-//        return auth.getName() + " " + auth.getAuthorities();
-
         return new StandardResponse(HttpStatus.OK, auth.getName() + " " + auth.getAuthorities(), "show logger user");
     }
 
