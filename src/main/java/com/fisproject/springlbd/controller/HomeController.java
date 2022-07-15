@@ -17,8 +17,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -91,14 +93,18 @@ public class HomeController {
 
     /** Zad 7 */
     @PostMapping("/userstories/addattachment")
-    public StandardResponse addAttachmentToSprint(@RequestParam("userStoryId") Long userStoryId) {
+    public StandardResponse addAttachmentToSprint(
+            @RequestParam("userStoryId") Long userStoryId,
+            @RequestParam("attachmentFile") MultipartFile attachmentFile) {
 
         LOG.warn("called /userstories/addattachment");
+
         Attachment attachment = new Attachment();
-        attachment.setBinaryFile("siema".getBytes());
+        try {
+            attachment.setBinaryFile(attachmentFile.getBytes());
+        } catch (Exception ignore) {}
         // we do not save
         // let service do it for us
-
         return userStoryService.addAttachment(userStoryId, attachment, true);
     }
 
