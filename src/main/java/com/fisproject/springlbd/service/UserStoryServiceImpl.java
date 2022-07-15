@@ -78,8 +78,13 @@ public class UserStoryServiceImpl implements UserStoryService {
         return delete(optionalUserStory.get());
     }
 
-    // TODO musi usuwac tez attachment
     @Override public StandardResponse delete(UserStory userStory) {
+
+        for (Attachment a : userStory.getAttachments()) {
+            userStory.removeAttachment(a);
+            attachmentRepository.delete(a);
+        }
+
         userStory.removeFromLinkedSprints();
         userStoryRepository.delete(userStory);
 
