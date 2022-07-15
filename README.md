@@ -60,7 +60,36 @@ Add new UserStory with default data to Sprint located by id.
         <td>Long</td>
         <td>Yes</td>
     </tr>
+    <tr>
+        <td>userStoryName</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>userStoryDesc</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>userStoryPoints</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>userStoryStatus</td>
+        <td>TO_DO, IN_PROGRESS, REVIEW, DONE</td>
+        <td>Yes</td>
+    </tr>
 </table>
+
+Response:
+```json
+{
+    "status": "OK",
+    "data": "",
+    "message": "added"
+}
+```
 
 ### `GET /sprints/storypoints`
 Get sum of all UserStory points from Sprint located by id.

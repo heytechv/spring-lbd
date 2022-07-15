@@ -16,7 +16,7 @@ public class ControllersAdvice {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<StandardResponse> handleMissingParams(MissingServletRequestParameterException e) {
         return ResponseEntity.badRequest().body(
-                new StandardResponse(HttpStatus.BAD_REQUEST, "", "Missing param "+e.getParameterName()));
+                new StandardResponse(HttpStatus.BAD_REQUEST, "", "Missing param '"+e.getParameterName()+"'."));
     }
 
 }

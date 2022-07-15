@@ -44,14 +44,14 @@ public class HomeController {
     @PostMapping("/sprints/addstory")
     public StandardResponse addNewUserStoryToSprintById(
             @RequestParam("sprintId") Long sprintId,
-            @RequestParam("sprintName") String sprintName,
-            @RequestParam("sprintDesc") String sprintDesc,
-            @RequestParam("sprintPoints") Integer sprintPoints,
-            @RequestParam("sprintStatus") UserStory.StatusType sprintStatus) {
+            @RequestParam("userStoryName") String userStoryName,
+            @RequestParam("userStoryDesc") String userStoryDesc,
+            @RequestParam("userStoryPoints") Integer userStoryPoints,
+            @RequestParam("userStoryStatus") UserStory.StatusType userStoryStatus) {
         LOG.warn("called /sprints/addstory");
 
         UserStory userStory = userStoryService
-                .createUserStory(sprintName, sprintDesc, sprintPoints, sprintStatus, false);
+                .createUserStory(userStoryName, userStoryDesc, userStoryPoints, userStoryStatus, false);
 
         if (userStory == null)
             return new StandardResponse(HttpStatus.INTERNAL_SERVER_ERROR, "", "internal server error error");
