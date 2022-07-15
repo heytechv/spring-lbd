@@ -12,8 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -40,17 +42,19 @@ public class HomeController {
 
     /** Zad 3 */
     @PostMapping("/sprints/addstory")
-    public StandardResponse addNewUserStoryToSprintById(@RequestParam("sprintId") Long sprintId) {
+    public StandardResponse addNewUserStoryToSprintById(
+            @RequestParam("sprintId") Long sprintId,
+            @RequestParam("sprintName") String sprintName,
+            @RequestParam("sprintDesc") String sprintDesc,
+            @RequestParam("sprintPoints") Integer sprintPoints,
+            @RequestParam("sprintStatus") UserStory.StatusType sprintStatus) {
         LOG.warn("called /sprints/addstory");
 
-        UserStory userStory = userStoryService.createUserStory(
-                "stronaName",
-                "stronaDesc",
-                22,
-                UserStory.StatusType.TO_DO,
-                false);
+        UserStory userStory = userStoryService
+                .createUserStory(sprintName, sprintDesc, sprintPoints, sprintStatus, false);
+
         if (userStory == null)
-            return new StandardResponse(HttpStatus.INTERNAL_SERVER_ERROR, "", "error");
+            return new StandardResponse(HttpStatus.INTERNAL_SERVER_ERROR, "", "internal server error error");
 //            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
 
         if (!sprintService.addUserStory(sprintId, userStory, true))
@@ -145,6 +149,5 @@ public class HomeController {
         Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
         return new StandardResponse(HttpStatus.OK, auth.getName() + " " + auth.getAuthorities(), "show logger user");
     }
-
 
 }

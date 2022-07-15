@@ -3,6 +3,7 @@ package com.fisproject.springlbd.service;
 
 import com.fisproject.springlbd.component.StandardResponse;
 import com.fisproject.springlbd.dto.SprintDto;
+import com.fisproject.springlbd.dto.SprintUltimateDto;
 import com.fisproject.springlbd.dto.SprintZad11Dto;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
@@ -40,7 +41,7 @@ public interface SprintService {
     /** ------------------------------------------------------------------------------------ **
     /** -- Mapper -------------------------------------------------------------------------- **
     /** ------------------------------------------------------------------------------------ **/
-    SprintDto convertEntityToDto(Sprint sprint);
-    SprintZad11Dto convertEntityToZad10Dto(Sprint sprint);
+    SprintUltimateDto convertEntityToDto(Sprint sprint);
+    SprintUltimateDto convertEntityToZad10Dto(Sprint sprint);
 
 }

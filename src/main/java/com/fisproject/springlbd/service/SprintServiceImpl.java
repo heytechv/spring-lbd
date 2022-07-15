@@ -1,9 +1,7 @@
 package com.fisproject.springlbd.service;
 
 import com.fisproject.springlbd.component.StandardResponse;
-import com.fisproject.springlbd.dto.SprintDto;
-import com.fisproject.springlbd.dto.SprintZad11Dto;
-import com.fisproject.springlbd.dto.UserStoryZad5Dto;
+import com.fisproject.springlbd.dto.*;
 import com.fisproject.springlbd.entity.Attachment;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
@@ -139,13 +137,14 @@ public class SprintServiceImpl implements SprintService {
         List<Sprint> sprints = findAll();
 
         return new StandardResponse(HttpStatus.OK, sprints.stream().map(sprint -> {
-            SprintDto sprintDto = convertEntityToDto(sprint);
+            SprintUltimateDto sprintDto = convertEntityToDto(sprint);
             if (showUserStories)
-                sprintDto.setUserStoryDtos(
-                        sprint.getUserStories().stream().map(userStory -> userStoryService.convertEntityToZad2Dto(userStory)).collect(Collectors.toList())
+                sprintDto.setUserStories(
+                        sprint.getUserStories().stream().map(userStory ->
+                                userStoryService.convertEntityToZad2Dto(userStory)).collect(Collectors.toList())
                 );
-            else
-                sprintDto.setUserStoryDtos(new ArrayList<>());
+//            else
+//                sprintDto.setU(new ArrayList<>());
 
             return sprintDto;
         }).collect(Collectors.toList()), "found");
@@ -177,7 +176,7 @@ public class SprintServiceImpl implements SprintService {
         Optional<Sprint> optionalSprint = findById(sprintId);
         return optionalSprint
                 .map(sprint -> {
-                    List<UserStoryZad5Dto> userStoryZad5Dtos = sprint.getUserStories()
+                    List<UserStoryUltimateDto> userStoryZad5Dtos = sprint.getUserStories()
                             .stream().map(userStory -> userStoryService.convertEntityToZad5Dto(userStory)).collect(Collectors.toList());
 
                     return new StandardResponse(
@@ -208,7 +207,7 @@ public class SprintServiceImpl implements SprintService {
         if (optionalSprints.isEmpty())
             return new StandardResponse(HttpStatus.INTERNAL_SERVER_ERROR, "", "error!");
 
-        ArrayList<SprintZad11Dto> arrayList = new ArrayList<>(optionalSprints.get().stream().map(this::convertEntityToZad10Dto).collect(Collectors.toList()));
+        ArrayList<SprintUltimateDto> arrayList = new ArrayList<>(optionalSprints.get().stream().map(this::convertEntityToZad10Dto).collect(Collectors.toList()));
 
 //        return new StandardResponse(HttpStatus.OK, arrayList, "ok");
         return new StandardResponse(HttpStatus.OK, arrayList, "ok");
@@ -245,12 +244,32 @@ public class SprintServiceImpl implements SprintService {
     /** ------------------------------------------------------------------------------------ **
     /** -- Mapper -------------------------------------------------------------------------- **
     /** ------------------------------------------------------------------------------------ **/
-    @Override public SprintDto convertEntityToDto(Sprint sprint) {
-        return new SprintDto(sprint.getId(), sprint.getName(), sprint.getDescription(), sprint.getStatus());
+    @Override public SprintUltimateDto convertEntityToDto(Sprint sprint) {
+
+        SprintUltimateDto sprintUltimateDto = new SprintUltimateDto();
+        sprintUltimateDto.setId(sprint.getId());
+        sprintUltimateDto.setName(sprint.getName());
+        sprintUltimateDto.setDescription(sprint.getDescription());
+        sprintUltimateDto.setStatus(sprint.getStatus());
+
+        return sprintUltimateDto;
+
+//        return new SprintDto(sprint.getId(), sprint.getName(), sprint.getDescription(), sprint.getStatus());
     }
 
-    @Override public SprintZad11Dto convertEntityToZad10Dto(Sprint sprint) {
-        return new SprintZad11Dto(sprint.getId(), sprint.getName(), sprint.getStartDate(), sprint.getEndDate(), sprint.getStatus());
+    @Override public SprintUltimateDto convertEntityToZad10Dto(Sprint sprint) {
+
+        SprintUltimateDto sprintUltimateDto = new SprintUltimateDto();
+        sprintUltimateDto.setId(sprint.getId());
+        sprintUltimateDto.setName(sprint.getName());
+        sprintUltimateDto.setStartDate(sprint.getStartDate());
+        sprintUltimateDto.setEndDate(sprint.getEndDate());
+        sprintUltimateDto.setStatus(sprint.getStatus());
+
+        return sprintUltimateDto;
+
+
+//        return new SprintZad11Dto(sprint.getId(), sprint.getName(), sprint.getStartDate(), sprint.getEndDate(), sprint.getStatus());
     }
 
 

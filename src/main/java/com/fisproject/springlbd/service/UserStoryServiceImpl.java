@@ -2,6 +2,7 @@ package com.fisproject.springlbd.service;
 
 import com.fisproject.springlbd.component.StandardResponse;
 import com.fisproject.springlbd.dto.AttachmentDto;
+import com.fisproject.springlbd.dto.UserStoryUltimateDto;
 import com.fisproject.springlbd.dto.UserStoryZad2Dto;
 import com.fisproject.springlbd.dto.UserStoryZad5Dto;
 import com.fisproject.springlbd.entity.Attachment;
@@ -133,12 +134,25 @@ public class UserStoryServiceImpl implements UserStoryService {
     /** ------------------------------------------------------------------------------------ **
     /** -- Mapper -------------------------------------------------------------------------- **
     /** ------------------------------------------------------------------------------------ **/
-    @Override public UserStoryZad2Dto convertEntityToZad2Dto(UserStory userStory) {
-        return new UserStoryZad2Dto(userStory.getId(), userStory.getName(), userStory.getStoryPointsAmount());
+    @Override public UserStoryUltimateDto convertEntityToZad2Dto(UserStory userStory) {
+
+        UserStoryUltimateDto userStoryUltimateDto = new UserStoryUltimateDto();
+        userStoryUltimateDto.setId(userStory.getId());
+        userStoryUltimateDto.setName(userStory.getName());
+        userStoryUltimateDto.setStoryPointsAmount(userStory.getStoryPointsAmount());
+        return userStoryUltimateDto;
+
+//        return new UserStoryZad2Dto(userStory.getId(), userStory.getName(), userStory.getStoryPointsAmount());
     }
 
-    @Override public UserStoryZad5Dto convertEntityToZad5Dto(UserStory userStory) {
-        return new UserStoryZad5Dto(userStory.getId(), userStory.getName(), userStory.getStoryPointsAmount(), userStory.getStatus());
+    @Override public UserStoryUltimateDto convertEntityToZad5Dto(UserStory userStory) {
+        UserStoryUltimateDto userStoryUltimateDto = new UserStoryUltimateDto();
+        userStoryUltimateDto.setId(userStory.getId());
+        userStoryUltimateDto.setName(userStory.getName());
+        userStoryUltimateDto.setStoryPointsAmount(userStory.getStoryPointsAmount());
+        userStoryUltimateDto.setStatus(userStory.getStatus());
+        return userStoryUltimateDto;
+//        return new UserStoryZad5Dto(userStory.getId(), userStory.getName(), userStory.getStoryPointsAmount(), userStory.getStatus());
     }
 
 
