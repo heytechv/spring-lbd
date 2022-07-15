@@ -6,18 +6,18 @@ import org.springframework.stereotype.Component;
 
 public class StandardResponse {
 
-    private HttpStatus status;
+    private Integer status;
     private Object data;
     private String message;
 
     public StandardResponse(HttpStatus status, Object data, String message) {
-        this.status=status;
+        this.status=status.value();
         this.data=data;
         this.message=message;
     }
 
-    public HttpStatus getStatus() { return status; }
-    public void setStatus(HttpStatus status) { this.status = status; }
+    public Integer getStatus() { return status; }
+    public void setStatus(int status) { this.status = status; }
 
     public Object getData() { return data; }
     public void setData(Object data) { this.data = data; }

@@ -66,7 +66,7 @@ public class UserStoryServiceImpl implements UserStoryService {
     }
 
     @Override public Page<UserStory> findAllPageAndSortByName(Integer page, Integer limit) {
-        return userStoryRepository.findAll(PageRequest.of(page, limit, Sort.by("name")));
+        return userStoryRepository.findAll(PageRequest.of(page, limit, Sort.by("name").ascending()));
     }
 
     @Override public void delete(UserStory userStory) {

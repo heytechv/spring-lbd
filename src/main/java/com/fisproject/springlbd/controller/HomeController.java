@@ -109,7 +109,6 @@ public class HomeController {
     }
 
     /** Zad 8 */
-    // TODO binary FILE nie string :/
     @GetMapping("/userstories/attachments")
     public StandardResponse getAttachments(@RequestParam("userStoryId") Long userStoryId) {
         LOG.warn("called /userstories/attachments");
@@ -118,7 +117,10 @@ public class HomeController {
 
     /** Zad 9 */
     @PutMapping("/sprints/updatestatus")
-    public StandardResponse updateSprintStatusById(@RequestParam("sprintId") Long sprintId, @RequestParam("newStatus") Sprint.StatusType newStatus) {
+    public StandardResponse updateSprintStatusById(
+            @RequestParam("sprintId") Long sprintId,
+            @RequestParam("newStatus") Sprint.StatusType newStatus) {
+
         LOG.warn("called /sprints/status");
         return sprintService.updateSprintStatus(sprintId, newStatus);
     }
@@ -129,7 +131,8 @@ public class HomeController {
     public StandardResponse deleteUserStory(@RequestParam("userStoryId") Long userStoryId) {
         Optional<UserStory> optionalUserStory = userStoryService.findById(userStoryId);
         if (optionalUserStory.isEmpty())
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            return new StandardResponse(HttpStatus.BAD_REQUEST, "", "id not found");
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         userStoryService.delete(optionalUserStory.get());
 
@@ -153,7 +156,8 @@ public class HomeController {
     @GetMapping("/whoami")
     public StandardResponse getLoggedUser() {
         Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
-        return new StandardResponse(HttpStatus.OK, auth.getName() + " " + auth.getAuthorities(), "show logger user");
+        return new StandardResponse(
+                HttpStatus.OK, auth.getName() + " " + auth.getAuthorities(), "logged in user");
     }
 
 }
