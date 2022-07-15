@@ -69,9 +69,21 @@ public class UserStoryServiceImpl implements UserStoryService {
         return userStoryRepository.findAll(PageRequest.of(page, limit, Sort.by("name").ascending()));
     }
 
-    @Override public void delete(UserStory userStory) {
+    @Override public StandardResponse deleteById(Long userStoryId) {
+
+        Optional<UserStory> optionalUserStory = findById(userStoryId);
+        if (optionalUserStory.isEmpty())
+            return new StandardResponse(HttpStatus.BAD_REQUEST, "", "id not found");
+
+        return delete(optionalUserStory.get());
+    }
+
+    // TODO musi usuwac tez attachment
+    @Override public StandardResponse delete(UserStory userStory) {
         userStory.removeFromLinkedSprints();
         userStoryRepository.delete(userStory);
+
+        return new StandardResponse(HttpStatus.OK, "", "deleted");
     }
 
     /** ------------------------------------------------------------------------------------ **
@@ -106,13 +118,12 @@ public class UserStoryServiceImpl implements UserStoryService {
             attachmentRepository.save(attachment);
         }
 
-
         optionalUserStory.ifPresent(userStory -> {
             userStory.addAttachment(attachment);
             userStoryRepository.save(userStory);
         });
 
-        return new StandardResponse(HttpStatus.OK, "", "dodano");
+        return new StandardResponse(HttpStatus.OK, "", "added");
     }
 
     /** (stworzone do Zad 8) */

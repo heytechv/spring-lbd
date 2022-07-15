@@ -9,6 +9,7 @@ import com.fisproject.springlbd.event.UserStoryCreatedEvent;
 import com.fisproject.springlbd.repository.AttachmentRepository;
 import com.fisproject.springlbd.repository.SprintRepository;
 import com.fisproject.springlbd.repository.UserStoryRepository;
+import org.hibernate.TransientObjectException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,20 +92,28 @@ public class SprintServiceImpl implements SprintService {
         sprintRepository.save(sprint);
     }
 
-    @Override public boolean addUserStory(Long id, UserStory userStory, boolean shouldSaveUserStory) {
-        // userStory musi byc przedtem stworzone i zapisane!
+    @Override public StandardResponse addUserStory(Long id, UserStory userStory, boolean shouldSaveUserStory) {
+
+        if (userStory == null)
+            return new StandardResponse(HttpStatus.INTERNAL_SERVER_ERROR, "", "internal server error. Unable to create UserStory");
 
         Optional<Sprint> optionalSprint = findById(id);
-        if (optionalSprint.isEmpty()) return false;
 
-        if (shouldSaveUserStory) userStoryRepository.save(userStory);
+        if (optionalSprint.isEmpty())
+            return new StandardResponse(HttpStatus.BAD_REQUEST, "", "id not found");
 
-        optionalSprint.ifPresent(sprint -> {
-            sprint.addUserStory(userStory);
-            sprintRepository.save(sprint);
-        });
+        if (shouldSaveUserStory)
+            userStoryRepository.save(userStory);
 
-        return true;
+        // Should be saved THEN i can flush (add to list)
+        try {
+            optionalSprint.get().addUserStory(userStory);
+            sprintRepository.save(optionalSprint.get());
+        } catch (Exception e) {
+            return new StandardResponse(HttpStatus.INTERNAL_SERVER_ERROR, "", "first save UserStory then you can add");
+        }
+
+        return new StandardResponse(HttpStatus.OK, "", "added");
     }
 
 
@@ -168,7 +177,7 @@ public class SprintServiceImpl implements SprintService {
             }
         }
 
-        return new StandardResponse(HttpStatus.OK, pointSum, "ID found.");
+        return new StandardResponse(HttpStatus.OK, pointSum, "found");
     }
 
     /** (stworzone do Zad 5) */
@@ -179,11 +188,8 @@ public class SprintServiceImpl implements SprintService {
                     List<UserStoryUltimateDto> userStoryZad5Dtos = sprint.getUserStories()
                             .stream().map(userStory -> userStoryService.convertEntityToZad5Dto(userStory)).collect(Collectors.toList());
 
-                    return new StandardResponse(
-                            HttpStatus.OK,
-                            userStoryZad5Dtos,
-                            "Found.");
-                }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, null, "ID not found"));
+                    return new StandardResponse(HttpStatus.OK, userStoryZad5Dtos, "found.");
+                }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, null, "id not found"));
     }
 
     /** (stworzone do Zad 9) */
@@ -195,7 +201,7 @@ public class SprintServiceImpl implements SprintService {
         return findById(sprintId).map(sprint -> {
                     sprint.setStatus(newStatus);
                     save(sprint);
-                    return new StandardResponse(HttpStatus.OK, "OK", "Updated!");
+                    return new StandardResponse(HttpStatus.OK, "OK", "updated");
                 }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, "", "id not found!"));
     }
 

@@ -22,7 +22,6 @@ public interface SprintService {
     List<Sprint> findAll();
     Optional<Sprint> findById(Long id);
     Integer getStoryPointsById(Long id);
-    boolean addUserStory(Long id, UserStory userStory, boolean shouldSaveUserStory);
 
     void addSprintWithUserStoryZad16(String sprintName) throws IllegalArgumentException;
 
@@ -37,6 +36,8 @@ public interface SprintService {
     StandardResponse getUserStories(Long sprintId);
     StandardResponse updateSprintStatus(Long sprintId, Sprint.StatusType newStatus);
     StandardResponse findBetweenDate(Timestamp start_range, Timestamp end_range);
+
+    StandardResponse addUserStory(Long id, UserStory userStory, boolean shouldSaveUserStory);
 
     /** ------------------------------------------------------------------------------------ **
     /** -- Mapper -------------------------------------------------------------------------- **

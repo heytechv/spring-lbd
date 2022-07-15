@@ -23,26 +23,45 @@ Get list of Sprints.
 Result:
 ```json
 {
-  "status": "OK",
+  "status": 200,
   "data": [
     {
       "id": 1,
       "name": "Sprint1",
       "description": "Opis1",
-      "status": "PENDING",
-      "userStoryDtos": [
-        
-      ]
+      "status": "PENDING"
     },
     {
       "id": 2,
-      "name": "a802da91-db9a-47f3-9adb-5a012e031664",
-      "description": "80b237d6-099d-469b-af14-1f10798074dc",
-      "status": "PENDING",
-      "userStoryDtos": [
-        
-      ]
-    }],
+      "name": "7ec68612-b4fc-4be9-a79f-c55e7021d6ce",
+      "description": "1d6e73fb-b07d-45f1-8966-6c5cf2b41167",
+      "status": "FINISHED"
+    },
+    {
+      "id": 3,
+      "name": "b99a0984-f255-49a7-b395-fa99691bb3f3",
+      "description": "11598ee8-44d2-4f08-b3c6-f3d096c43ebf",
+      "status": "FINISHED"
+    },
+    {
+      "id": 4,
+      "name": "d9d39875-610f-4789-b0df-63aabd0ce891",
+      "description": "e652713e-6645-4e93-80c8-a16e7521d030",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "id": 5,
+      "name": "73ba8057-1bde-415d-9654-58ff419132d1",
+      "description": "bd3046b4-4588-4811-a5f9-8fa7555c4dc4",
+      "status": "FINISHED"
+    },
+    {
+      "id": 6,
+      "name": "8ec0e410-5cfa-45ed-9422-83850dd844f1",
+      "description": "0614815e-7097-4d31-aada-6160cff40ad7",
+      "status": "IN_PROGRESS"
+    }
+  ],
   "message": "found"
 }
 ```
@@ -85,7 +104,7 @@ Add new UserStory with default data to Sprint located by id.
 Response:
 ```json
 {
-    "status": "OK",
+    "status": 200,
     "data": "",
     "message": "added"
 }
@@ -110,9 +129,9 @@ Get sum of all UserStory points from Sprint located by id.
 Result:
 ```json
 {
-  "status": "OK",
-  "data": 7,
-  "message": "ID found."
+    "status": 200,
+    "data": 10,
+    "message": "found"
 }
 ```
 
@@ -135,19 +154,29 @@ Get list of UserStory from Sprint located by id.
 Result:
 ```json
 {
-  "status": "OK",
+  "status": 200,
   "data": [
     {
-      "id": 6,
-      "name": "stronaName",
-      "status": "TO_DO",
-      "storyPointsAmount": 22
+      "id": 3,
+      "name": "UserStory3",
+      "status": "TO_DO"
     },
     {
       "id": 4,
       "name": "UserStory4",
       "status": "DONE",
       "storyPointsAmount": 2
+    },
+    {
+      "id": 2,
+      "name": "UserStory2",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "id": 1,
+      "name": "UserStory1",
+      "status": "DONE",
+      "storyPointsAmount": 5
     }
   ],
   "message": "found"
@@ -173,9 +202,9 @@ Get list description from UserStory located by id.
 Response:
 ```json
 {
-  "status": "OK",
-  "data": "Opis1",
-  "message": "foud"
+    "status": 200,
+    "data": "Opis1",
+    "message": "found"
 }
 ```
 
@@ -202,9 +231,9 @@ Add an attachment with default data to UserStory located by id.
 Response:
 ```json
 {
-    "status": "OK",
+    "status": 200,
     "data": "",
-    "message": "dodano"
+    "message": "added"
 }
 ```
 
@@ -227,11 +256,10 @@ Get list of attachments from UserStory located by id.
 Response:
 ```json
 {
-  "status": "OK",
+  "status": 200,
   "data": [
     {
-      "id": 1,
-      "binaryFile": "c2llbWE="
+      "binaryFile": "IyBodgR3mddKGh0dHBzOlcy90dXRvcmlhbHMvcmVzdC8pCgo="
     }
   ],
   "message": "found"
@@ -261,9 +289,9 @@ Update status of Sprint located by id.
 Response:
 ```json
 {
-    "status": "OK",
+    "status": 200,
     "data": "OK",
-    "message": "Updated!"
+    "message": "updated"
 }
 ```
 
@@ -285,7 +313,7 @@ Delete UserStory located by id.
 Response:
 ```json
 {
-    "status": "OK",
+    "status": 200,
     "data": "",
     "message": "deleted"
 }

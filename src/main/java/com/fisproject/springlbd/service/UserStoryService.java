@@ -19,8 +19,6 @@ public interface UserStoryService {
     List<UserStory> findAll();
     Optional<UserStory> findById(Long id);
     Page<UserStory> findAllPageAndSortByName(Integer page, Integer limit);
-    void delete(UserStory userStory);
-
 
     /** ------------------------------------------------------------------------------------ **
     /** -- Day3 - web responses ------------------------------------------------------------ **
@@ -29,6 +27,9 @@ public interface UserStoryService {
     StandardResponse getSortedUserStories(Integer page, Integer limit);
     StandardResponse addAttachment(Long userStoryId, Attachment attachment, boolean shouldSaveAttachment);
     StandardResponse getAttachmentList(Long userStoryId);
+
+    StandardResponse deleteById(Long userStoryId);
+    StandardResponse delete(UserStory userStory);
 
     /** ------------------------------------------------------------------------------------ **
     /** -- Mapper -------------------------------------------------------------------------- **

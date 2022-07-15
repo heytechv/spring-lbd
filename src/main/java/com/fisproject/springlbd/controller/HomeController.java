@@ -50,24 +50,19 @@ public class HomeController {
             @RequestParam("userStoryDesc") String userStoryDesc,
             @RequestParam("userStoryPoints") Integer userStoryPoints,
             @RequestParam("userStoryStatus") UserStory.StatusType userStoryStatus) {
+
         LOG.warn("called /sprints/addstory");
 
         UserStory userStory = userStoryService
                 .createUserStory(userStoryName, userStoryDesc, userStoryPoints, userStoryStatus, false);
 
-        if (userStory == null)
-            return new StandardResponse(HttpStatus.INTERNAL_SERVER_ERROR, "", "internal server error error");
-//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-
-        if (!sprintService.addUserStory(sprintId, userStory, true))
-            return new StandardResponse(HttpStatus.BAD_REQUEST, "", "id not found");
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-
+        StandardResponse response = sprintService.addUserStory(sprintId, userStory, true);
 
         /** Zad 18 - Event */
-        publisher.publishEvent(new UserStoryCreatedEvent(userStory.getId()));
+        if (response.getStatus() == HttpStatus.OK.value())
+            publisher.publishEvent(new UserStoryCreatedEvent(userStory.getId()));
 
-        return new StandardResponse(HttpStatus.OK, "", "added");
+        return response;
     }
 
     /** Zad 4 */
@@ -100,9 +95,8 @@ public class HomeController {
         LOG.warn("called /userstories/addattachment");
 
         Attachment attachment = new Attachment();
-        try {
-            attachment.setBinaryFile(attachmentFile.getBytes());
-        } catch (Exception ignore) {}
+        try { attachment.setBinaryFile(attachmentFile.getBytes()); }
+        catch (Exception ignore) { return new StandardResponse(HttpStatus.INTERNAL_SERVER_ERROR, "", "internal server error"); }
         // we do not save
         // let service do it for us
         return userStoryService.addAttachment(userStoryId, attachment, true);
@@ -129,14 +123,8 @@ public class HomeController {
      * <a href="https://www.youtube.com/watch?v=vYNdjtf7iAQ&ab_channel=ThorbenJanssen">...</a> */
     @DeleteMapping("/userstories/deleteuserstory")
     public StandardResponse deleteUserStory(@RequestParam("userStoryId") Long userStoryId) {
-        Optional<UserStory> optionalUserStory = userStoryService.findById(userStoryId);
-        if (optionalUserStory.isEmpty())
-            return new StandardResponse(HttpStatus.BAD_REQUEST, "", "id not found");
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-
-        userStoryService.delete(optionalUserStory.get());
-
-        return new StandardResponse(HttpStatus.OK, "", "deleted");
+        LOG.warn("called /userstories/deleteuserstory");
+        return userStoryService.deleteById(userStoryId);
     }
 
     /** Zad 11 */
