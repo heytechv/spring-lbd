@@ -141,6 +141,7 @@ public class SprintServiceImpl implements SprintService {
     /** -- Day3 - web responses ------------------------------------------------------------ **
     /** ------------------------------------------------------------------------------------ **/
 
+
     /** (stworzone do Zad 2) */
     @Override public StandardResponse getSprints(boolean showUserStories) {
         List<Sprint> sprints = findAll();

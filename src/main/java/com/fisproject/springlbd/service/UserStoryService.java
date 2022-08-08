@@ -27,6 +27,7 @@ public interface UserStoryService {
     StandardResponse getSortedUserStories(Integer page, Integer limit);
     StandardResponse addAttachment(Long userStoryId, Attachment attachment, boolean shouldSaveAttachment);
     StandardResponse getAttachmentList(Long userStoryId);
+    StandardResponse getAttachmentById(Long userStoryId, Long attachmentId);
 
     StandardResponse deleteById(Long userStoryId);
     StandardResponse delete(UserStory userStory);

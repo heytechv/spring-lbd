@@ -1,5 +1,8 @@
 package com.fisproject.springlbd.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AttachmentDto {
 
     private Long id;

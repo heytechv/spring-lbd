@@ -147,6 +147,24 @@ public class UserStoryServiceImpl implements UserStoryService {
                 }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, "", "not found"));
     }
 
+    /** (stworzone do Zad 8) */
+    @Override public StandardResponse getAttachmentById(Long userStoryId, Long attachmentId) {
+        Optional<UserStory> optionalUserStory = userStoryRepository.findById(userStoryId);
+
+        if (optionalUserStory.isEmpty())
+            return new StandardResponse(HttpStatus.BAD_REQUEST, "", "User story with that id not found");
+
+        return optionalUserStory.map(userStory -> {
+            List<AttachmentDto> attachmentDtoList = userStory
+                    .getAttachments().stream().map(attachment ->
+                            new AttachmentDto(attachment.getId(), attachment.getBinaryFile())
+                    ).collect(Collectors.toList());
+
+                    return new StandardResponse(HttpStatus.OK, attachmentDtoList, "found");
+                }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, "", "not found"));
+    }
+
+
     /** ------------------------------------------------------------------------------------ **
     /** -- Mapper -------------------------------------------------------------------------- **
     /** ------------------------------------------------------------------------------------ **/

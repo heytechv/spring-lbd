@@ -11,7 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -102,12 +104,29 @@ public class HomeController {
         return userStoryService.addAttachment(userStoryId, attachment, true);
     }
 
-    /** Zad 8 */
+    /** Zad moje - wyswietl wszystkie zalaczniki */
     @GetMapping("/userstories/attachments")
     public StandardResponse getAttachments(@RequestParam("userStoryId") Long userStoryId) {
         LOG.warn("called /userstories/attachments");
         return userStoryService.getAttachmentList(userStoryId);
     }
+
+    /** Zad 8 - pobierz zalacznik */
+    @GetMapping("/userstories/attachments/download")
+    public ResponseEntity<ByteArrayResource> getAttachmentsDownload(
+            @RequestParam("userStoryId") Long userStoryId,
+            @RequestParam(value="attachmentId", required=false) Long attachmentId) {
+
+        LOG.warn("called /userstories/attachments/download");
+
+
+        ByteArrayResource resource = new ByteArrayResource((byte[])userStoryService.getAttachmentList(userStoryId).getData());
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
+    }
+
 
     /** Zad 9 */
     @PutMapping("/sprints/updatestatus")
