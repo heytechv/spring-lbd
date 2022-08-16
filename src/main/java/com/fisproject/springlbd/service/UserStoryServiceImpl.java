@@ -1,6 +1,6 @@
 package com.fisproject.springlbd.service;
 
-import com.fisproject.springlbd.component.StandardResponse;
+import com.fisproject.springlbd.apiresponse.StandardResponse;
 import com.fisproject.springlbd.dto.AttachmentDto;
 import com.fisproject.springlbd.dto.UserStoryDto;
 import com.fisproject.springlbd.entity.Attachment;
@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +26,41 @@ public class UserStoryServiceImpl implements UserStoryService {
 
     @Autowired UserStoryRepository userStoryRepository;
     @Autowired AttachmentRepository attachmentRepository;
+
+
+
+    /**
+     * Private Utilities
+     * */
+    private UserStory findById(Long id) {
+        return userStoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("UserStory with id="+id+" not found!"));
+    }
+
+    private void delete(UserStory userStory) {
+//        for (Attachment a : userStory.getAttachmentSet()) {
+//            userStory.removeAttachment(a);
+//            attachmentRepository.delete(a);
+//        }
+        // todo sprawdzic czy usuwa attachments
+
+
+        userStory.removeFromLinkedSprints();
+        userStoryRepository.delete(userStory);
+    }
+
+    private Page<UserStory> findAllPageAndSortByName(Integer page, Integer limit) {
+        return userStoryRepository.findAll(PageRequest.of(page, limit, Sort.by("name").ascending()));
+    }
+
+
+    /**
+     * Public
+     * */
+
+
+
+
+
 
     @Override @Transactional
     public UserStory createUserStory(String name, String description, Integer story_points_amount, UserStory.StatusType status, boolean shouldSave) throws IllegalArgumentException {
@@ -59,54 +95,24 @@ public class UserStoryServiceImpl implements UserStoryService {
         return userStoryRepository.findAll(PageRequest.of(page, size));
     }
 
-    @Override public Optional<UserStory> findById(Long id) {
-        return userStoryRepository.findById(id);
+
+
+    @Override public void deleteById(Long userStoryId) {
+        delete(findById(userStoryId));
     }
 
-    @Override public Page<UserStory> findAllPageAndSortByName(Integer page, Integer limit) {
-        return userStoryRepository.findAll(PageRequest.of(page, limit, Sort.by("name").ascending()));
-    }
 
-    @Override public StandardResponse deleteById(Long userStoryId) {
-
-        Optional<UserStory> optionalUserStory = findById(userStoryId);
-        if (optionalUserStory.isEmpty())
-            return new StandardResponse(HttpStatus.BAD_REQUEST, "", "id not found");
-
-        return delete(optionalUserStory.get());
-    }
-
-    @Override public StandardResponse delete(UserStory userStory) {
-
-        for (Attachment a : userStory.getAttachmentSet()) {
-            userStory.removeAttachment(a);
-            attachmentRepository.delete(a);
-        }
-
-        userStory.removeFromLinkedSprints();
-        userStoryRepository.delete(userStory);
-
-        return new StandardResponse(HttpStatus.OK, "", "deleted");
-    }
 
     /** ------------------------------------------------------------------------------------ **
     /** -- Day3 - web responses ------------------------------------------------------------ **
     /** ------------------------------------------------------------------------------------ **/
     /** (stworzone do Zad 6) */
-    @Override public StandardResponse getUserStoryDescription(Long userStoryId) {
-        Optional<UserStory> optionalUserStory = findById(userStoryId);
-        if (optionalUserStory.isEmpty())
-            return new StandardResponse(HttpStatus.BAD_REQUEST, "", "Not found!");
-
-        return new StandardResponse(HttpStatus.OK, optionalUserStory.get().getDescription(), "found");
+    @Override public String getDescription(Long id) {
+        return findById(id).getDescription();
     }
 
-    @Override public StandardResponse getSortedUserStories(Integer page, Integer limit) {
-        return new StandardResponse(
-                HttpStatus.OK,
-                findAllPageAndSortByName(page, limit).stream().map(this::convertEntityToZad5Dto).collect(Collectors.toList()),
-                "found"
-        );
+    @Override public List<UserStoryDto> getSortedUserStories(Integer page, Integer limit) {
+        return findAllPageAndSortByName(page, limit).stream().map(this::convertEntityToZad5Dto).collect(Collectors.toList());
     }
 
     /** (stworzone do Zad 7) */
@@ -130,19 +136,19 @@ public class UserStoryServiceImpl implements UserStoryService {
     }
 
     /** (stworzone do Zad 8) */
-    @Override public StandardResponse getAttachmentList(Long userStoryId) {
-        Optional<UserStory> optionalUserStory = userStoryRepository.findById(userStoryId);
+    @Override public List<AttachmentDto> getAttachmentList(Long id) {
+        UserStory userStory = findById(id);
 
-        if (optionalUserStory.isEmpty())
-            return new StandardResponse(HttpStatus.BAD_REQUEST, "", "User story with that id not found");
+//        return optionalUserStory
+//                .map(userStory -> {
+//                    List<AttachmentDto> attachmentDtoList = userStory.getAttachmentSet()
+//                            .stream().map(attachment -> new AttachmentDto(attachment.getId(), attachment.getBinaryFile())).collect(Collectors.toList());
+//
+//                    return new StandardResponse(HttpStatus.OK, attachmentDtoList, "found");
+//                }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, "", "not found"));
 
-        return optionalUserStory
-                .map(userStory -> {
-                    List<AttachmentDto> attachmentDtoList = userStory.getAttachmentSet()
-                            .stream().map(attachment -> new AttachmentDto(attachment.getId(), attachment.getBinaryFile())).collect(Collectors.toList());
-
-                    return new StandardResponse(HttpStatus.OK, attachmentDtoList, "found");
-                }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, "", "not found"));
+        return userStory.getAttachmentSet()
+                .stream().map(attachment -> new AttachmentDto(attachment.getId(), attachment.getBinaryFile())).collect(Collectors.toList());
     }
 
     /** (stworzone do Zad 8) */

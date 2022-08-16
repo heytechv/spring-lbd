@@ -42,6 +42,7 @@ public class UserStory {
     public void addAttachment(Attachment attachment) { this.attachmentSet.add(attachment); }
     public void removeAttachment(Attachment attachment) {
         this.attachmentSet.remove(attachment);
+        attachment.setUserStoryLinked(null);
     }
 
     /**

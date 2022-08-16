@@ -1,6 +1,6 @@
 package com.fisproject.springlbd.controller;
 
-import com.fisproject.springlbd.component.StandardResponse;
+import com.fisproject.springlbd.apiresponse.StandardResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
