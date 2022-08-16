@@ -2,16 +2,14 @@ package com.fisproject.springlbd.service;
 
 
 import com.fisproject.springlbd.component.StandardResponse;
-import com.fisproject.springlbd.dto.SprintDto;
 import com.fisproject.springlbd.dto.SprintUltimateDto;
-import com.fisproject.springlbd.dto.SprintZad11Dto;
+import com.fisproject.springlbd.dto.UserStoryDto;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
 import org.springframework.data.domain.Page;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 
 public interface SprintService {
     void addSprint(String name, Timestamp start_date, Timestamp end_date, String description, Sprint.StatusType status) throws IllegalArgumentException;
@@ -20,7 +18,7 @@ public interface SprintService {
 //    List<Sprint> findBetweenDate(Timestamp start_range, Timestamp end_range);
     Page<Sprint> findAllPageAndSortByDate(Integer page, Integer size);
     List<Sprint> findAll();
-    Optional<Sprint> findById(Long id);
+//    Optional<Sprint> findById(Long id);
     Integer getStoryPointsById(Long id);
 
     void addSprintWithUserStoryZad16(String sprintName) throws IllegalArgumentException;
@@ -31,13 +29,13 @@ public interface SprintService {
     /** -- Day3 - web responses ------------------------------------------------------------ **
     /** ------------------------------------------------------------------------------------ **/
     StandardResponse getSprints(boolean showUserStories);
-    StandardResponse getStoryPointsAmount(Long sprintId);
+    Integer getStoryPointsAmount(Long sprintId);
 
-    StandardResponse getUserStories(Long sprintId);
-    StandardResponse updateSprintStatus(Long sprintId, Sprint.StatusType newStatus);
+    List<UserStoryDto> getUserStories(Long sprintId);
+    void updateSprintStatus(Long sprintId, Sprint.StatusType newStatus);
     StandardResponse findBetweenDate(Timestamp start_range, Timestamp end_range);
 
-    StandardResponse addUserStory(Long id, UserStory userStory, boolean shouldSaveUserStory);
+    void addUserStory(Long id, UserStoryDto userStoryDto);
 
     /** ------------------------------------------------------------------------------------ **
     /** -- Mapper -------------------------------------------------------------------------- **

@@ -29,7 +29,7 @@ public interface SprintRepository extends PagingAndSortingRepository<Sprint, Lon
 //  WHERE s.ID=1 AND us.STATUS LIKE 'DONE'
 // Ale okazuje sie ze w JPQL (@Query) nie musimy laczyc niczego :)
 // https://stackoverflow.com/questions/18592533/many-to-many-query-jpql
-    @Query("SELECT SUM(sus.story_points_amount) FROM Sprint s JOIN s.userStories sus WHERE s.id=:sprintID AND sus.status LIKE 'DONE'")
+    @Query("SELECT SUM(sus.storyPointsAmount) FROM Sprint s JOIN s.userStorySet sus WHERE s.id=:sprintID AND sus.status LIKE 'DONE'")
     Integer getStoryPointsById(@Param("sprintID") Long id);
 
 

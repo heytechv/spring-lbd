@@ -2,9 +2,7 @@ package com.fisproject.springlbd.service;
 
 
 import com.fisproject.springlbd.component.StandardResponse;
-import com.fisproject.springlbd.dto.UserStoryUltimateDto;
-import com.fisproject.springlbd.dto.UserStoryZad2Dto;
-import com.fisproject.springlbd.dto.UserStoryZad5Dto;
+import com.fisproject.springlbd.dto.UserStoryDto;
 import com.fisproject.springlbd.entity.Attachment;
 import com.fisproject.springlbd.entity.UserStory;
 import org.springframework.data.domain.Page;
@@ -35,7 +33,7 @@ public interface UserStoryService {
     /** ------------------------------------------------------------------------------------ **
     /** -- Mapper -------------------------------------------------------------------------- **
     /** ------------------------------------------------------------------------------------ **/
-    UserStoryUltimateDto convertEntityToZad2Dto(UserStory userStory);
-    UserStoryUltimateDto convertEntityToZad5Dto(UserStory userStory);
+    UserStoryDto convertEntityToZad2Dto(UserStory userStory);
+    UserStoryDto convertEntityToZad5Dto(UserStory userStory);
 
 }

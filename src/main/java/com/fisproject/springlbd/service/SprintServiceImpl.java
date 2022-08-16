@@ -2,14 +2,12 @@ package com.fisproject.springlbd.service;
 
 import com.fisproject.springlbd.component.StandardResponse;
 import com.fisproject.springlbd.dto.*;
-import com.fisproject.springlbd.entity.Attachment;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.event.UserStoryCreatedEvent;
 import com.fisproject.springlbd.repository.AttachmentRepository;
 import com.fisproject.springlbd.repository.SprintRepository;
 import com.fisproject.springlbd.repository.UserStoryRepository;
-import org.hibernate.TransientObjectException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.*;
@@ -35,45 +34,53 @@ public class SprintServiceImpl implements SprintService {
 
     @Autowired private UserStoryRepository userStoryRepository;
 
+    private final Logger log = LoggerFactory.getLogger(SprintServiceImpl.class);
 
-    private final Logger LOG = LoggerFactory.getLogger(SprintServiceImpl.class);
+    /**
+     * Private Utilities
+     * */
+    private Sprint findById(Long id) {
+        return sprintRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Sprint with id="+id+" not found!"));
+    }
 
+
+    /**
+     * Public
+     * */
     // @Transactional needs UNCHECKED exception for rollback!
     @Override @Transactional                                                                                            // https://www.baeldung.com/transaction-configuration-with-jpa-and-spring - @Transactional pozwala na rollback po jakimkolwiek runtime exception
     public void addSprint(String name, Timestamp start_date, Timestamp end_date, String description, Sprint.StatusType status) throws IllegalArgumentException {
-
-        Sprint sprint = new Sprint();
-        sprint.setName(name);
-        sprint.setStartDate(start_date);
-        sprint.setEndDate(end_date);
-        sprint.setStatus(status);
+        Sprint sprint = Sprint.builder()
+                .name(name)
+                .startDate(start_date)
+                .endDate(end_date)
+                .status(status)
+                .build();
         if (description != null) sprint.setDescription(description);
-
         sprintRepository.save(sprint);
 
-        if (name == null || name.isEmpty())
-            throw new IllegalArgumentException("[addSprint] Missing required 'name' field!");
+        if (name == null || name.isBlank())
+            throw new IllegalArgumentException("Missing required 'name' field!");
         if (start_date == null || end_date == null || start_date.after(end_date))
-            throw new IllegalArgumentException("[addSprint] Missing required 'start_date', 'end_date' fields!");
+            throw new IllegalArgumentException("Missing required 'start_date', 'end_date' fields!");
         if (start_date.after(end_date))
-            throw new IllegalArgumentException("[addSprint] 'end_date' must be greater than 'start_date'!");
+            throw new IllegalArgumentException("'end_date' must be greater than 'start_date'!");
         if (!Arrays.asList(Sprint.StatusType.values()).contains(status))
-            throw new IllegalArgumentException("[addSprint] Status type not found!");
+            throw new IllegalArgumentException("Status type not found!");
     }
-
+;
     @Override public List<UserStory> getUserStoryListById(Long id) {
-        Optional<Sprint> foundSprint = sprintRepository.findById(id);
-        return foundSprint.map(sprint -> new ArrayList<>(sprint.getUserStories())).orElse(null);    // tutaj new Array bo inaczej LazyException
+        Sprint sprint = findById(id);
+        return new ArrayList<>(sprint.getUserStorySet());   // tutaj new Array bo inaczej LazyException
     }
 
     @Override public List<Sprint> findAll() {
         return (List<Sprint>) sprintRepository.findAll();
     }
-    @Override public Optional<Sprint> findById(Long id) { return sprintRepository.findById(id); };
 
     @Override public List<UserStory> getUserStoryListByName(String name) {
         Optional<Sprint> foundSprint = sprintRepository.findByName(name);
-        return foundSprint.map(sprint -> new ArrayList<>(sprint.getUserStories())).orElse(null);
+        return foundSprint.map(sprint -> new ArrayList<>(sprint.getUserStorySet())).orElse(null);
     }
 
     @Override public Integer getStoryPointsById(Long id) {
@@ -92,28 +99,23 @@ public class SprintServiceImpl implements SprintService {
         sprintRepository.save(sprint);
     }
 
-    @Override public StandardResponse addUserStory(Long id, UserStory userStory, boolean shouldSaveUserStory) {
+    @Override @Transactional public void addUserStory(Long id, UserStoryDto userStoryDto) {
+        if (userStoryDto == null)
+            throw new RuntimeException("internal server error. Unable to create UserStory");
 
-        if (userStory == null)
-            return new StandardResponse(HttpStatus.INTERNAL_SERVER_ERROR, "", "internal server error. Unable to create UserStory");
+        Sprint sprint = findById(id);
+        // todo mapper
+        UserStory userStory = UserStory.builder()
+                        .name(userStoryDto.getName())
+                        .description(userStoryDto.getDescription())
+                        .storyPointsAmount(userStoryDto.getStoryPointsAmount())
+                        .status(userStoryDto.getStatus())
+                        .build();
+        userStoryRepository.save(userStory);
 
-        Optional<Sprint> optionalSprint = findById(id);
+        sprint.addUserStory(userStory);
+//        sprintRepository.save(optionalSprint.get());
 
-        if (optionalSprint.isEmpty())
-            return new StandardResponse(HttpStatus.BAD_REQUEST, "", "id not found");
-
-        if (shouldSaveUserStory)
-            userStoryRepository.save(userStory);
-
-        // Should be saved THEN i can flush (add to list)
-        try {
-            optionalSprint.get().addUserStory(userStory);
-            sprintRepository.save(optionalSprint.get());
-        } catch (Exception e) {
-            return new StandardResponse(HttpStatus.INTERNAL_SERVER_ERROR, "", "first save UserStory then you can add");
-        }
-
-        return new StandardResponse(HttpStatus.OK, "", "added");
     }
 
 
@@ -150,7 +152,7 @@ public class SprintServiceImpl implements SprintService {
             SprintUltimateDto sprintDto = convertEntityToDto(sprint);
             if (showUserStories)
                 sprintDto.setUserStories(
-                        sprint.getUserStories().stream().map(userStory ->
+                        sprint.getUserStorySet().stream().map(userStory ->
                                 userStoryService.convertEntityToZad2Dto(userStory)).collect(Collectors.toList())
                 );
 //            else
@@ -162,48 +164,48 @@ public class SprintServiceImpl implements SprintService {
 
 
     /** (stworzone do Zad 4) */
-    @Override public StandardResponse getStoryPointsAmount(Long sprintId) {
-        Optional<Sprint> optionalSprint = findById(sprintId);
-
-        if (optionalSprint.isEmpty())
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-            return new StandardResponse(HttpStatus.BAD_REQUEST, null, "ID not found!");
+    @Override public Integer getStoryPointsAmount(Long sprintId) {
+        Sprint sprint = findById(sprintId);
 
         int pointSum = 0;
-        Optional<Set<UserStory>> optionalUserStories = optionalSprint.map(Sprint::getUserStories);
-        if (optionalUserStories.isPresent()) {
-            for (UserStory us : optionalUserStories.get()) {
-                if (us.getStoryPointsAmount() == null) continue;
-                pointSum += us.getStoryPointsAmount();
-            }
+        Set<UserStory> userStories = sprint.getUserStorySet();
+        for (UserStory us : userStories) {
+            if (us.getStoryPointsAmount() == null) continue;
+            pointSum += us.getStoryPointsAmount();
         }
 
-        return new StandardResponse(HttpStatus.OK, pointSum, "found");
+
+        return pointSum;
     }
 
     /** (stworzone do Zad 5) */
-    @Override public StandardResponse getUserStories(Long sprintId) {
-        Optional<Sprint> optionalSprint = findById(sprintId);
-        return optionalSprint
-                .map(sprint -> {
-                    List<UserStoryUltimateDto> userStoryZad5Dtos = sprint.getUserStories()
-                            .stream().map(userStory -> userStoryService.convertEntityToZad5Dto(userStory)).collect(Collectors.toList());
+    @Override public List<UserStoryDto> getUserStories(Long sprintId) {
+        Sprint sprint = findById(sprintId);
+//        return optionalSprint
+//                .map(sprint -> {
+//                    List<UserStoryUltimateDto> userStoryZad5Dtos = sprint.getUserStorySet()
+//                            .stream().map(userStory -> userStoryService.convertEntityToZad5Dto(userStory)).collect(Collectors.toList());
+//
+//                    return new StandardResponse(HttpStatus.OK, userStoryZad5Dtos, "found.");
+//                }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, null, "id not found"));
 
-                    return new StandardResponse(HttpStatus.OK, userStoryZad5Dtos, "found.");
-                }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, null, "id not found"));
+        return sprint.getUserStorySet()
+                .stream().map(userStory -> userStoryService.convertEntityToZad5Dto(userStory)).collect(Collectors.toList());
     }
 
     /** (stworzone do Zad 9) */
-    @Override public StandardResponse updateSprintStatus(Long sprintId, Sprint.StatusType newStatus) {
+    @Override public void updateSprintStatus(Long id, Sprint.StatusType newStatus) {
         if (!Arrays.asList(Sprint.StatusType.values()).contains(newStatus))
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-            return new StandardResponse(HttpStatus.BAD_REQUEST, null, newStatus+" status not found!");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+//            return new StandardResponse(HttpStatus.BAD_REQUEST, null, newStatus+" status not found!");
 
-        return findById(sprintId).map(sprint -> {
-                    sprint.setStatus(newStatus);
-                    save(sprint);
-                    return new StandardResponse(HttpStatus.OK, "OK", "updated");
-                }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, "", "id not found!"));
+//        return findById(sprintId).map(sprint -> {
+//                    sprint.setStatus(newStatus);
+//                    save(sprint);
+//                    return new StandardResponse(HttpStatus.OK, "OK", "updated");
+//                }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, "", "id not found!"));
+
+        findById(id).setStatus(newStatus);
     }
 
     /** (stworzone do Zad 11) */
@@ -229,20 +231,20 @@ public class SprintServiceImpl implements SprintService {
 
         Optional<UserStory> optionalUserStory = userStoryService.findById(event.getUserStoryId());
         if (optionalUserStory.isEmpty()) {
-            LOG.error("Problem z evenetem!");
+            log.error("Problem z evenetem!");
             return;
         }
 
-        List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll(Sort.by("startDate"));
-        for (Sprint sprint : sprints) {
-            if (sprint.getStatus() == Sprint.StatusType.PENDING) {
-                addUserStory(sprint.getId(), optionalUserStory.get(), true);
-                LOG.info("Dodano do Sprinta o nazwie {} z id = {}", sprint.getName(), sprint.getId());
-                return;
-            }
-        }
+//        List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll(Sort.by("startDate"));
+//        for (Sprint sprint : sprints) {
+//            if (sprint.getStatus() == Sprint.StatusType.PENDING) {
+//                addUserStory(sprint.getId(), optionalUserStory.get(), true);
+//                log.info("Dodano do Sprinta o nazwie {} z id = {}", sprint.getName(), sprint.getId());
+//                return;
+//            }
+//        }
 
-        LOG.info("Nie znaleziono  Sprinta o statusie PENDING :/");
+        log.info("Nie znaleziono  Sprinta o statusie PENDING :/");
 
     }
 

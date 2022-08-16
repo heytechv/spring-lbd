@@ -1,16 +1,16 @@
 package com.fisproject.springlbd.entity;
 
-import com.fisproject.springlbd.dto.SprintDto;
+import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name="Sprint")
+@Setter @Getter
+@NoArgsConstructor @AllArgsConstructor @Builder
 public class Sprint {
 
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)                                                               // https://stackoverflow.com/questions/39807483/sequence-hibernate-sequence-not-found-sql-statement - @GeneratedValue(...)
@@ -21,44 +21,36 @@ public class Sprint {
     @Column(name="description") private String description;
     @Enumerated(EnumType.STRING) @Column(name="status") private StatusType status;
 
-    /* Sprint - jako glowny (UserStory poboczny?) */
-    @ManyToMany(fetch = FetchType.EAGER)                                                                                                         // https://www.youtube.com/watch?v=ntN1HWKND8U&ab_channel=CodeForgeYT
+    /** Sprint - jako glowny (UserStory dodatkowy) */
+    @ManyToMany(fetch = FetchType.EAGER)                                                                                // https://www.youtube.com/watch?v=ntN1HWKND8U&ab_channel=CodeForgeYT
     @JoinTable(
         name="SPRINT_USER_STORY",
             joinColumns       =@JoinColumn(name="sprint_id"),
             inverseJoinColumns=@JoinColumn(name="user_story_id")
     )
-    private Set<UserStory> userStories = new HashSet<>();
+    @Builder.Default private Set<UserStory> userStorySet = new HashSet<>();                                             // Default init
 
-    public void setId(Long id) { this.id = id; }
-    public Long getId() { return id; }
-
-    public void setName(String name) { this.name = name; }
-    public String getName() { return name; }
-
-    public void setStartDate(Timestamp start_date) { this.startDate = start_date; }
-    public Timestamp getStartDate() { return startDate; }
-
-    public void setEndDate(Timestamp end_date) { this.endDate = end_date; }
-    public Timestamp getEndDate() { return endDate; }
-
-    public void setDescription(String description) { this.description = description; }
-    public String getDescription() { return description; }
-
-    public void setStatus(StatusType status) { this.status = status; }
-    public StatusType getStatus() { return status; }
-
-    public Set<UserStory> getUserStories() { return userStories; }
-    public void addUserStory(UserStory userStory) { this.userStories.add(userStory); }
+    /** UserStorySet
+     * Removing/adding ManyToMany
+     * <a href="https://www.youtube.com/watch?v=vYNdjtf7iAQ&ab_channel=ThorbenJanssen">...</a>
+     * */
+    public void addUserStory(UserStory userStory) {
+        this.userStorySet.add(userStory);
+        userStory.getSprintSet().add(this);
+    }
     public void removeUserStory(UserStory userStory) {
-        this.userStories.remove(userStory);
-        userStory.getSprints().remove(this);
+        this.userStorySet.remove(userStory);
+        userStory.getSprintSet().remove(this);
     }
 
-
+    /**
+     * Sprint status types
+     * */
     public enum StatusType {
-        PENDING, IN_PROGRESS, FINISHED, CANCELED
+        PENDING,
+        IN_PROGRESS,
+        FINISHED,
+        CANCELED
     }
-
 
 }

@@ -2,11 +2,9 @@ package com.fisproject.springlbd.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fisproject.springlbd.entity.Sprint;
-import com.fisproject.springlbd.entity.UserStory;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)  // nie pokazuj pol, ktore nie sa ustawione (sa null)
 public class SprintUltimateDto {
@@ -17,7 +15,7 @@ public class SprintUltimateDto {
     private Timestamp endDate;
     private String description;
     private Sprint.StatusType status;
-    private List<UserStoryUltimateDto> userStories;
+    private List<UserStoryDto> userStories;
 
 
     public void setId(Long id) { this.id = id; }
@@ -38,8 +36,8 @@ public class SprintUltimateDto {
     public void setStatus(Sprint.StatusType status) { this.status = status; }
     public Sprint.StatusType getStatus() { return status; }
 
-    public List<UserStoryUltimateDto> getUserStories() { return userStories; }
-    public void setUserStories(List<UserStoryUltimateDto> userStories) { this.userStories = userStories; }
+    public List<UserStoryDto> getUserStories() { return userStories; }
+    public void setUserStories(List<UserStoryDto> userStories) { this.userStories = userStories; }
 
 
 }

@@ -1,10 +1,9 @@
 package com.fisproject.springlbd.controller;
 
 import com.fisproject.springlbd.component.StandardResponse;
+import com.fisproject.springlbd.dto.UserStoryDto;
 import com.fisproject.springlbd.entity.Attachment;
 import com.fisproject.springlbd.entity.Sprint;
-import com.fisproject.springlbd.entity.UserStory;
-import com.fisproject.springlbd.event.UserStoryCreatedEvent;
 import com.fisproject.springlbd.service.SprintService;
 import com.fisproject.springlbd.service.UserStoryService;
 import org.slf4j.Logger;
@@ -17,14 +16,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.*;
 
 @RestController
 public class HomeController {
@@ -45,40 +40,42 @@ public class HomeController {
     }
 
     /** Zad 3 */
-    @PostMapping("/sprints/addstory")
-    public StandardResponse addNewUserStoryToSprintById(
-            @RequestParam("sprintId") Long sprintId,
-            @RequestParam("userStoryName") String userStoryName,
-            @RequestParam("userStoryDesc") String userStoryDesc,
-            @RequestParam("userStoryPoints") Integer userStoryPoints,
-            @RequestParam("userStoryStatus") UserStory.StatusType userStoryStatus) {
+    @PostMapping("/userstory")
+//    public StandardResponse addNewUserStoryToSprintById(
+//            @RequestParam("sprintId") Long sprintId,
+//            @RequestParam("userStoryName") String userStoryName,
+//            @RequestParam("userStoryDesc") String userStoryDesc,
+//            @RequestParam("userStoryPoints") Integer userStoryPoints,
+//            @RequestParam("userStoryStatus") UserStory.StatusType userStoryStatus) {
+    public StandardResponse addNewUserStoryToSprintById(@RequestParam Long sprintId, @RequestBody UserStoryDto userStoryDto) {
 
         LOG.warn("called /sprints/addstory");
-
-        UserStory userStory = userStoryService
-                .createUserStory(userStoryName, userStoryDesc, userStoryPoints, userStoryStatus, false);
-
-        StandardResponse response = sprintService.addUserStory(sprintId, userStory, true);
+        sprintService.addUserStory(sprintId, userStoryDto);
 
         /** Zad 18 - Event */
-        if (response.getStatus() == HttpStatus.OK.value())
-            publisher.publishEvent(new UserStoryCreatedEvent(userStory.getId()));
+        // TODO event naprawa
+//        if (response.getStatus() == HttpStatus.OK.value())
+//            publisher.publishEvent(new UserStoryCreatedEvent(userStory.getId()));
 
-        return response;
+        return new StandardResponse(HttpStatus.OK, "", "ok");
     }
 
     /** Zad 4 */
     @GetMapping("/sprints/storypoints")
     public StandardResponse getStoryPoints(@RequestParam("sprintId") Long sprintId) {
         LOG.warn("called /sprints/storypoints");
-        return sprintService.getStoryPointsAmount(sprintId);
+        sprintService.getStoryPointsAmount(sprintId);
+
+        return new StandardResponse(HttpStatus.OK, "", "ok");
     }
 
     /** Zad 5 */
     @GetMapping("/sprints/userstories")
     public StandardResponse getUserStoryListFromSprint(@RequestParam("sprintId") Long sprintId) {
         LOG.warn("called /sprints/userstories");
-        return sprintService.getUserStories(sprintId);
+        sprintService.getUserStories(sprintId);
+
+        return new StandardResponse(HttpStatus.OK, "", "ok");
     }
 
     /** Zad 6 */
@@ -135,7 +132,9 @@ public class HomeController {
             @RequestParam("newStatus") Sprint.StatusType newStatus) {
 
         LOG.warn("called /sprints/status");
-        return sprintService.updateSprintStatus(sprintId, newStatus);
+        sprintService.updateSprintStatus(sprintId, newStatus);
+
+        return new StandardResponse(HttpStatus.OK, "", "ok");
     }
 
     /** Zad 10
