@@ -1,29 +1,21 @@
 package com.fisproject.springlbd.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "Attachment")
+@Setter @Getter
 public class Attachment {
 
-
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
+    @Column(name = "binary_file")                           private byte[] binaryFile;
 
     @ManyToOne
     @JoinColumn(name = "user_story_id")
     private Sprint userStoryLinked;
-    private byte[] binaryFile;
-
-    public void setId(Long id) { this.id = id; }
-    public Long getId() { return id; }
-
-    @Column(name = "user_story_id")
-    public void setUserStoryLinked(Sprint userStoryId) { this.userStoryLinked =userStoryId; }
-    public Sprint getUserStoryLinked() { return userStoryLinked; }
-
-    @Column(name = "binary_file")
-    public void setBinaryFile(byte[] binaryFile) { this.binaryFile=binaryFile; }
-    public byte[] getBinaryFile() { return binaryFile; }
 
 }
 

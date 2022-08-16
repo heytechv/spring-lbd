@@ -21,15 +21,18 @@ public interface SprintRepository extends PagingAndSortingRepository<Sprint, Lon
     @Query("SELECT s FROM Sprint s WHERE s.startDate BETWEEN :startRange AND :endRange")                               // @Param("nazwa") i potem w sql ":nazwa"
     List<Sprint> getSprintListBetweenDates(@Param("startRange") Timestamp start_range, @Param("endRange") Timestamp end_range);
 
-// WAZNE! Argumenty oprocz @Param mozna przekazywac jako po prostu w sqlu '?1' ?Numer
-// Zapytanie normalnie wyglada tak:
-//  SELECT SUM(us.STORY_POINTS_AMOUNT) FROM SPRINT s
-//    LEFT JOIN SPRINT_USER_STORY sus on s.ID = sus.SPRINT_ID
-//    LEFT JOIN USERSTORY us on us.ID = sus.USER_STORY_ID
-//  WHERE s.ID=1 AND us.STATUS LIKE 'DONE'
-// Ale okazuje sie ze w JPQL (@Query) nie musimy laczyc niczego :)
-// https://stackoverflow.com/questions/18592533/many-to-many-query-jpql
-    @Query("SELECT SUM(sus.story_points_amount) FROM Sprint s JOIN s.userStories sus WHERE s.id=:sprintID AND sus.status LIKE 'DONE'")
+/** WAZNE! Argumenty oprocz @Param mozna przekazywac jako po prostu w sqlu '?1' ?Numer
+ *
+ * Zapytanie normalnie wyglada tak:
+ *  SELECT SUM(us.STORY_POINTS_AMOUNT) FROM SPRINT s
+ *    LEFT JOIN SPRINT_USER_STORY sus on s.ID = sus.SPRINT_ID
+ *    LEFT JOIN USERSTORY us on us.ID = sus.USER_STORY_ID
+ *  WHERE s.ID=1 AND us.STATUS LIKE 'DONE'
+ * Ale okazuje sie ze w JPQL (@Query) nie musimy laczyc niczego :)
+ *
+ * <a href="https://stackoverflow.com/questions/18592533/many-to-many-query-jpql">...</a>
+ */
+    @Query("SELECT SUM(sus.storyPointsAmount) FROM Sprint s JOIN s.userStoryList sus WHERE s.id=:sprintID AND sus.status LIKE 'DONE'")
     Integer getStoryPointsById(@Param("sprintID") Long id);
 
 

@@ -2,39 +2,43 @@ package com.fisproject.springlbd.utils;
 
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.repository.SprintRepository;
+import com.fisproject.springlbd.service.SprintService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
+@Component
 public class CreateRandomSprints {
 
-    public void create(ApplicationContext context, int amount) {
+    @Autowired private SprintService sprintService;
 
-        SprintRepository sprintRepository = context.getBean(SprintRepository.class);
 
-        ArrayList<Sprint> sprints = new ArrayList<>();
+    public void create(int amount) {
+
+        List<Sprint> sprintList = new ArrayList<>();
 
         for (int i=0; i<amount; i++) {
             Random random = new Random();
-            int rndYear = random.nextInt(8)+1;
-            int rndDay = random.nextInt(7)+1;
+            int rndYear  = random.nextInt(8) + 1;
+            int rndMonth = random.nextInt(8) + 1;
 
-            Sprint s = new Sprint();
-            s.setName(UUID.randomUUID().toString());
-            s.setDescription(UUID.randomUUID().toString());
-            s.setStartDate(Timestamp.valueOf("202"+rndYear+"-0"+rndDay     +"-01 00:00:00.0"));
-            s.setEndDate(Timestamp.valueOf("202"+rndYear+"-0"+(rndDay+1) +"-01 05:00:00.0"));
-//            s.setStatus(Arrays.asList("PENDING","IN_PROGRESS","FINISHED","CANCELED").get(random.nextInt(4)));
-            s.setStatus(Arrays.asList(Sprint.StatusType.values()).get(random.nextInt(4)));
-
-            sprints.add(s);
+            Sprint s = Sprint.builder()
+                    .name(UUID.randomUUID().toString())
+                    .description(UUID.randomUUID().toString())
+                    .startDate(Timestamp.valueOf("202"+rndYear+"-0"+rndMonth +"-01 00:00:00.0"))
+                    .endDate  (Timestamp.valueOf("202"+rndYear+"-0"+rndMonth +"-02 05:00:00.0"))
+                    .status(Arrays.asList(Sprint.StatusType.values()).get(random.nextInt(4)).toString())
+                    .build();
+            sprintList.add(s);
         }
-        sprintRepository.saveAll(sprints);
+
+        sprintService.saveAll(sprintList);
     }
 
 }
