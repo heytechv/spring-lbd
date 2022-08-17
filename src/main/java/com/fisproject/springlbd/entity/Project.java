@@ -6,16 +6,13 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Attachment")
+@Table(name = "Project")
 @Setter @Getter
-public class Attachment {
+public class Project {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id") private Long id;
-    @Column(name = "binary_file") private byte[] binaryFile;
 
-    @ManyToOne
-    @JoinColumn(name = "user_story_id")
-    private UserStory userStory;
+
+
 
 }
-

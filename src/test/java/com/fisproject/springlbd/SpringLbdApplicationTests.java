@@ -1,12 +1,5 @@
 package com.fisproject.springlbd;
 
-import com.fisproject.springlbd.apiresponse.StandardResponse;
-import com.fisproject.springlbd.dto.SprintDto;
-import com.fisproject.springlbd.dto.UserStoryDto;
-import com.fisproject.springlbd.entity.Sprint;
-import com.fisproject.springlbd.entity.UserStory;
-import com.fisproject.springlbd.service.SprintService;
-import com.fisproject.springlbd.service.UserStoryService;
 import com.fisproject.springlbd.utils.CreateRandomSprints;
 import com.fisproject.springlbd.utils.CreateRandomUserStories;
 import org.junit.jupiter.api.Test;
