@@ -43,7 +43,7 @@ public class UserStoryServiceImpl implements UserStoryService {
     private void delete(UserStory userStory) {
 //        for (Attachment a : userStory.getAttachmentSet()) {
 //            userStory.removeAttachment(a);
-//            attachmentRepository.delete(a);
+////            attachmentRepository.delete(a);
 //        }
         // todo sprawdzic czy usuwa attachments
 
