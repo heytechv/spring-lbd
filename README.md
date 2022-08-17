@@ -25,6 +25,29 @@ Update status of Sprint
 Get Sprints in date range
 
 
+### `GET /userstory/{id}/description`
+Get description of UserStory
+
+### `DELETE /userstory/{id}`
+Delete UserStory
+
+### `GET /userstory/sorted`
+Get UserStories by page with limit
+
+### `POST /userstory/{id}/addattachment`
+Add new Attachment to UserStory
+
+### `GET /userstory/{id}/attachment`
+Get list of all Atachments that belongs to UserStory
+
+
+### `GET /attachment/{id}`
+Download Attachment by id
+
+
+### `GET /whoami`
+Whoami (logged in user)
+
 
 
 

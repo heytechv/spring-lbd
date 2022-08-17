@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class WhoamiController {
 
-    /** Whoami - Zad 22 */
     @GetMapping("/whoami")
     public ResponseEntity<StandardResponse> getLoggedUser() {
+        /* Zad 22 */
         Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
-        return new StandardResponse(
-                HttpStatus.OK, auth.getName() + " " + auth.getAuthorities(), "Logged in user").buildResponseEntity();
+        return new StandardResponse( HttpStatus.OK, auth.getName() + " " + auth.getAuthorities(), "Logged in user")
+                .buildResponseEntity();
     }
 
 }

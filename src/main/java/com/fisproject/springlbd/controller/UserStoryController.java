@@ -31,32 +31,32 @@ public class UserStoryController {
 
     final Logger log = LoggerFactory.getLogger(UserStoryController.class);
 
-    /** Get description from UserStory - Zad 6 */
-    @GetMapping("/description/{id}")
+    @GetMapping("/{id}/description")
     public ResponseEntity<StandardResponse> getUserStoryDescription(@PathVariable Long id) {
-        log.warn("called GET /userstory/description/{id}");
-        return new StandardResponse(HttpStatus.OK, userStoryService.getDescription(id), "ok").buildResponseEntity();
+        /* Zad 6 */
+        return new StandardResponse(HttpStatus.OK, userStoryService.getDescription(id), "Found")
+                .buildResponseEntity();
     }
 
-    /** Delete UserStory - Zad 10 */
     @DeleteMapping("/{id}")
     public ResponseEntity<StandardResponse> deleteUserStory(@PathVariable Long id) {
-        log.warn("called DELETE /userstory/{id}");
+        /* Zad 10 */
         userStoryService.deleteById(id);
-        return new StandardResponse(HttpStatus.OK, "", "UserStory deleted").buildResponseEntity();
+        return new StandardResponse(HttpStatus.OK, "UserStory deleted").buildResponseEntity();
     }
 
-    /** Get UserStories (page+limit) - Zad 12*/
     @GetMapping("/sorted")
-    public ResponseEntity<StandardResponse> getSortedUserStories(@RequestParam Integer page, @RequestParam Integer limit) {
-        return new StandardResponse(HttpStatus.OK, userStoryService.getSortedUserStoryList(page, limit), "ok").buildResponseEntity();
+    public ResponseEntity<StandardResponse> getSortedUserStories(@RequestParam Integer page,
+                                                                 @RequestParam Integer limit) {
+        /* Zad 12 */
+        return new StandardResponse(HttpStatus.OK, userStoryService.getSortedUserStoryList(page, limit), "Found")
+                .buildResponseEntity();
     }
 
-    /** Add new Attachment to UserStory - Zad 7 */
-    @PostMapping("/addattachment/{id}")
-    public ResponseEntity<StandardResponse> addAttachmentToSprint(@PathVariable Long id, @RequestParam MultipartFile attachmentFile) {
-        log.warn("called /userstory/addattachment/{id}");
-
+    @PostMapping("/{id}/addattachment")
+    public ResponseEntity<StandardResponse> addAttachmentToUserStory(@PathVariable Long id,
+                                                                     @RequestParam MultipartFile attachmentFile) {
+        /* Zad 7 */
         AttachmentDto attachmentDto = new AttachmentDto();
         try { attachmentDto.setBinaryFile(attachmentFile.getBytes()); }
         catch (Exception ignore) { throw new RuntimeException("Couldn't parse attachment!"); }
@@ -67,13 +67,11 @@ public class UserStoryController {
         return new StandardResponse(HttpStatus.OK, "Attachment added successfully").buildResponseEntity();
     }
 
-    /** Get list of all Atachments that belongs to UserStory */
-    @GetMapping("/attachments/{id}")
+    @GetMapping("/{id}/attachment")
     public StandardResponse getAttachmentsList(@PathVariable Long id) {
         log.warn("called GET /userstory/attachments/{id}");
-        return new StandardResponse(HttpStatus.OK, userStoryService.getAttachmentList(id), "ok");
+        return new StandardResponse(HttpStatus.OK, userStoryService.getAttachmentList(id), "Found");
     }
-
 
 
 }

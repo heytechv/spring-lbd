@@ -39,12 +39,9 @@ public class AttachmentController {
 
     final Logger log = LoggerFactory.getLogger(AttachmentController.class);
 
-
-    /** Download Attachment by id - Zad 8 */
     @GetMapping("/{id}")
-    public ResponseEntity<Resource> getAttachmentsDownload(@PathVariable Long id) {
-        log.warn("called GET /attachment/download/{id}");
-
+    public ResponseEntity<Resource> getAttachmentDownload(@PathVariable Long id) {
+        /* Zad 8 */
         ByteArrayResource byteArrayResource = attachmentService.getDownload(id);
 
         return ResponseEntity.ok()
