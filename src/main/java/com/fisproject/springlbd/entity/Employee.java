@@ -14,6 +14,9 @@ public class Employee {
     @Column(name = "first_name") String firstName;
     @Column(name = "last_name") String lastName;
 
+    @OneToOne(mappedBy = "employee")
+    private EmployeeRoleInTeam employeeRoleInTeam;
+
 
 
 }

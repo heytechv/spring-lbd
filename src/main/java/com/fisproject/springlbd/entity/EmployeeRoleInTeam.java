@@ -5,13 +5,19 @@ import com.fisproject.springlbd.entity.enums.EmployeeRole;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "EmployeeRoleInTeam")
+@Table(name = "EMPLOYEE_ROLE_IN_TEAM")
 public class EmployeeRoleInTeam {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id") private Long id;
 
-    @Column(name = "team_id") Team team;
-    @Column(name = "employee_id") Employee employee;
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
+
+    @OneToOne
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
     @Column(name = "employe_role") EmployeeRole employeeRole;
 
 }
