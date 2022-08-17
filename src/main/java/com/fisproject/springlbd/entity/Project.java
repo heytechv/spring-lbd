@@ -11,20 +11,13 @@ import javax.persistence.*;
 public class Project {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id") private Long id;
-
     @Column(name = "title") private String title;
+    @OneToOne(cascade = CascadeType.ALL) @MapsId private Team team;
 
-//    @OneToOne(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private Team team;
 
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
-
-
-    @OneToOne
-    @MapsId
-    private Team team;
 
 
     /**

@@ -12,12 +12,8 @@ import javax.persistence.*;
 public class EmployeeWithRole {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id") private Long id;
-    @Column(name = "employe_role") EmployeeRole employeeRole;
-
-    @OneToOne
-    @MapsId
-//    @JoinColumn(name = "employee_id")
-    private Employee employee;
+    @Column(name = "employe_role") private EmployeeRole employeeRole;
+    @OneToOne(cascade = CascadeType.ALL) @MapsId private Employee employee;
 
 
     @ManyToOne

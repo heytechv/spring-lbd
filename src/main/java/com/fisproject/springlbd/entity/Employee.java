@@ -13,14 +13,10 @@ import javax.persistence.*;
 public class Employee {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id") private Long id;
-    @Column(name = "first_name") String firstName;
-    @Column(name = "last_name") String lastName;
-    @Column(name = "contract") EmployeeContract contract;
-    @Column(name = "department") CityDepartment cityDepartment;
-
-//    @OneToOne(mappedBy = "employee")
-//    private EmployeeWithRole employeeWithRole;
-
+    @Column(name = "first_name") private String firstName;
+    @Column(name = "last_name")  private String lastName;
+    @Column(name = "contract")   private EmployeeContract contract;
+    @Column(name = "department") private CityDepartment cityDepartment;
 
 
 }

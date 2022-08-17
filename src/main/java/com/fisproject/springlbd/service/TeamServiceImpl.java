@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -14,28 +15,28 @@ public class TeamServiceImpl {
 
     private TeamRepository teamRepository;
 
-
+    /** Private
+     * */
     private Team findById(Long id) {
-        return teamRepository.findById(id).orElseThrow(() -> new RuntimeException("Id not found"));
+        return teamRepository.findById(id).orElseThrow(() -> new RuntimeException("Id not found!"));
     }
 
-
-    @Transactional
-    public void addEmployee(Long id, Employee employee, EmployeeRole role) {
-
-        Team team = findById(id);
-
-        EmployeeWithRole employeeWithRole = new EmployeeWithRole();
-        employeeWithRole.setEmployee(employee);
-        employeeWithRole.setEmployeeRole(role);
-        team.addEmployeeWithRole(employeeWithRole);
-
-
+    private void save(Team team) {
+        if (team == null)
+            throw new RuntimeException("Client cannot be null!");
         teamRepository.save(team);
     }
 
 
+    /** Public
+     * */
+    public Team getById(Long id) {
+        return findById(id);
+    }
 
+    public List<EmployeeWithRole> getEmployeeWithRoleList(Long id) {
+        return findById(id).getEmployeeWithRoleList();
+    }
 
 
 }

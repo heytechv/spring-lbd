@@ -17,15 +17,17 @@ public class Team {
     @Column(name = "team_department") private TeamType teamType;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<EmployeeWithRole> employeeWithRoleList = new ArrayList<>();
+    private List<EmployeeWithRole> employeeWithRoleList = new ArrayList<>();
 
-//    @OneToOne
-//    @JoinColumn(name = "project_id")
-//    private Project project;
 
     public void addEmployeeWithRole(EmployeeWithRole employeeWithRole) {
         employeeWithRoleList.add(employeeWithRole);
         employeeWithRole.setTeam(this);
+    }
+
+    public void removeEmployeeWithRole(EmployeeWithRole employeeWithRole) {
+        employeeWithRoleList.remove(employeeWithRole);
+        employeeWithRole.setTeam(null);
     }
 
 

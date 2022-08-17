@@ -19,14 +19,24 @@ public class ClientServiceImpl {
     /** Private
      * */
     private Client findById(Long id) {
-        return clientRepository.findById(id).orElseThrow(() -> new RuntimeException("Id not found"));
+        return clientRepository.findById(id).orElseThrow(() -> new RuntimeException("Id not found!"));
+    }
+
+    private void save(Client client) {
+        if (client == null)
+            throw new RuntimeException("Client cannot be null!");
+        clientRepository.save(client);
     }
 
 
     /** Public
      * */
     public void add(Client client) {
-        clientRepository.save(client);
+        save(client);
+    }
+
+    public Client getById(Long id) {
+        return getById(id);
     }
 
     public List<Project> getAllProjects(Long id) {
