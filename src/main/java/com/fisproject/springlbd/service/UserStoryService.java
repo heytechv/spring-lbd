@@ -13,6 +13,7 @@ import java.util.List;
 public interface UserStoryService {
     List<UserStory> getAll();
     Page<UserStory> getAllByPage(Integer page, Integer size);
+    UserStory getById(Long id);
     String getDescription(Long userStoryId);
     List<UserStoryDto> getSortedUserStoryList(Integer page, Integer limit);
 
@@ -20,6 +21,7 @@ public interface UserStoryService {
 
     void addAttachment(Long userStoryId, AttachmentDto attachmentDto);
     List<AttachmentDto> getAttachmentList(Long userStoryId);
-//    StandardResponse getAttachmentById(Long userStoryId, Long attachmentId);
+
+
 
 }

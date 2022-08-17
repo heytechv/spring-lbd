@@ -1,11 +1,10 @@
 package com.fisproject.springlbd.service;
 
-import com.fisproject.springlbd.apiresponse.StandardResponse;
 import com.fisproject.springlbd.dto.AttachmentDto;
 import com.fisproject.springlbd.dto.UserStoryDto;
 import com.fisproject.springlbd.entity.Attachment;
 import com.fisproject.springlbd.entity.UserStory;
-import com.fisproject.springlbd.mapper.UserStoryMapper;
+import com.fisproject.springlbd.mapper.UniversalMapper;
 import com.fisproject.springlbd.repository.AttachmentRepository;
 import com.fisproject.springlbd.repository.UserStoryRepository;
 import lombok.AllArgsConstructor;
@@ -14,13 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +26,7 @@ public class UserStoryServiceImpl implements UserStoryService {
 
     UserStoryRepository userStoryRepository;
     AttachmentRepository attachmentRepository;
-    UserStoryMapper userStoryMapper;
+    UniversalMapper universalMapper;
 
     private final Logger log = LoggerFactory.getLogger(UserStoryServiceImpl.class);
 
@@ -41,13 +38,6 @@ public class UserStoryServiceImpl implements UserStoryService {
     }
 
     private void delete(UserStory userStory) {
-//        for (Attachment a : userStory.getAttachmentSet()) {
-//            userStory.removeAttachment(a);
-////            attachmentRepository.delete(a);
-//        }
-        // todo sprawdzic czy usuwa attachments
-
-
         userStory.removeFromLinkedSprints();
         userStoryRepository.delete(userStory);
     }
@@ -67,13 +57,17 @@ public class UserStoryServiceImpl implements UserStoryService {
         return userStoryRepository.findAll(PageRequest.of(page, size));
     }
 
+    @Override public UserStory getById(Long  id) {
+        return findById(id);
+    }
+
     @Override public void deleteById(Long userStoryId) {
         delete(findById(userStoryId));
     }
 
     @Override public List<UserStoryDto> getSortedUserStoryList(Integer page, Integer limit) {
         return findAllPageAndSortByName(page, limit).stream().map(userStory ->
-                userStoryMapper.userStoryToDto(userStory)).collect(Collectors.toList());
+                universalMapper.userStoryToDto(userStory)).collect(Collectors.toList());
     }
 
     /** (stworzone do Zad 6) */

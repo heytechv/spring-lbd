@@ -4,6 +4,8 @@ import com.fisproject.springlbd.apiresponse.StandardResponse;
 import com.fisproject.springlbd.dto.SprintDto;
 import com.fisproject.springlbd.dto.UserStoryDto;
 import com.fisproject.springlbd.entity.Sprint;
+import com.fisproject.springlbd.entity.UserStory;
+import com.fisproject.springlbd.event.UserStoryCreatedEvent;
 import com.fisproject.springlbd.service.SprintService;
 import com.fisproject.springlbd.service.UserStoryService;
 import lombok.AllArgsConstructor;
@@ -49,12 +51,10 @@ public class SprintController {
     @PostMapping("/adduserstory/{id}")
     public ResponseEntity<StandardResponse> addUserStoryToSprintById(@PathVariable Long id, @Valid @RequestBody UserStoryDto userStoryDto) {
         log.warn("\ncalled /sprint/adduserstory/{id}");
-        sprintService.addUserStory(id, userStoryDto);
+        UserStory userStory = sprintService.addUserStory(id, userStoryDto);
 
-        /** Zad 18 - Event */
-        // TODO event naprawa
-//        if (response.getStatus() == HttpStatus.OK.value())
-//            publisher.publishEvent(new UserStoryCreatedEvent(userStory.getId()));
+        // Zad 18 - Event
+        publisher.publishEvent(new UserStoryCreatedEvent(userStory.getId()));
 
         return new StandardResponse(HttpStatus.OK, "", "ok").buildResponseEntity();
     }

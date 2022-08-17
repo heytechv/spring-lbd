@@ -15,7 +15,7 @@ public interface SprintService {
 
     void add(SprintDto sprintDto);
     void addSprintWithUserStoryZad16(String sprintName) throws IllegalArgumentException;
-    void addUserStory(Long id, UserStoryDto userStoryDto);
+    UserStory addUserStory(Long id, UserStoryDto userStoryDto);
 
     void updateSprintStatus(Long sprintId, Sprint.StatusType newStatus);
 

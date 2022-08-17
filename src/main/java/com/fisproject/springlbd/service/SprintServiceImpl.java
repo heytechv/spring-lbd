@@ -1,12 +1,10 @@
 package com.fisproject.springlbd.service;
 
 import com.fisproject.springlbd.dto.*;
-import com.fisproject.springlbd.entity.Attachment;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.event.UserStoryCreatedEvent;
-import com.fisproject.springlbd.mapper.SprintMapper;
-import com.fisproject.springlbd.mapper.UserStoryMapper;
+import com.fisproject.springlbd.mapper.UniversalMapper;
 import com.fisproject.springlbd.repository.AttachmentRepository;
 import com.fisproject.springlbd.repository.SprintRepository;
 import com.fisproject.springlbd.repository.UserStoryRepository;
@@ -31,8 +29,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class SprintServiceImpl implements SprintService {
 
-    private SprintMapper sprintMapper;
-    private UserStoryMapper userStoryMapper;
+    private UniversalMapper universalMapper;
     private SprintRepository sprintRepository;
     private UserStoryService userStoryService;
     private AttachmentRepository attachmentRepository;
@@ -43,7 +40,7 @@ public class SprintServiceImpl implements SprintService {
 
 
     /**
-     * Private Utilities
+     * Private (utils)
      * */
     private Sprint findById(Long id) {
         return sprintRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Sprint with id="+id+" not found!"));
@@ -59,24 +56,25 @@ public class SprintServiceImpl implements SprintService {
     @Override @Transactional public void add(SprintDto sprintDto) {
         if (sprintDto == null)
             throw new RuntimeException("Sprint cannot be null!");
-        sprintRepository.save(sprintMapper.sprintDtoToSprint(sprintDto));
+        sprintRepository.save(universalMapper.sprintDtoToSprint(sprintDto));
     }
 
-    /** (stworzone do Zad 2) */
     @Override public List<SprintDto> getAll(boolean showUserStories) {
+        /* (stworzone do Zad 2) */
         List<Sprint> sprints = findAll();
         return sprints.stream().map(sprint -> {
-            SprintDto sprintDto = sprintMapper.sprintToSprintDto(sprint);
+            SprintDto sprintDto = universalMapper.sprintToSprintDto(sprint);
             if (showUserStories)
-                sprintDto.setUserStoryList(
-                        sprint.getUserStorySet().stream().map(userStory -> {
-                            UserStoryDto userStoryDto = userStoryMapper.userStoryToDto(userStory);
-                            List<Attachment> attachmentList = new ArrayList<>(userStory.getAttachmentSet());
-                            userStoryDto.setAttachmentList(attachmentList.stream().map(attachment ->
-                                    new AttachmentDto(attachment.getId(), attachment.getBinaryFile())).collect(Collectors.toList()));
-                            return userStoryDto;
-                        }).collect(Collectors.toList())
-                );
+                sprintDto.setUserStoryList(universalMapper.listToListDto(new ArrayList<>(sprint.getUserStorySet())));
+//                sprintDto.setUserStoryList(
+//                        sprint.getUserStorySet().stream().map(userStory -> {
+//                            UserStoryDto userStoryDto = userStoryMapper.userStoryToDto(userStory);
+//                            List<Attachment> attachmentList = new ArrayList<>(userStory.getAttachmentSet());
+//                            userStoryDto.setAttachmentList(attachmentList.stream().map(attachment ->
+//                                    new AttachmentDto(attachment.getId(), attachment.getBinaryFile())).collect(Collectors.toList()));
+//                            return userStoryDto;
+//                        }).collect(Collectors.toList())
+//                );
             return sprintDto;
         }).collect(Collectors.toList());
     }
@@ -103,21 +101,22 @@ public class SprintServiceImpl implements SprintService {
                         Sort.by("startDate")));
     }
 
-    @Override @Transactional public void addUserStory(Long id, UserStoryDto userStoryDto) {
+    @Override @Transactional public UserStory addUserStory(Long id, UserStoryDto userStoryDto) {
         if (userStoryDto == null)
             throw new RuntimeException("internal server error. Unable to create UserStory");
         // find Sprint by id
         Sprint sprint = findById(id);
         // save UserStory
-        UserStory userStory = userStoryMapper.dtoToUserStory(userStoryDto);
+        UserStory userStory = universalMapper.dtoToUserStory(userStoryDto);
         userStoryRepository.save(userStory);
         // add UserStory to Sprint (and save automatically @Transactional)
         sprint.addUserStory(userStory);
+
+        return userStory;
     }
 
-
     @Override @Transactional public void addSprintWithUserStoryZad16(String sprintName) {
-
+        /* Zad 16 */
         UserStory userStory = new UserStory();
         userStory.setName("user_story_zad16");
         userStory.setDescription("opis user story (zad 16)");
@@ -135,10 +134,8 @@ public class SprintServiceImpl implements SprintService {
         sprintRepository.save(sprint);
     }
 
-
-
-    /** (stworzone do Zad 4) */
     @Override public Integer getStoryPointsAmount(Long sprintId) {
+        /* Zad 4 */
         Sprint sprint = findById(sprintId);
 
         int pointSum = 0;
@@ -151,66 +148,50 @@ public class SprintServiceImpl implements SprintService {
         return pointSum;
     }
 
-    /** (stworzone do Zad 5) */
     @Override public List<UserStoryDto> getUserStoryList(Long sprintId) {
+        /* Zad 5 */
         Sprint sprint = findById(sprintId);
-//        return optionalSprint
-//                .map(sprint -> {
-//                    List<UserStoryUltimateDto> userStoryZad5Dtos = sprint.getUserStorySet()
-//                            .stream().map(userStory -> userStoryService.convertEntityToZad5Dto(userStory)).collect(Collectors.toList());
-//
-//                    return new StandardResponse(HttpStatus.OK, userStoryZad5Dtos, "found.");
-//                }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, null, "id not found"));
-
         return sprint.getUserStorySet()
-                .stream().map(userStory -> userStoryMapper.userStoryToDto(userStory)).collect(Collectors.toList());
+                .stream().map(userStory -> universalMapper.userStoryToDto(userStory)).collect(Collectors.toList());
     }
 
-    /** (stworzone do Zad 9) */
     @Override @Transactional public void updateSprintStatus(Long id, Sprint.StatusType newStatus) {
+        /* Zad 9 */
         if (!Arrays.asList(Sprint.StatusType.values()).contains(newStatus))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         findById(id).setStatus(newStatus);
     }
 
-    /** (stworzone do Zad 11) */
     @Override public ArrayList<SprintDto> getBetweenDate(Timestamp start_range, Timestamp end_range) {
+        /* Zad 11 */
         Optional<List<Sprint>> optionalSprints = sprintRepository.getSprintListBetweenDates(start_range, end_range);
         if (optionalSprints.isEmpty())
             throw new EntityNotFoundException("Sprints not found in this date range!");
 
         return new ArrayList<>(optionalSprints.get().stream().map(sprint ->
-                sprintMapper.sprintToSprintDto(sprint)).collect(Collectors.toList()));
+                universalMapper.sprintToSprintDto(sprint)).collect(Collectors.toList()));
     }
 
-
-    /** ------------------------------------------------------------------------------------ **
-    /** -- EventListener ------------------------------------------------------------------- **
-    /** ------------------------------------------------------------------------------------ **/
+    /**
+     * Event Listener */
     @EventListener public void handleAddStoryEvent(UserStoryCreatedEvent event) {
         System.out.println("JEST FAJNIE");
 
-//        Optional<UserStory> optionalUserStory = userStoryService.findById(event.getUserStoryId());
-//        if (optionalUserStory.isEmpty()) {
-//            log.error("Problem z evenetem!");
-//            return;
-//        }
+        UserStory userStory = userStoryService.getById(event.getUserStoryId());
 
-//        List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll(Sort.by("startDate"));
-//        for (Sprint sprint : sprints) {
-//            if (sprint.getStatus() == Sprint.StatusType.PENDING) {
-//                addUserStory(sprint.getId(), optionalUserStory.get(), true);
-//                log.info("Dodano do Sprinta o nazwie {} z id = {}", sprint.getName(), sprint.getId());
-//                return;
-//            }
-//        }
+        List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll(Sort.by("startDate"));
+        for (Sprint sprint : sprints) {
+            if (sprint.getStatus() == Sprint.StatusType.PENDING) {
+                sprint.addUserStory(userStory);
+                sprintRepository.save(sprint);
+                log.info("Dodano do Sprinta o nazwie {} z id = {}", sprint.getName(), sprint.getId());
+                return;
+            }
+        }
 
         log.info("Nie znaleziono  Sprinta o statusie PENDING :/");
-
     }
-
-
 
 
 }
