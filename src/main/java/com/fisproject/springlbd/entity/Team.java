@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,13 +16,17 @@ public class Team {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id") private Long id;
     @Column(name = "team_department") private TeamType teamType;
 
-    @OneToMany(mappedBy = "team")
-    List<EmployeeWithRole> employeeWithRole;
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<EmployeeWithRole> employeeWithRoleList = new ArrayList<>();
 
 //    @OneToOne
 //    @JoinColumn(name = "project_id")
 //    private Project project;
 
+    public void addEmployeeWithRole(EmployeeWithRole employeeWithRole) {
+        employeeWithRoleList.add(employeeWithRole);
+        employeeWithRole.setTeam(this);
+    }
 
 
 

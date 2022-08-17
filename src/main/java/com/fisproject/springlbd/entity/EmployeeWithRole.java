@@ -12,15 +12,17 @@ import javax.persistence.*;
 public class EmployeeWithRole {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id") private Long id;
+    @Column(name = "employe_role") EmployeeRole employeeRole;
+
+    @OneToOne
+    @MapsId
+//    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
 
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
 
-    @OneToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
-
-    @Column(name = "employe_role") EmployeeRole employeeRole;
 
 }

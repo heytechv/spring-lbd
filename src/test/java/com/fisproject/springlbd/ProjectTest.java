@@ -1,12 +1,12 @@
 package com.fisproject.springlbd;
 
-import com.fisproject.springlbd.entity.Client;
-import com.fisproject.springlbd.entity.Project;
-import com.fisproject.springlbd.entity.Team;
+import com.fisproject.springlbd.entity.*;
+import com.fisproject.springlbd.entity.enums.EmployeeRole;
 import com.fisproject.springlbd.entity.enums.TeamType;
 import com.fisproject.springlbd.repository.ProjectRepository;
 import com.fisproject.springlbd.service.ClientServiceImpl;
 import com.fisproject.springlbd.service.ProjectServiceImpl;
+import com.fisproject.springlbd.service.TeamServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +19,7 @@ public class ProjectTest {
     @Autowired ClientServiceImpl clientService;
     @Autowired ProjectServiceImpl projectService;
     @Autowired ProjectRepository projectRepository;
+    @Autowired TeamServiceImpl teamService;
 
     private Logger log = LoggerFactory.getLogger(ProjectTest.class);
 
@@ -30,14 +31,27 @@ public class ProjectTest {
 
         Project project = new Project();
         project.setTitle("Projekt stazowy");
-//        projectRepository.save(project);
 
         Team team = new Team();
         team.setTeamType(TeamType.JAVA);
-        project.setTeam(team);
+
+        EmployeeWithRole employeeWithRole = new EmployeeWithRole();
+        employeeWithRole.setEmployeeRole(EmployeeRole.DESIGNER);
+
+        Employee employee = new Employee();
+        employee.setFirstName("Maciek");
+
 
         client.addProject(project);
-        clientService.addNew(client);
+        project.setTeam(team);
+        team.addEmployeeWithRole(employeeWithRole);
+        employeeWithRole.setEmployee(employee);
+
+
+        clientService.add(client);
+
+
+//        teamService.addEmployee(1L, employee, EmployeeRole.DESIGNER);
 
 
 

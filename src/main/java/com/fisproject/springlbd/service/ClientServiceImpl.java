@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -15,22 +16,22 @@ public class ClientServiceImpl {
     private ClientRepository clientRepository;
 
 
+    /** Private
+     * */
     private Client findById(Long id) {
         return clientRepository.findById(id).orElseThrow(() -> new RuntimeException("Id not found"));
     }
 
 
-    public void addNew(Client client) {
+    /** Public
+     * */
+    public void add(Client client) {
         clientRepository.save(client);
     }
 
-    @Transactional
-    public void addProject(Long id, Project project) {
-        Client client = findById(id);
-        client.addProject(project);
-
+    public List<Project> getAllProjects(Long id) {
+        return findById(id).getProjectList();
     }
-
 
 
 

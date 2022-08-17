@@ -18,8 +18,8 @@ public class Employee {
     @Column(name = "contract") EmployeeContract contract;
     @Column(name = "department") CityDepartment cityDepartment;
 
-    @OneToOne(mappedBy = "employee")
-    private EmployeeWithRole employeeWithRole;
+//    @OneToOne(mappedBy = "employee")
+//    private EmployeeWithRole employeeWithRole;
 
 
 
