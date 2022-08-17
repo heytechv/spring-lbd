@@ -11,6 +11,9 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface UserStoryService {
+
+    void add(UserStory userStory);
+
     List<UserStory> getAll();
     Page<UserStory> getAllByPage(Integer page, Integer size);
     UserStory getById(Long id);

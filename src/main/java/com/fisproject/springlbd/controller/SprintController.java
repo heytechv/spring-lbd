@@ -31,61 +31,68 @@ public class SprintController {
 
     final Logger log = LoggerFactory.getLogger(SprintController.class);
 
-    /** Add new Sprint */
-    @PostMapping("/add")
+    @PostMapping()
     public ResponseEntity<StandardResponse> addSprint(@Valid @RequestBody SprintDto sprintDto) {
-        log.warn("\ncalled POST /sprint/add");
         sprintService.add(sprintDto);
-        return new StandardResponse(HttpStatus.OK, "", "Sprint added successfully").buildResponseEntity();
+        return new StandardResponse(HttpStatus.OK, "Sprint added successfully").buildResponseEntity();
     }
 
-    /** Get all sprints - Zad 2 */
-    @GetMapping("/all")
-    public ResponseEntity<StandardResponse> getSprintList(@RequestParam(value="tasks", required=false, defaultValue="false") boolean showUserStories) {
-        log.warn("\ncalled GET /sprint/all");
-        List l = sprintService.getAll(showUserStories);
-        return new StandardResponse(HttpStatus.OK, l, "All found sprints").buildResponseEntity();
+    @GetMapping()
+    public ResponseEntity<StandardResponse> getSprintList(
+            @RequestParam(value="tasks", required=false, defaultValue="false") boolean showUserStories) {
+        /* Zad 2 */
+        return new StandardResponse(HttpStatus.OK, sprintService.getAll(showUserStories), "Found sprints")
+                .buildResponseEntity();
     }
 
-    /** Add new UserStory to Sprint - Zad 3 */
-    @PostMapping("/adduserstory/{id}")
-    public ResponseEntity<StandardResponse> addUserStoryToSprintById(@PathVariable Long id, @Valid @RequestBody UserStoryDto userStoryDto) {
-        log.warn("\ncalled /sprint/adduserstory/{id}");
+    @GetMapping("/{id}")
+    public ResponseEntity<StandardResponse> getSprintById(
+            @PathVariable Long id,
+            @RequestParam(value="tasks", required=false, defaultValue="false") boolean showUserStories) {
+        return new StandardResponse(HttpStatus.OK, sprintService.getById(id, showUserStories), "Found sprint")
+                .buildResponseEntity();
+    }
+
+    @PostMapping("/{id}/adduserstory")
+    public ResponseEntity<StandardResponse> addUserStoryToSprintById(@PathVariable Long id,
+                                                                     @Valid @RequestBody UserStoryDto userStoryDto) {
+        /* Zad 3 */
         UserStory userStory = sprintService.addUserStory(id, userStoryDto);
 
         // Zad 18 - Event
         publisher.publishEvent(new UserStoryCreatedEvent(userStory.getId()));
 
-        return new StandardResponse(HttpStatus.OK, "", "ok").buildResponseEntity();
+        return new StandardResponse(HttpStatus.OK, "ok").buildResponseEntity();
     }
 
-    /** Get sum of all story points that Sprint contains - Zad 4 */
-    @GetMapping("/storypoints/{id}")
+    @GetMapping("/{id}/storypoints")
     public ResponseEntity<StandardResponse> getStoryPoints(@PathVariable Long id) {
-        log.warn("\ncalled GET /sprint/storypoints/{id}");
-        return new StandardResponse(HttpStatus.OK, sprintService.getStoryPointsAmount(id), "ok").buildResponseEntity();
+        /* Zad 4 */
+        return new StandardResponse(HttpStatus.OK, sprintService.getStoryPointsAmount(id), "ok")
+                .buildResponseEntity();
     }
 
-    /** Get all UserStories from Sprint - Zad 5 */
-    @GetMapping("/userstories/{id}")
+    @GetMapping("/{id}/userstories")
     public ResponseEntity<StandardResponse> getUserStoryListFromSprint(@PathVariable Long id) {
-        log.warn("\ncalled GET /sprint/userstories/{id}");
-        return new StandardResponse(HttpStatus.OK, sprintService.getUserStoryList(id), "ok").buildResponseEntity();
+        /* Zad 5 */
+        return new StandardResponse(HttpStatus.OK, sprintService.getUserStoryList(id), "ok")
+                .buildResponseEntity();
     }
 
-    /** Update status of Sprint - Zad 9 */
-    @PutMapping("/updatestatus/{id}")
-    public ResponseEntity<StandardResponse> updateSprintStatusById(@PathVariable Long id, @RequestParam Sprint.StatusType newStatus) {
-        log.warn("\ncalled PUT /sprints/updatestatus/{id}");
+    @PutMapping("/{id}/updatestatus")
+    public ResponseEntity<StandardResponse> updateSprintStatusById(@PathVariable Long id,
+                                                                   @RequestParam Sprint.StatusType newStatus) {
+        /* Zad 9 */
         sprintService.updateSprintStatus(id, newStatus);
-        return new StandardResponse(HttpStatus.OK, "", "Status updated").buildResponseEntity();
+        return new StandardResponse(HttpStatus.OK, "Status updated").buildResponseEntity();
     }
 
-    /** Find Sprints in date range - Zad 11 */
     @GetMapping("/daterange")
-    public ResponseEntity<StandardResponse> getSprintsInDateRange(@RequestParam String startDate, @RequestParam String endDate) {
-        log.warn("called /sprints/daterange");
-        return new StandardResponse(HttpStatus.OK, sprintService.getBetweenDate(Timestamp.valueOf(startDate), Timestamp.valueOf(endDate)), "").buildResponseEntity();
+    public ResponseEntity<StandardResponse> getSprintsInDateRange(@RequestParam String startDate,
+                                                                  @RequestParam String endDate) {
+        /* Zad 11 */
+        return new StandardResponse(HttpStatus.OK, sprintService.getBetweenDate(Timestamp.valueOf(startDate), Timestamp.valueOf(endDate)), "")
+                .buildResponseEntity();
     }
 
 

@@ -1,7 +1,7 @@
 package com.fisproject.springlbd;
 
-import com.fisproject.springlbd.component.StandardResponse;
-import com.fisproject.springlbd.dto.SprintZad11Dto;
+import com.fisproject.springlbd.apiresponse.StandardResponse;
+import com.fisproject.springlbd.dto.SprintDto;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.service.SprintService;
@@ -33,33 +33,39 @@ class SpringLbdApplicationTests {
 
     /** Zad 8 Test */
     @Test void test_zad8_SprintServiceOK() throws IllegalArgumentException {
-        sprintService.addSprint(
-                "SH",
-                Timestamp.valueOf("2022-07-06 00:00:00.0"),
-                Timestamp.valueOf("2022-07-07 00:00:00.0"),
-                "opis jakis",
-                Sprint.StatusType.IN_PROGRESS);
+        Sprint sprint = Sprint.builder()
+                .name("SH")
+                .startDate(Timestamp.valueOf("2022-07-06 00:00:00.0"))
+                .endDate(Timestamp.valueOf("2022-07-07 00:00:00.0"))
+                .description("opis jakis")
+                .status(Sprint.StatusType.IN_PROGRESS)
+                .build();
+        sprintService.add(sprint);
     }
 
     @Test void test_zad8_UserStoryServiceOK() throws IllegalArgumentException {
-        userStoryService.createUserStory(
-                "SH",
-                "opis jakis",
-                1,
-                null);
+        UserStory userStory = UserStory.builder()
+                .name("SH")
+                .description( "opis jakis")
+                .storyPointsAmount(1)
+                .status(UserStory.StatusType.TO_DO)
+                .build();
+        userStoryService.add(userStory);
     }
 
     @Test void test_zad8_SprintServiceException() {
         boolean isE = false;
 
         try {
-            sprintService.addSprint(
-                    "SH",
-                    Timestamp.valueOf("2022-07-06 00:00:00.0"),
-//                    Timestamp.valueOf("2022-07-07 00:00:00.0"),
-                    null,
-                    "",
-                    Sprint.StatusType.PENDING);
+            Sprint sprint = Sprint.builder()
+                    .name("SH")
+                    .startDate(Timestamp.valueOf("2022-07-06 00:00:00.0"))
+                    .endDate(null)
+                    .description("opis jakis")
+                    .status(Sprint.StatusType.PENDING)
+                    .build();
+            sprintService.add(sprint);
+
         } catch (Exception e) {
             LOG.error(e.getMessage());
             isE = true;
@@ -71,11 +77,13 @@ class SpringLbdApplicationTests {
         boolean isE = false;
 
         try {
-            userStoryService.createUserStory(
-                    "jakies",
-                    "", // PUSTY!
-                    1,
-                    null);
+            UserStory userStory = UserStory.builder()
+                    .name("SH")
+                    .description("")  // pusty
+                    .storyPointsAmount(1)
+                    .status(UserStory.StatusType.TO_DO)
+                    .build();
+            userStoryService.add(userStory);
         } catch (Exception e) {
             LOG.error(e.getMessage());
             isE = true;
@@ -93,14 +101,13 @@ class SpringLbdApplicationTests {
 
     /** Zad 10 Test */
     @Test void test_zad10_SprintsBetweenDateRange() {
-        StandardResponse sprints = sprintService
-                .findBetweenDate(
+        List<SprintDto> sprints = sprintService.getBetweenDate(
                         Timestamp.valueOf("2022-07-01 00:00:00.0"),
                         Timestamp.valueOf("2022-07-07 00:00:00.0")
-                );
-        ((List<SprintZad11Dto>) sprints.getData()).forEach(s -> System.out.println(s.getName() + " | " + s.getStartDate() + " | "+ s.getStatus()));
+        );
+        sprints.forEach(s -> System.out.println(s.getName() + " | " + s.getStartDate() + " | "+ s.getStatus()));
 
-        assert ((List<SprintZad11Dto>) sprints.getData()).size() > 0;
+        assert sprints.size() > 0;
     }
 
     /** Zad 11 Test */
@@ -114,14 +121,14 @@ class SpringLbdApplicationTests {
     /** Zad 12 Test */
     @Test void test_zad12_createRandom() {
         new CreateRandomUserStories().create(context, 100);
-        userStoryService.findAll().forEach(us -> System.out.println(us.getId()+"\t|\t"+us.getName()+"\t|\t"+us.getStatus()));
+        userStoryService.getAll().forEach(us -> System.out.println(us.getId()+"\t|\t"+us.getName()+"\t|\t"+us.getStatus()));
     }
 
     /** Zad 14 Test */
     @Test void test_zad13_pagination() {
         new CreateRandomUserStories().create(context, 100);
 
-        Page<UserStory> userStories = userStoryService.findAllByPage(1, 10);
+        Page<UserStory> userStories = userStoryService.getAllByPage(1, 10);
 
         for (UserStory us : userStories)
             System.out.println(us.getId() + " | " + us.getName() + " | " + us.getStatus());
@@ -134,7 +141,7 @@ class SpringLbdApplicationTests {
     @Test void test_zad15_paginationSort() {
         new CreateRandomSprints().create(context, 100);
 
-        Page<Sprint> sprints = sprintService.findAllPageAndSortByDate(0, 10);
+        Page<Sprint> sprints = sprintService.getAllPageAndSortByDate(0, 10);
         sprints.forEach(s -> System.out.println(s.getId() + "\t|\t" + s.getName() + "\t|\t" + s.getStartDate() + "\t|\t" + s.getStatus()));
     }
 
@@ -153,8 +160,8 @@ class SpringLbdApplicationTests {
     @Test void test_rob() {
         sprintService.addSprintWithUserStoryZad16("roboczy");
 
-        List<Sprint> sprints = sprintService.findAll();
-        sprints.forEach(sprint -> System.out.println(sprint.getName()));
+        List<SprintDto> sprintDtoList = sprintService.getAll(false);
+        sprintDtoList.forEach(sprint -> System.out.println(sprint.getName()));
 
 
     }

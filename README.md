@@ -1,5 +1,33 @@
 # REST API
 
+### `POST /sprint`
+Add new Sprint
+
+### `GET /sprint`
+Get all Sprints
+
+### `GET /sprint/{id}`
+Get Sprint by id
+
+### `POST /sprint/{id}/adduserstory`
+Create and add UserStory to Sprint
+
+### `GET /sprint/{id}/storypoints`
+Get sum of all story points that Sprint contains
+
+### `GET /sprint/{id}/userstories`
+Get UserStories that belongs to Sprint
+
+### `PUT /sprint/{id}/updatestatus`
+Update status of Sprint
+
+### `GET /sprint/daterange`
+Get Sprints in date range
+
+
+
+
+
 ### `GET /sprints`
 Get list of Sprints.
 - http://localhost:8080/sprints

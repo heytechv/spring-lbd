@@ -53,10 +53,17 @@ public class SprintServiceImpl implements SprintService {
     /**
      * Public
      * */
-    @Override @Transactional public void add(SprintDto sprintDto) {
-        if (sprintDto == null)
+    @Override @Transactional public void add(Sprint sprint) {
+        if (sprint == null)
             throw new RuntimeException("Sprint cannot be null!");
-        sprintRepository.save(universalMapper.sprintDtoToSprint(sprintDto));
+        sprintRepository.save(sprint);
+    }
+
+    @Override @Transactional public void add(SprintDto sprintDto) {
+        add(universalMapper.sprintDtoToSprint(sprintDto));
+//        if (sprintDto == null)
+//            throw new RuntimeException("Sprint cannot be null!");
+//        sprintRepository.save(universalMapper.sprintDtoToSprint(sprintDto));
     }
 
     @Override public List<SprintDto> getAll(boolean showUserStories) {
@@ -66,17 +73,17 @@ public class SprintServiceImpl implements SprintService {
             SprintDto sprintDto = universalMapper.sprintToSprintDto(sprint);
             if (showUserStories)
                 sprintDto.setUserStoryList(universalMapper.listToListDto(new ArrayList<>(sprint.getUserStorySet())));
-//                sprintDto.setUserStoryList(
-//                        sprint.getUserStorySet().stream().map(userStory -> {
-//                            UserStoryDto userStoryDto = userStoryMapper.userStoryToDto(userStory);
-//                            List<Attachment> attachmentList = new ArrayList<>(userStory.getAttachmentSet());
-//                            userStoryDto.setAttachmentList(attachmentList.stream().map(attachment ->
-//                                    new AttachmentDto(attachment.getId(), attachment.getBinaryFile())).collect(Collectors.toList()));
-//                            return userStoryDto;
-//                        }).collect(Collectors.toList())
-//                );
             return sprintDto;
         }).collect(Collectors.toList());
+    }
+
+    @Override public SprintDto getById(Long id, boolean showUserStories) {
+        Sprint sprint = findById(id);
+
+        SprintDto sprintDto = universalMapper.sprintToSprintDto(sprint);
+        if (showUserStories)
+            sprintDto.setUserStoryList(universalMapper.listToListDto(new ArrayList<>(sprint.getUserStorySet())));
+        return sprintDto;
     }
 
     @Override public List<UserStory> getUserStoryListById(Long id) {

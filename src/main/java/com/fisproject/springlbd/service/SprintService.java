@@ -13,19 +13,22 @@ import java.util.List;
 
 public interface SprintService {
 
+    void add(Sprint sprint);
     void add(SprintDto sprintDto);
     void addSprintWithUserStoryZad16(String sprintName) throws IllegalArgumentException;
     UserStory addUserStory(Long id, UserStoryDto userStoryDto);
 
     void updateSprintStatus(Long sprintId, Sprint.StatusType newStatus);
 
+    List<SprintDto>      getAll(boolean showUserStories);
+    SprintDto            getById(Long id, boolean showUserStories);
+    Page<Sprint>         getAllPageAndSortByDate(Integer page, Integer size);
+    ArrayList<SprintDto> getBetweenDate(Timestamp start_range, Timestamp end_range);
+
+    List<UserStoryDto> getUserStoryList(Long sprintId);
     List<UserStory> getUserStoryListById(Long id);
     List<UserStory> getUserStoryListByName(String name);
-    Page<Sprint> getAllPageAndSortByDate(Integer page, Integer size);
     Integer getStoryPointsById(Long id);
-    List<SprintDto> getAll(boolean showUserStories);
     Integer getStoryPointsAmount(Long sprintId);
-    List<UserStoryDto> getUserStoryList(Long sprintId);
-    ArrayList<SprintDto> getBetweenDate(Timestamp start_range, Timestamp end_range);
 
 }
