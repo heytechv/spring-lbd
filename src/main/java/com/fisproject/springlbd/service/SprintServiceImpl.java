@@ -17,16 +17,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Validated
 public class SprintServiceImpl implements SprintService {
 
     private UniversalMapper universalMapper;
@@ -53,17 +56,10 @@ public class SprintServiceImpl implements SprintService {
     /**
      * Public
      * */
-    @Override @Transactional public void add(Sprint sprint) {
-        if (sprint == null)
+    @Override @Transactional public void add(@Valid SprintDto sprintDto) {
+        if (sprintDto == null)
             throw new RuntimeException("Sprint cannot be null!");
-        sprintRepository.save(sprint);
-    }
-
-    @Override @Transactional public void add(SprintDto sprintDto) {
-        add(universalMapper.sprintDtoToSprint(sprintDto));
-//        if (sprintDto == null)
-//            throw new RuntimeException("Sprint cannot be null!");
-//        sprintRepository.save(universalMapper.sprintDtoToSprint(sprintDto));
+        sprintRepository.save(universalMapper.sprintDtoToSprint(sprintDto));
     }
 
     @Override public List<SprintDto> getAll(boolean showUserStories) {

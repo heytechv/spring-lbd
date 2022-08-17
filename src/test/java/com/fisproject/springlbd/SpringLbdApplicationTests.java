@@ -2,6 +2,7 @@ package com.fisproject.springlbd;
 
 import com.fisproject.springlbd.apiresponse.StandardResponse;
 import com.fisproject.springlbd.dto.SprintDto;
+import com.fisproject.springlbd.dto.UserStoryDto;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.service.SprintService;
@@ -33,38 +34,38 @@ class SpringLbdApplicationTests {
 
     /** Zad 8 Test */
     @Test void test_zad8_SprintServiceOK() throws IllegalArgumentException {
-        Sprint sprint = Sprint.builder()
+        SprintDto sprintDto = SprintDto.builder()
                 .name("SH")
                 .startDate(Timestamp.valueOf("2022-07-06 00:00:00.0"))
                 .endDate(Timestamp.valueOf("2022-07-07 00:00:00.0"))
                 .description("opis jakis")
                 .status(Sprint.StatusType.IN_PROGRESS)
                 .build();
-        sprintService.add(sprint);
+        sprintService.add(sprintDto);
     }
 
     @Test void test_zad8_UserStoryServiceOK() throws IllegalArgumentException {
-        UserStory userStory = UserStory.builder()
+        UserStoryDto userStoryDto = UserStoryDto.builder()
                 .name("SH")
                 .description( "opis jakis")
                 .storyPointsAmount(1)
                 .status(UserStory.StatusType.TO_DO)
                 .build();
-        userStoryService.add(userStory);
+        userStoryService.add(userStoryDto);
     }
 
     @Test void test_zad8_SprintServiceException() {
         boolean isE = false;
 
         try {
-            Sprint sprint = Sprint.builder()
+            SprintDto sprintDto = SprintDto.builder()
                     .name("SH")
                     .startDate(Timestamp.valueOf("2022-07-06 00:00:00.0"))
                     .endDate(null)
                     .description("opis jakis")
                     .status(Sprint.StatusType.PENDING)
                     .build();
-            sprintService.add(sprint);
+            sprintService.add(sprintDto);
 
         } catch (Exception e) {
             LOG.error(e.getMessage());
@@ -77,13 +78,13 @@ class SpringLbdApplicationTests {
         boolean isE = false;
 
         try {
-            UserStory userStory = UserStory.builder()
+            UserStoryDto userStoryDto = UserStoryDto.builder()
                     .name("SH")
                     .description("")  // pusty
                     .storyPointsAmount(1)
                     .status(UserStory.StatusType.TO_DO)
                     .build();
-            userStoryService.add(userStory);
+            userStoryService.add(userStoryDto);
         } catch (Exception e) {
             LOG.error(e.getMessage());
             isE = true;
@@ -155,16 +156,5 @@ class SpringLbdApplicationTests {
 
         assert userStories.size() > 0;
     }
-
-    /** rob */
-    @Test void test_rob() {
-        sprintService.addSprintWithUserStoryZad16("roboczy");
-
-        List<SprintDto> sprintDtoList = sprintService.getAll(false);
-        sprintDtoList.forEach(sprint -> System.out.println(sprint.getName()));
-
-
-    }
-
 
 }

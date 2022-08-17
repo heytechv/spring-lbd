@@ -2,6 +2,7 @@ package com.fisproject.springlbd.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fisproject.springlbd.entity.Sprint;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,12 +12,13 @@ import java.util.List;
 
 
 @Setter @Getter
+@Builder
 public class SprintDto {
 
     private Long id;
     @NotNull private String name;
-    private Timestamp startDate;
-    private Timestamp endDate;
+    @NotNull private Timestamp startDate;
+    @NotNull private Timestamp endDate;
     private String description;
     @NotNull private Sprint.StatusType status;
 

@@ -17,7 +17,7 @@ public class RestApiTest {
 
 
     @Test void storyPointsAmountTest() {
-        String url = "http://localhost:8080/sprints/storypoints?sprintId=1";
+        String url = "http://localhost:8080/sprint/1/storypoints";
 
         String result = restTemplate.getForObject(url, String.class);
         LOG.debug(result);
@@ -27,7 +27,7 @@ public class RestApiTest {
     }
 
     @Test void userStoriesFromSprint(){
-        String url = "http://localhost:8080/sprints/userstories?sprintId=1";
+        String url = "http://localhost:8080/sprint/1/userstories";
 
         String result = restTemplate.getForObject(url, String.class);
         LOG.debug(result);
@@ -37,7 +37,7 @@ public class RestApiTest {
     }
 
     @Test void sprints(){
-        String url = "http://localhost:8080/sprints?tasks=false";
+        String url = "http://localhost:8080/sprint?tasks=false";
 
         String result = restTemplate.getForObject(url, String.class);
         LOG.debug(result);

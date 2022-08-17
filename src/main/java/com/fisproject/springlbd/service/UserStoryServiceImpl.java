@@ -15,14 +15,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Validated
 public class UserStoryServiceImpl implements UserStoryService {
 
     UserStoryRepository userStoryRepository;
@@ -50,10 +53,10 @@ public class UserStoryServiceImpl implements UserStoryService {
     /**
      * Public
      * */
-    @Override @Transactional public void add(UserStory userStory) {
-        if (userStory == null)
+    @Override @Transactional public void add(@Valid UserStoryDto userStoryDto) {
+        if (userStoryDto == null)
             throw new RuntimeException("UserStory cannot be null!");
-        userStoryRepository.save(userStory);
+        userStoryRepository.save(universalMapper.dtoToUserStory(userStoryDto));
     }
 
     @Override public List<UserStory> getAll() {
@@ -101,22 +104,5 @@ public class UserStoryServiceImpl implements UserStoryService {
         return userStory.getAttachmentSet()
                 .stream().map(attachment -> new AttachmentDto(attachment.getId(), attachment.getBinaryFile())).collect(Collectors.toList());
     }
-
-//    /** (stworzone do Zad 8) */
-//    @Override public StandardResponse getAttachmentById(Long userStoryId, Long attachmentId) {
-//        Optional<UserStory> optionalUserStory = userStoryRepository.findById(userStoryId);
-//
-//        if (optionalUserStory.isEmpty())
-//            return new StandardResponse(HttpStatus.BAD_REQUEST, "", "User story with that id not found");
-//
-//        return optionalUserStory.map(userStory -> {
-//            List<AttachmentDto> attachmentDtoList = userStory
-//                    .getAttachmentSet().stream().map(attachment ->
-//                            new AttachmentDto(attachment.getId(), attachment.getBinaryFile())
-//                    ).collect(Collectors.toList());
-//
-//                    return new StandardResponse(HttpStatus.OK, attachmentDtoList, "found");
-//                }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, "", "not found"));
-//    }
 
 }

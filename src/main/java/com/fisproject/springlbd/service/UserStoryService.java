@@ -7,12 +7,14 @@ import com.fisproject.springlbd.dto.UserStoryDto;
 import com.fisproject.springlbd.entity.Attachment;
 import com.fisproject.springlbd.entity.UserStory;
 import org.springframework.data.domain.Page;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.List;
 
 public interface UserStoryService {
 
-    void add(UserStory userStory);
+    void add(@Valid UserStoryDto userStoryDto);
 
     List<UserStory> getAll();
     Page<UserStory> getAllByPage(Integer page, Integer size);
@@ -22,7 +24,7 @@ public interface UserStoryService {
 
     void deleteById(Long userStoryId);
 
-    void addAttachment(Long userStoryId, AttachmentDto attachmentDto);
+    void addAttachment(Long userStoryId, @Valid AttachmentDto attachmentDto);
     List<AttachmentDto> getAttachmentList(Long userStoryId);
 
 

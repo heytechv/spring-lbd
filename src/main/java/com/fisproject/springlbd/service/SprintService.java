@@ -6,17 +6,18 @@ import com.fisproject.springlbd.dto.UserStoryDto;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
 import org.springframework.data.domain.Page;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 public interface SprintService {
 
-    void add(Sprint sprint);
-    void add(SprintDto sprintDto);
+    void add(@Valid SprintDto sprintDto);
     void addSprintWithUserStoryZad16(String sprintName) throws IllegalArgumentException;
-    UserStory addUserStory(Long id, UserStoryDto userStoryDto);
+    UserStory addUserStory(Long id, @Valid UserStoryDto userStoryDto);
 
     void updateSprintStatus(Long sprintId, Sprint.StatusType newStatus);
 
