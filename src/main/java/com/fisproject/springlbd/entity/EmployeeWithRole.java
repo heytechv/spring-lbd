@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "EMPLOYEE_ROLE_IN_TEAM")
-public class EmployeeRoleInTeam {
+public class EmployeeWithRole {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id") private Long id;
 

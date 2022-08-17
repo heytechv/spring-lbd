@@ -15,7 +15,7 @@ public class Employee {
     @Column(name = "last_name") String lastName;
 
     @OneToOne(mappedBy = "employee")
-    private EmployeeRoleInTeam employeeRoleInTeam;
+    private EmployeeWithRole employeeWithRole;
 
 
 
