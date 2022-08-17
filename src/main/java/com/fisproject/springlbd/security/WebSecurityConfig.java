@@ -20,7 +20,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/whoami").hasAnyRole("USER", "ADMIN")
                 .anyRequest().permitAll()
                 .and()
-                .formLogin();
+                .httpBasic();
     }
 
     @Autowired public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {

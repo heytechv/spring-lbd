@@ -3,24 +3,18 @@ package com.fisproject.springlbd.controller;
 import com.fisproject.springlbd.apiresponse.StandardResponse;
 import com.fisproject.springlbd.dto.SprintDto;
 import com.fisproject.springlbd.dto.UserStoryDto;
-import com.fisproject.springlbd.entity.Attachment;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.service.SprintService;
 import com.fisproject.springlbd.service.UserStoryService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -37,7 +31,7 @@ public class SprintController {
 
     /** Add new Sprint */
     @PostMapping("/add")
-    public ResponseEntity<StandardResponse> addSprint(@RequestBody SprintDto sprintDto) {
+    public ResponseEntity<StandardResponse> addSprint(@Valid @RequestBody SprintDto sprintDto) {
         log.warn("\ncalled POST /sprint/add");
         sprintService.add(sprintDto);
         return new StandardResponse(HttpStatus.OK, "", "Sprint added successfully").buildResponseEntity();
@@ -47,13 +41,13 @@ public class SprintController {
     @GetMapping("/all")
     public ResponseEntity<StandardResponse> getSprintList(@RequestParam(value="tasks", required=false, defaultValue="false") boolean showUserStories) {
         log.warn("\ncalled GET /sprint/all");
-        List l = sprintService.getSprints(showUserStories);
+        List l = sprintService.getAll(showUserStories);
         return new StandardResponse(HttpStatus.OK, l, "All found sprints").buildResponseEntity();
     }
 
     /** Add new UserStory to Sprint - Zad 3 */
     @PostMapping("/adduserstory/{id}")
-    public ResponseEntity<StandardResponse> addUserStoryToSprintById(@PathVariable Long id, @RequestBody UserStoryDto userStoryDto) {
+    public ResponseEntity<StandardResponse> addUserStoryToSprintById(@PathVariable Long id, @Valid @RequestBody UserStoryDto userStoryDto) {
         log.warn("\ncalled /sprint/adduserstory/{id}");
         sprintService.addUserStory(id, userStoryDto);
 

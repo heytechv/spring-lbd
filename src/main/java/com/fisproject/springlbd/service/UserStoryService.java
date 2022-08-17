@@ -11,27 +11,15 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface UserStoryService {
-    UserStory createUserStory(String name, String description, Integer story_points_amount, UserStory.StatusType status) throws IllegalArgumentException;
-    UserStory createUserStory(String name, String description, Integer story_points_amount, UserStory.StatusType status, boolean shouldSave) throws IllegalArgumentException;
-    Page<UserStory> findAllByPage(Integer page, Integer size);
-    List<UserStory> findAll();
-//    Optional<UserStory> findById(Long id);
-
-    /** ------------------------------------------------------------------------------------ **
-    /** -- Day3 - web responses ------------------------------------------------------------ **
-    /** ------------------------------------------------------------------------------------ **/
+    List<UserStory> getAll();
+    Page<UserStory> getAllByPage(Integer page, Integer size);
     String getDescription(Long userStoryId);
-    List<UserStoryDto> getSortedUserStories(Integer page, Integer limit);
-    StandardResponse addAttachment(Long userStoryId, Attachment attachment, boolean shouldSaveAttachment);
-    List<AttachmentDto> getAttachmentList(Long userStoryId);
-    StandardResponse getAttachmentById(Long userStoryId, Long attachmentId);
+    List<UserStoryDto> getSortedUserStoryList(Integer page, Integer limit);
 
     void deleteById(Long userStoryId);
 
-    /** ------------------------------------------------------------------------------------ **
-    /** -- Mapper -------------------------------------------------------------------------- **
-    /** ------------------------------------------------------------------------------------ **/
-    UserStoryDto convertEntityToZad2Dto(UserStory userStory);
-    UserStoryDto convertEntityToZad5Dto(UserStory userStory);
+    void addAttachment(Long userStoryId, AttachmentDto attachmentDto);
+    List<AttachmentDto> getAttachmentList(Long userStoryId);
+//    StandardResponse getAttachmentById(Long userStoryId, Long attachmentId);
 
 }

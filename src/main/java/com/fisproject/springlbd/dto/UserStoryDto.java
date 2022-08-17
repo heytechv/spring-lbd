@@ -13,10 +13,11 @@ import java.util.List;
 @Setter @Getter
 public class UserStoryDto {
 
+    private Long id;
     @NotNull private String name;
     private String description;
     private Integer storyPointsAmount;
     @NotNull private UserStory.StatusType status;
-    private List<AttachmentDto> attachmentDtoList;
+    private List<AttachmentDto> attachmentList;
 
 }

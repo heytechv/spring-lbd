@@ -19,7 +19,7 @@ public class UserStory {
     @Column(name="story_points_amount") private Integer storyPointsAmount;
     @Enumerated(EnumType.STRING) @Column(name="status") private StatusType status;
 
-    @OneToMany(mappedBy = "userStoryLinked")
+    @OneToMany(mappedBy = "userStory")
     @Builder.Default private Set<Attachment> attachmentSet = new HashSet<>();
 
     /** Tutaj nazwa zmiennej List w Sprint.java */
@@ -42,7 +42,7 @@ public class UserStory {
     public void addAttachment(Attachment attachment) { this.attachmentSet.add(attachment); }
     public void removeAttachment(Attachment attachment) {
         this.attachmentSet.remove(attachment);
-        attachment.setUserStoryLinked(null);
+        attachment.setUserStory(null);
     }
 
     /**

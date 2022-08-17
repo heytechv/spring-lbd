@@ -1,6 +1,7 @@
 package com.fisproject.springlbd.service;
 
 import com.fisproject.springlbd.dto.*;
+import com.fisproject.springlbd.entity.Attachment;
 import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.event.UserStoryCreatedEvent;
@@ -48,6 +49,10 @@ public class SprintServiceImpl implements SprintService {
         return sprintRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Sprint with id="+id+" not found!"));
     }
 
+    private List<Sprint> findAll() {
+        return (List<Sprint>) sprintRepository.findAll();
+    }
+
     /**
      * Public
      * */
@@ -57,8 +62,23 @@ public class SprintServiceImpl implements SprintService {
         sprintRepository.save(sprintMapper.sprintDtoToSprint(sprintDto));
     }
 
-    @Override public List<Sprint> getAll() {
-        return (List<Sprint>) sprintRepository.findAll();
+    /** (stworzone do Zad 2) */
+    @Override public List<SprintDto> getAll(boolean showUserStories) {
+        List<Sprint> sprints = findAll();
+        return sprints.stream().map(sprint -> {
+            SprintDto sprintDto = sprintMapper.sprintToSprintDto(sprint);
+            if (showUserStories)
+                sprintDto.setUserStoryList(
+                        sprint.getUserStorySet().stream().map(userStory -> {
+                            UserStoryDto userStoryDto = userStoryMapper.userStoryToDto(userStory);
+                            List<Attachment> attachmentList = new ArrayList<>(userStory.getAttachmentSet());
+                            userStoryDto.setAttachmentList(attachmentList.stream().map(attachment ->
+                                    new AttachmentDto(attachment.getId(), attachment.getBinaryFile())).collect(Collectors.toList()));
+                            return userStoryDto;
+                        }).collect(Collectors.toList())
+                );
+            return sprintDto;
+        }).collect(Collectors.toList());
     }
 
     @Override public List<UserStory> getUserStoryListById(Long id) {
@@ -76,7 +96,7 @@ public class SprintServiceImpl implements SprintService {
         return points != null ? points : 0;
     }
 
-    @Override public Page<Sprint> findAllPageAndSortByDate(Integer page, Integer size) {
+    @Override public Page<Sprint> getAllPageAndSortByDate(Integer page, Integer size) {
         // https://www.baeldung.com/spring-data-jpa-pagination-sorting
         return sprintRepository.findAll(
                 PageRequest.of(page, size,
@@ -116,25 +136,6 @@ public class SprintServiceImpl implements SprintService {
     }
 
 
-    /** ------------------------------------------------------------------------------------ **
-    /** -- Day3 - web responses ------------------------------------------------------------ **
-    /** ------------------------------------------------------------------------------------ **/
-
-
-    /** (stworzone do Zad 2) */
-    @Override public List<SprintDto> getSprints(boolean showUserStories) {
-        List<Sprint> sprints = getAll();
-        return sprints.stream().map(sprint -> {
-            SprintDto sprintDto = sprintMapper.sprintToSprintDto(sprint);
-            if (showUserStories)
-                sprintDto.setUserStories(
-                        sprint.getUserStorySet().stream().map(userStory ->
-                                userStoryMapper.userStoryToDto(userStory)).collect(Collectors.toList())
-                );
-            return sprintDto;
-        }).collect(Collectors.toList());
-    }
-
 
     /** (stworzone do Zad 4) */
     @Override public Integer getStoryPointsAmount(Long sprintId) {
@@ -162,7 +163,7 @@ public class SprintServiceImpl implements SprintService {
 //                }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, null, "id not found"));
 
         return sprint.getUserStorySet()
-                .stream().map(userStory -> userStoryService.convertEntityToZad5Dto(userStory)).collect(Collectors.toList());
+                .stream().map(userStory -> userStoryMapper.userStoryToDto(userStory)).collect(Collectors.toList());
     }
 
     /** (stworzone do Zad 9) */

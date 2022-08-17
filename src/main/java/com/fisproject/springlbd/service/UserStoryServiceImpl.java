@@ -5,9 +5,12 @@ import com.fisproject.springlbd.dto.AttachmentDto;
 import com.fisproject.springlbd.dto.UserStoryDto;
 import com.fisproject.springlbd.entity.Attachment;
 import com.fisproject.springlbd.entity.UserStory;
+import com.fisproject.springlbd.mapper.UserStoryMapper;
 import com.fisproject.springlbd.repository.AttachmentRepository;
 import com.fisproject.springlbd.repository.UserStoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -16,21 +19,22 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class UserStoryServiceImpl implements UserStoryService {
 
-    @Autowired UserStoryRepository userStoryRepository;
-    @Autowired AttachmentRepository attachmentRepository;
+    UserStoryRepository userStoryRepository;
+    AttachmentRepository attachmentRepository;
+    UserStoryMapper userStoryMapper;
 
-
+    private final Logger log = LoggerFactory.getLogger(UserStoryServiceImpl.class);
 
     /**
-     * Private Utilities
+     * Private (utilities)
      * */
     private UserStory findById(Long id) {
         return userStoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("UserStory with id="+id+" not found!"));
@@ -52,146 +56,66 @@ public class UserStoryServiceImpl implements UserStoryService {
         return userStoryRepository.findAll(PageRequest.of(page, limit, Sort.by("name").ascending()));
     }
 
-
     /**
      * Public
      * */
-
-
-
-
-
-
-    @Override @Transactional
-    public UserStory createUserStory(String name, String description, Integer story_points_amount, UserStory.StatusType status, boolean shouldSave) throws IllegalArgumentException {
-
-        UserStory userStory = new UserStory();
-        userStory.setName(name);
-        userStory.setDescription(description);
-        if (story_points_amount != null) userStory.setStoryPointsAmount(story_points_amount);
-
-        userStory.setStatus(UserStory.StatusType.TO_DO);
-        if (status != null && Arrays.asList(UserStory.StatusType.values()).contains(status))
-            userStory.setStatus(status);
-
-        if (shouldSave) userStoryRepository.save(userStory);
-
-        if (name == null || name.isEmpty())
-            throw new IllegalArgumentException("[addUserStory] Missing required 'name' field!");
-        if (description == null || description.isEmpty())
-            throw new IllegalArgumentException("[addUserStory] Missing required 'description' field!");
-
-        return userStory;
-    }
-    @Override public UserStory createUserStory(String name, String description, Integer story_points_amount, UserStory.StatusType status) throws IllegalArgumentException {
-        return createUserStory(name, description, story_points_amount, status, true);
-    }
-
-    @Override public List<UserStory> findAll() {
+    @Override public List<UserStory> getAll() {
         return (List<UserStory>) userStoryRepository.findAll();
     }
 
-    @Override public Page<UserStory> findAllByPage(Integer page, Integer size) {
+    @Override public Page<UserStory> getAllByPage(Integer page, Integer size) {
         return userStoryRepository.findAll(PageRequest.of(page, size));
     }
-
-
 
     @Override public void deleteById(Long userStoryId) {
         delete(findById(userStoryId));
     }
 
+    @Override public List<UserStoryDto> getSortedUserStoryList(Integer page, Integer limit) {
+        return findAllPageAndSortByName(page, limit).stream().map(userStory ->
+                userStoryMapper.userStoryToDto(userStory)).collect(Collectors.toList());
+    }
 
-
-    /** ------------------------------------------------------------------------------------ **
-    /** -- Day3 - web responses ------------------------------------------------------------ **
-    /** ------------------------------------------------------------------------------------ **/
     /** (stworzone do Zad 6) */
     @Override public String getDescription(Long id) {
         return findById(id).getDescription();
     }
 
-    @Override public List<UserStoryDto> getSortedUserStories(Integer page, Integer limit) {
-        return findAllPageAndSortByName(page, limit).stream().map(this::convertEntityToZad5Dto).collect(Collectors.toList());
-    }
-
     /** (stworzone do Zad 7) */
-    @Override public StandardResponse addAttachment(Long userStoryId, Attachment attachment, boolean shouldSaveAttachment) {
-        Optional<UserStory> optionalUserStory = userStoryRepository.findById(userStoryId);
+    @Override @Transactional public void addAttachment(Long id, AttachmentDto attachmentDto) {
+        UserStory userStory = findById(id);
 
-        if (optionalUserStory.isEmpty())
-            return new StandardResponse(HttpStatus.BAD_REQUEST, "", "User story with that id not found");
+        Attachment attachment = new Attachment();
+        attachment.setBinaryFile(attachmentDto.getBinaryFile());
+        attachment.setUserStory(userStory);
+        attachmentRepository.save(attachment);
 
-        if (shouldSaveAttachment) {
-            attachment.setUserStoryLinked(optionalUserStory.get());
-            attachmentRepository.save(attachment);
-        }
-
-        optionalUserStory.ifPresent(userStory -> {
-            userStory.addAttachment(attachment);
-            userStoryRepository.save(userStory);
-        });
-
-        return new StandardResponse(HttpStatus.OK, "", "added");
+        userStory.addAttachment(attachment);
+        userStoryRepository.save(userStory);
     }
 
     /** (stworzone do Zad 8) */
     @Override public List<AttachmentDto> getAttachmentList(Long id) {
         UserStory userStory = findById(id);
-
-//        return optionalUserStory
-//                .map(userStory -> {
-//                    List<AttachmentDto> attachmentDtoList = userStory.getAttachmentSet()
-//                            .stream().map(attachment -> new AttachmentDto(attachment.getId(), attachment.getBinaryFile())).collect(Collectors.toList());
-//
-//                    return new StandardResponse(HttpStatus.OK, attachmentDtoList, "found");
-//                }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, "", "not found"));
-
         return userStory.getAttachmentSet()
                 .stream().map(attachment -> new AttachmentDto(attachment.getId(), attachment.getBinaryFile())).collect(Collectors.toList());
     }
 
-    /** (stworzone do Zad 8) */
-    @Override public StandardResponse getAttachmentById(Long userStoryId, Long attachmentId) {
-        Optional<UserStory> optionalUserStory = userStoryRepository.findById(userStoryId);
-
-        if (optionalUserStory.isEmpty())
-            return new StandardResponse(HttpStatus.BAD_REQUEST, "", "User story with that id not found");
-
-        return optionalUserStory.map(userStory -> {
-            List<AttachmentDto> attachmentDtoList = userStory
-                    .getAttachmentSet().stream().map(attachment ->
-                            new AttachmentDto(attachment.getId(), attachment.getBinaryFile())
-                    ).collect(Collectors.toList());
-
-                    return new StandardResponse(HttpStatus.OK, attachmentDtoList, "found");
-                }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, "", "not found"));
-    }
-
-
-    /** ------------------------------------------------------------------------------------ **
-    /** -- Mapper -------------------------------------------------------------------------- **
-    /** ------------------------------------------------------------------------------------ **/
-    @Override public UserStoryDto convertEntityToZad2Dto(UserStory userStory) {
-
-        UserStoryDto userStoryDto = new UserStoryDto();
-//        userStoryDto.setId(userStory.getId());
-        userStoryDto.setName(userStory.getName());
-        userStoryDto.setStoryPointsAmount(userStory.getStoryPointsAmount());
-        return userStoryDto;
-
-//        return new UserStoryZad2Dto(userStory.getId(), userStory.getName(), userStory.getStoryPointsAmount());
-    }
-
-    @Override public UserStoryDto convertEntityToZad5Dto(UserStory userStory) {
-        UserStoryDto userStoryDto = new UserStoryDto();
-//        userStoryDto.setId(userStory.getId());
-        userStoryDto.setName(userStory.getName());
-        userStoryDto.setStoryPointsAmount(userStory.getStoryPointsAmount());
-        userStoryDto.setStatus(userStory.getStatus());
-        return userStoryDto;
-//        return new UserStoryZad5Dto(userStory.getId(), userStory.getName(), userStory.getStoryPointsAmount(), userStory.getStatus());
-    }
-
+//    /** (stworzone do Zad 8) */
+//    @Override public StandardResponse getAttachmentById(Long userStoryId, Long attachmentId) {
+//        Optional<UserStory> optionalUserStory = userStoryRepository.findById(userStoryId);
+//
+//        if (optionalUserStory.isEmpty())
+//            return new StandardResponse(HttpStatus.BAD_REQUEST, "", "User story with that id not found");
+//
+//        return optionalUserStory.map(userStory -> {
+//            List<AttachmentDto> attachmentDtoList = userStory
+//                    .getAttachmentSet().stream().map(attachment ->
+//                            new AttachmentDto(attachment.getId(), attachment.getBinaryFile())
+//                    ).collect(Collectors.toList());
+//
+//                    return new StandardResponse(HttpStatus.OK, attachmentDtoList, "found");
+//                }).orElse(new StandardResponse(HttpStatus.BAD_REQUEST, "", "not found"));
+//    }
 
 }
