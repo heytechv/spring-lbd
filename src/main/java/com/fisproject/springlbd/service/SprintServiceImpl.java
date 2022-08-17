@@ -120,19 +120,21 @@ public class SprintServiceImpl implements SprintService {
 
     @Override @Transactional public void addSprintWithUserStoryZad16(String sprintName) {
         /* Zad 16 */
-        UserStory userStory = new UserStory();
-        userStory.setName("user_story_zad16");
-        userStory.setDescription("opis user story (zad 16)");
-        userStory.setStoryPointsAmount(12);
-        userStory.setStatus(UserStory.StatusType.IN_PROGRESS);
+        UserStory userStory = UserStory.builder()
+                .name("user_story_zad16")
+                .description("opis user story (zad 16)")
+                .storyPointsAmount(12)
+                .status(UserStory.StatusType.IN_PROGRESS)
+                .build();
         userStoryRepository.save(userStory);
 
-        Sprint sprint = new Sprint();
-        sprint.setName(sprintName);
-        sprint.setStartDate(Timestamp.valueOf("2022-07-07 00:00:00.0"));
-        sprint.setEndDate(Timestamp.valueOf("2022-07-08 00:00:00.0"));
-        sprint.setDescription("sprint na potrzeby zad 16 :)");
-        sprint.setStatus(Sprint.StatusType.PENDING);
+        Sprint sprint = Sprint.builder()
+                .name(sprintName)
+                .startDate(Timestamp.valueOf("2022-07-07 00:00:00.0"))
+                .endDate(Timestamp.valueOf("2022-07-08 00:00:00.0"))
+                .description("sprint na potrzeby zad 16 :)")
+                .status(Sprint.StatusType.PENDING)
+                .build();
         sprint.addUserStory(userStory);
         sprintRepository.save(sprint);
     }

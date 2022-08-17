@@ -80,13 +80,13 @@ public class UserStoryServiceImpl implements UserStoryService {
                 universalMapper.userStoryToDto(userStory)).collect(Collectors.toList());
     }
 
-    /** (stworzone do Zad 6) */
     @Override public String getDescription(Long id) {
+        /* Zad 6 */
         return findById(id).getDescription();
     }
 
-    /** (stworzone do Zad 7) */
     @Override @Transactional public void addAttachment(Long id, AttachmentDto attachmentDto) {
+        /* Zad 7 */
         UserStory userStory = findById(id);
 
         Attachment attachment = new Attachment();
@@ -98,11 +98,11 @@ public class UserStoryServiceImpl implements UserStoryService {
         userStoryRepository.save(userStory);
     }
 
-    /** (stworzone do Zad 8) */
     @Override public List<AttachmentDto> getAttachmentList(Long id) {
+        /* Zad 8 */
         UserStory userStory = findById(id);
-        return userStory.getAttachmentSet()
-                .stream().map(attachment -> new AttachmentDto(attachment.getId(), attachment.getBinaryFile())).collect(Collectors.toList());
+        return userStory.getAttachmentSet() .stream().map(attachment ->
+                new AttachmentDto(attachment.getId(), attachment.getBinaryFile())).collect(Collectors.toList());
     }
 
 }

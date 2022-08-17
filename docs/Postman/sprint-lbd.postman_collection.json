@@ -21,14 +21,13 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/sprint/add",
+					"raw": "localhost:8080/sprint",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"sprint",
-						"add"
+						"sprint"
 					]
 				}
 			},
@@ -40,14 +39,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/sprint/all?tasks=true",
+					"raw": "localhost:8080/sprint?tasks=true",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"sprint",
-						"all"
+						"sprint"
 					],
 					"query": [
 						{
@@ -60,7 +58,137 @@
 			"response": []
 		},
 		{
-			"name": "sprint->daterange",
+			"name": "sprint->getById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/sprint/1?tasks=true",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sprint",
+						"1"
+					],
+					"query": [
+						{
+							"key": "tasks",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sprint->addUserStoryToId",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"DodanyXD\",\r\n    \"description\": \"Opis nowy\",\r\n    \"storyPointsAmount\": 10,\r\n    \"status\": \"DONE\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/sprint/2/adduserstory",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sprint",
+						"2",
+						"adduserstory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sprint->getStoryPointsById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/sprint/1/storypoints",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sprint",
+						"1",
+						"storypoints"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sprint->getUserStoriesFromId",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/sprint/1/userstories",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sprint",
+						"1",
+						"userstories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sprint->updateStatusById",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "newStatus",
+							"value": "CANCELED",
+							"type": "text"
+						},
+						{
+							"key": "newStatus",
+							"value": "FINISHED",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/sprint/1/updatestatus",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sprint",
+						"1",
+						"updatestatus"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sprint->getAllInDaterange",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -72,7 +200,7 @@
 					"formdata": [
 						{
 							"key": "startDate",
-							"value": "2012-01-01 00:00:00",
+							"value": "2022-01-01 00:00:00",
 							"type": "text"
 						},
 						{
@@ -97,162 +225,27 @@
 			"response": []
 		},
 		{
-			"name": "sprint->adduserstory/{id}",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Dodany\",\r\n    \"description\": \"Opis nowy\",\r\n    \"storyPointsAmount\": 10,\r\n    \"status\": \"DONE\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/sprint/adduserstory/2",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"sprint",
-						"adduserstory",
-						"2"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "sprint->updatestatus/{id}",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "newStatus",
-							"value": "CANCELED",
-							"type": "text"
-						},
-						{
-							"key": "newStatus",
-							"value": "FINISHED",
-							"type": "text",
-							"disabled": true
-						}
-					]
-				},
-				"url": {
-					"raw": "localhost:8080/sprint/updatestatus/1",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"sprint",
-						"updatestatus",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "sprint->storypoints/{id}",
+			"name": "userstory->getDescriptionById",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/sprint/storypoints/1",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"sprint",
-						"storypoints",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "sprint->userstories/{id}",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/sprint/userstories/1",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"sprint",
-						"userstories",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "userstory->description/{id}",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/userstory/description/1",
+					"raw": "localhost:8080/userstory/1/description",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"userstory",
-						"description",
-						"1"
+						"1",
+						"description"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "userstory->addattachment/{id}",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "attachmentFile",
-							"type": "file",
-							"src": "/E:/Programy/IntellijUlt_workspace/spring-lbd/docs/zadania/Spring Boot Labs - Day 3.pdf"
-						}
-					]
-				},
-				"url": {
-					"raw": "localhost:8080/userstory/addattachment/1",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"userstory",
-						"addattachment",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "userstory/{id}",
+			"name": "userstory->deleteById",
 			"request": {
 				"method": "DELETE",
 				"header": [],
@@ -271,27 +264,7 @@
 			"response": []
 		},
 		{
-			"name": "userstory->attachments",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/userstory/attachments/1",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"userstory",
-						"attachments",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "userstory->sorted",
+			"name": "userstory->getAllSorted",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -328,7 +301,57 @@
 			"response": []
 		},
 		{
-			"name": "/attachment/{id} (download)",
+			"name": "userstory->addAttachmentToId",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "attachmentFile",
+							"type": "file",
+							"src": "/E:/Programy/IntellijUlt_workspace/spring-lbd/docs/zadania/Spring Boot Labs - Day 3.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/userstory/2/addattachment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"userstory",
+						"2",
+						"addattachment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "userstory->getAllattachmentsFromId",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/userstory/2/attachment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"userstory",
+						"2",
+						"attachment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "attachment->downloadById",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -365,7 +388,7 @@
 			"response": []
 		},
 		{
-			"name": "/whoami",
+			"name": "whoami",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
