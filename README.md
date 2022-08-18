@@ -47,3 +47,31 @@ Download Attachment by id
 
 ### `GET /whoami`
 Whoami (logged in user)
+
+# Spring Boot
+### @Autowired via constructor
+
+```java
+import com.fisproject.springlbd.repository.SprintRepository;
+import com.fisproject.springlbd.repository.UserStoryRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+class SprintService {
+
+    @Autowired SprintRepository sprintRepository;
+
+    // vs
+
+    UserStoryRepository userStoryRepository;
+    public SprintService(UserStoryRepository userStoryRepository) {
+        this.userStoryRepository = userStoryRepository;
+    }
+
+    // vs
+    // We can use lombok and add @AllArgsConstructor, so we don't need custom constructor
+}
+```
+
