@@ -2,6 +2,7 @@ package com.fisproject.springlbd.service;
 
 import com.fisproject.springlbd.entity.Client;
 import com.fisproject.springlbd.entity.Project;
+import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.Team;
 import com.fisproject.springlbd.repository.ClientRepository;
 import com.fisproject.springlbd.repository.ProjectRepository;
@@ -40,5 +41,13 @@ public class ProjectServiceImpl {
         project.setTeam(team);
         projectRepository.save(project);
     }
+
+    /** Add Sprint to Project by id */
+    public void addSprint(Long id, Sprint sprint) {
+        Project project = findById(id);
+        project.addSprint(sprint);
+        projectRepository.save(project);
+    }
+
 
 }

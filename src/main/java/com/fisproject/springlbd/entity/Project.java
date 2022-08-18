@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Project")
@@ -12,11 +14,13 @@ public class Project {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id") private Long id;
     @Column(name = "title") private String title;
-//    @OneToOne @MapsId private Team team;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "team_id", referencedColumnName = "id")
     private Team team;
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Sprint> sprintList = new ArrayList<>();
 
 
     // --
@@ -25,26 +29,20 @@ public class Project {
     private Client client;
 
 
-
-    // Dziala i z tym i bez :/
     public void setTeam(Team team) {
         this.team = team;
         team.setProject(this);
     }
 
+    public void addSprint(Sprint sprint) {
+        sprintList.add(sprint);
+        sprint.setProject(this);
+    }
 
-    /**
-     * */
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (!(o instanceof Project )) return false;
-//        return id != null && id.equals(((Project) o).getId());
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return getClass().hashCode();
-//    }
+    public void removeSprint(Sprint sprint) {
+        sprintList.remove(sprint);
+        sprint.setProject(null);
+    }
+
 
 }
