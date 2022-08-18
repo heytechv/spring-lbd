@@ -11,6 +11,7 @@ import javax.persistence.*;
 public class Attachment {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id") private Long id;
+    @Column(name = "file_name") private String fileName;
     @Column(name = "binary_file") private byte[] binaryFile;
 
     @ManyToOne

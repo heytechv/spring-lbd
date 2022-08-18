@@ -27,7 +27,8 @@ public class AttachmentServiceImpl implements AttachmentService {
      * Private Utilities
      * */
     private Attachment findById(Long id) {
-        return attachmentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Sprint with id="+id+" not found!"));
+        return attachmentRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Attachment with id="+id+" not found!"));
     }
 
     /**
@@ -35,7 +36,11 @@ public class AttachmentServiceImpl implements AttachmentService {
      * */
     @Override public ByteArrayResource getDownload(Long id) {
         Attachment attachment = findById(id);
-        return new ByteArrayResource(attachment.getBinaryFile());
+        return new ByteArrayResource(attachment.getBinaryFile()) {
+            @Override public String getFilename() {
+                return attachment.getFileName();
+            }
+        };
     }
 
 }

@@ -51,6 +51,8 @@ public interface UniversalMapper {
     /** Attachment <-> AttachmentDto */
     @Named("attachmentToDto")
     AttachmentDto attachmentToDto(Attachment attachment);
+    @Named("attachmentDtoToAttachment")
+    Attachment attachmentDtoToAttachment(AttachmentDto attachmentDto);
     @Named("attachmentListToListDto")
     Set<AttachmentDto> attachmentSetToSetDto(Set<Attachment> attachmentSet);
 

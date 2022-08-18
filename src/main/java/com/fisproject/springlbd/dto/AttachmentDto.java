@@ -9,11 +9,14 @@ import lombok.Setter;
 public class AttachmentDto {
 
     private Long id;
+    private String fileName;
     private byte[] binaryFile;
 
     public AttachmentDto() { }
 
-    public AttachmentDto(Long id, byte[] binaryFile) {
+    public AttachmentDto(Long id, String fileName, byte[] binaryFile) {
+        this.id = id;
+        this.fileName = fileName;
         this.binaryFile=binaryFile;
     }
 

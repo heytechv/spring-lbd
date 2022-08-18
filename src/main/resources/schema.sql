@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS SPRINT_USER_STORY(
 CREATE TABLE IF NOT EXISTS Attachment(
     id integer PRIMARY KEY AUTO_INCREMENT,
     user_story_id integer NOT NULL references UserStory(id),
+    file_name text,
     binary_file varbinary
 );
 

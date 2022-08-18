@@ -58,7 +58,7 @@ public class UserStoryController {
                                                                      @RequestParam MultipartFile attachmentFile) {
         /* Zad 7 */
         AttachmentDto attachmentDto = new AttachmentDto();
-        try { attachmentDto.setBinaryFile(attachmentFile.getBytes()); }
+        try { attachmentDto.setBinaryFile(attachmentFile.getBytes()); attachmentDto.setFileName(attachmentFile.getOriginalFilename()); }
         catch (Exception ignore) { throw new RuntimeException("Couldn't parse attachment!"); }
         // we do not save
         // let service do it for us

@@ -94,8 +94,7 @@ public class UserStoryServiceImpl implements UserStoryService {
         /* Zad 7 */
         UserStory userStory = findById(id);
 
-        Attachment attachment = new Attachment();
-        attachment.setBinaryFile(attachmentDto.getBinaryFile());
+        Attachment attachment = universalMapper.attachmentDtoToAttachment(attachmentDto);
         attachment.setUserStory(userStory);
         attachmentRepository.save(attachment);
 
@@ -106,8 +105,9 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Override public List<AttachmentDto> getAttachmentList(Long id) {
         /* Zad 8 */
         UserStory userStory = findById(id);
-        return userStory.getAttachmentSet() .stream().map(attachment ->
-                new AttachmentDto(attachment.getId(), attachment.getBinaryFile())).collect(Collectors.toList());
+        return userStory.getAttachmentSet().stream().map(attachment ->
+                new AttachmentDto(attachment.getId(), attachment.getFileName(), attachment.getBinaryFile()))
+                .collect(Collectors.toList());
     }
 
 }
