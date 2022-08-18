@@ -34,9 +34,17 @@ public class TeamServiceImpl {
         return findById(id);
     }
 
-//    public List<EmployeeWithRole> getEmployeeWithRoleList(Long id) {
-//        return findById(id).getEmployeeWithRoleList();
-//    }
+    /** Add Employee to Team by id */
+    public void addEmployee(Long id, Employee employee, EmployeeRole employeeRole) {
+        Team team = findById(id);
+
+        EmployeeWithRole employeeWithRole = new EmployeeWithRole();
+        employeeWithRole.setEmployeeRole(employeeRole);
+        employeeWithRole.setTeam(team);
+        employeeWithRole.setEmployee(employee);
+
+        teamRepository.save(team);
+    }
 
 
 }

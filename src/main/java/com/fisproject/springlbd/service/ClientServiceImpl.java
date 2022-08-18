@@ -22,11 +22,9 @@ public class ClientServiceImpl {
     }
 
 
-
-
     /** Public
      * */
-    public void save(Client client) {
+    public void add(Client client) {
         if (client == null)
             throw new RuntimeException("Client cannot be null!");
         clientRepository.save(client);
@@ -38,6 +36,13 @@ public class ClientServiceImpl {
 
     public List<Project> getAllProjects(Long id) {
         return findById(id).getProjectList();
+    }
+
+    /** Add Project to Client by id */
+    public void addProject(Long id, Project project) {
+        Client client = findById(id);
+        client.addProject(project);
+        clientRepository.save(client);
     }
 
 

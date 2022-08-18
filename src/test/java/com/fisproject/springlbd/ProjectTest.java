@@ -1,6 +1,8 @@
 package com.fisproject.springlbd;
 
 import com.fisproject.springlbd.entity.*;
+import com.fisproject.springlbd.entity.enums.CityDepartment;
+import com.fisproject.springlbd.entity.enums.EmployeeContract;
 import com.fisproject.springlbd.entity.enums.EmployeeRole;
 import com.fisproject.springlbd.entity.enums.TeamType;
 import com.fisproject.springlbd.repository.*;
@@ -30,91 +32,7 @@ public class ProjectTest {
 
     private Logger log = LoggerFactory.getLogger(ProjectTest.class);
 
-
-/*    @Test void mainTest() {
-        Client client = new Client();
-        client.setCity("Warszawa");
-        client.setCountryCode("PL");
-
-        Project project = new Project();
-        project.setTitle("Projekt stazowy");
-
-        Team team = new Team();
-        team.setTeamType(TeamType.JAVA);
-
-        EmployeeWithRole employeeWithRole = new EmployeeWithRole();
-        employeeWithRole.setEmployeeRole(EmployeeRole.DESIGNER);
-
-        Employee employee = new Employee();
-        employee.setFirstName("Maciek");
-
-        // ------------------------------
-        client.addProject(project);
-        project.setTeam(team);
-        team.addEmployeeWithRole(employeeWithRole);
-        employeeWithRole.setEmployee(employee);
-
-        // ------------------------------
-        clientService.save(client);
-    }
-
-    @Test void mainTest2() {
-        Employee employee = new Employee();
-        employee.setFirstName("Maciek");
-        employeeService.add(employee);
-
-        // ------------------------------
-        Client client = new Client();
-        client.setCity("Warszawa");
-        client.setCountryCode("PL");
-        clientRepository.save(client);
-
-        Project project = new Project();
-        project.setTitle("Projekt stazowy");
-        projectRepository.save(project);
-
-        if (true) return;
-
-        Team team = new Team();
-        team.setTeamType(TeamType.JAVA);
-
-        EmployeeWithRole employeeWithRole = new EmployeeWithRole();
-        employeeWithRole.setEmployeeRole(EmployeeRole.DESIGNER);
-
-        // ------------------------------
-        client.addProject(project);
-        project.setTeam(team);
-        team.addEmployeeWithRole(employeeWithRole);
-        employeeWithRole.setEmployee(employeeService.getById(1L));
-
-        // ------------------------------
-        clientService.save(client);
-
-
-        // ============== 2 ==============
-        Project project2 = new Project();
-        project2.setTitle("Projekt stazowy 2");
-
-        Team team2 = new Team();
-        team2.setTeamType(TeamType.NET);
-
-        EmployeeWithRole employeeWithRole2 = new EmployeeWithRole();
-        employeeWithRole2.setEmployeeRole(EmployeeRole.ANALYST);
-
-        // ------------------------------
-        client.addProject(project2);
-        project2.setTeam(team2);
-        team2.addEmployeeWithRole(employeeWithRole2);
-        employeeWithRole2.setEmployee(employeeService.getById(1L));
-
-        // ------------------------------
-        clientService.save(client);
-
-
-    }*/
-
-
-    @Test void test() {
+    @Test void testFirst() {
         /** Client -> addClient */
         Client client = new Client();
         client.setCity("Warszawa");
@@ -153,41 +71,44 @@ public class ProjectTest {
         employeeWithRole.setEmployeeRole(EmployeeRole.DESIGNER);
         employeeWithRole.setTeam(teamOK);
         employeeWithRole.setEmployee(employeeOK);
-        employeeWithRoleRepository.save(employeeWithRole);
+        teamRepository.save(teamOK);  // dziala
+//        employeeWithRoleRepository.save(employeeWithRole);  // dziala
 
-        System.out.println("");
-//
-//        teamOK.getEmployeeWithRoleSet().add(employeeWithRole);
-//        employeeOK.getEmployeeWithRoleSet().add(employeeWithRole);
+    }
 
-//        teamRepository.save(teamOK);
-//        employeeRepository.save(employeeOK);
+    @Test void testService() {
+        Employee employee = new Employee();
+        employee.setFirstName("Maciek");
+        employee.setLastName("Wyszkowski");
+        employee.setContract(EmployeeContract.B2B);
+        employee.setCityDepartment(CityDepartment.GLIWICE);
+        employeeService.add(employee);
 
+        Employee employee2 = new Employee();
+        employee2.setFirstName("Patryk");
+        employee2.setLastName("Wojak");
+        employee2.setContract(EmployeeContract.ETAT);
+        employee2.setCityDepartment(CityDepartment.GLIWICE);
+        employeeService.add(employee2);
 
-//        employeeRepository.save(employeeOK);
+        // --
 
-//        employeeWithRole.setEmployee(employeeOK);
-//        employeeWithRoleRepository.save(employeeWithRole);
+        Client client = new Client();
+        client.setCity("Warszawa");
+        client.setCountryCode("PL");
+        clientService.add(client);
 
+        // --
 
+        Project project = new Project();
+        project.setTitle("Projekt 1");
+        clientService.addProject(1L, project);
 
-
-//
-//
-//        Team team = new Team();
-//        team.setTeamType(TeamType.JAVA);
-//
-//        project.setTeam(team);
-////        clientRepository.save(client);
-////        projectRepository.save(project);
-//
-//
-//        EmployeeWithRole employeeWithRole = new EmployeeWithRole();
-//        employeeWithRole.setEmployeeRole(EmployeeRole.DESIGNER);
-//
-//        team.addEmployeeWithRole(employeeWithRole);
-//        clientRepository.save(client);
-
+        Team team = new Team();
+        team.setTeamType(TeamType.JAVA);
+        projectService.addTeam(1L, team);
+        teamService.addEmployee(1L, employeeService.getById(1L), EmployeeRole.DESIGNER);
+        teamService.addEmployee(1L, employeeService.getById(2L), EmployeeRole.PROGRAMMER);
 
 
 

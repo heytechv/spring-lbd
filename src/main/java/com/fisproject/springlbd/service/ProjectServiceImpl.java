@@ -34,9 +34,10 @@ public class ProjectServiceImpl {
         return findById(id).getTeam();
     }
 
-    public void save(Project project) {
-        if (project == null)
-            throw new RuntimeException("Project cannot be null!");
+    /** Add Team to Project by id */
+    public void addTeam(Long id, Team team) {
+        Project project = findById(id);
+        project.setTeam(team);
         projectRepository.save(project);
     }
 
