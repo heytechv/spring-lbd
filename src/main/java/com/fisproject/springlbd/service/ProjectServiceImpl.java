@@ -22,11 +22,6 @@ public class ProjectServiceImpl {
         return projectRepository.findById(id).orElseThrow(() -> new RuntimeException("Id not found!"));
     }
 
-    private void save(Project project) {
-        if (project == null)
-            throw new RuntimeException("Client cannot be null!");
-        projectRepository.save(project);
-    }
 
 
     /** Public
@@ -39,6 +34,10 @@ public class ProjectServiceImpl {
         return findById(id).getTeam();
     }
 
-
+    public void save(Project project) {
+        if (project == null)
+            throw new RuntimeException("Project cannot be null!");
+        projectRepository.save(project);
+    }
 
 }

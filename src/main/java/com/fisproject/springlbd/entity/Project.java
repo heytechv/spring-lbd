@@ -12,12 +12,25 @@ public class Project {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id") private Long id;
     @Column(name = "title") private String title;
-    @OneToOne(cascade = CascadeType.ALL) @MapsId private Team team;
+//    @OneToOne @MapsId private Team team;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "team_id", referencedColumnName = "id")
+    private Team team;
 
 
+    // --
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
+
+
+
+    // Dziala i z tym i bez :/
+    public void setTeam(Team team) {
+        this.team = team;
+        team.setProject(this);
+    }
 
 
     /**

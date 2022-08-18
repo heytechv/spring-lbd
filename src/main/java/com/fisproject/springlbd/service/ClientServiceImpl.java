@@ -6,7 +6,6 @@ import com.fisproject.springlbd.repository.ClientRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -22,21 +21,19 @@ public class ClientServiceImpl {
         return clientRepository.findById(id).orElseThrow(() -> new RuntimeException("Id not found!"));
     }
 
-    private void save(Client client) {
+
+
+
+    /** Public
+     * */
+    public void save(Client client) {
         if (client == null)
             throw new RuntimeException("Client cannot be null!");
         clientRepository.save(client);
     }
 
-
-    /** Public
-     * */
-    public void add(Client client) {
-        save(client);
-    }
-
     public Client getById(Long id) {
-        return getById(id);
+        return findById(id);
     }
 
     public List<Project> getAllProjects(Long id) {

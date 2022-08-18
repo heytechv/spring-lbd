@@ -34,9 +34,9 @@ public class TeamServiceImpl {
         return findById(id);
     }
 
-    public List<EmployeeWithRole> getEmployeeWithRoleList(Long id) {
-        return findById(id).getEmployeeWithRoleList();
-    }
+//    public List<EmployeeWithRole> getEmployeeWithRoleList(Long id) {
+//        return findById(id).getEmployeeWithRoleList();
+//    }
 
 
 }

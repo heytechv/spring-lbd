@@ -18,7 +18,7 @@ public class Client {
     @Column(name = "country_code") private String countryCode;
     @Column(name = "city") private String city;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Project> projectList = new ArrayList<>();
 
 
