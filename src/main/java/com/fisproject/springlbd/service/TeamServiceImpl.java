@@ -35,6 +35,7 @@ public class TeamServiceImpl {
     }
 
     /** Add Employee to Team by id */
+    @Transactional
     public void addEmployee(Long id, Employee employee, EmployeeRole employeeRole) {
         Team team = findById(id);
 

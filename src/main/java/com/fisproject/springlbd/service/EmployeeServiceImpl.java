@@ -8,6 +8,7 @@ import com.fisproject.springlbd.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -32,7 +33,7 @@ public class EmployeeServiceImpl {
 
     /** Public
      * */
-    // todo test
+    @Transactional
     public void add(Employee employee) {
         save(employee);
     }

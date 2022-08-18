@@ -9,6 +9,7 @@ import com.fisproject.springlbd.repository.ProjectRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -36,6 +37,7 @@ public class ProjectServiceImpl {
     }
 
     /** Add Team to Project by id */
+    @Transactional
     public void addTeam(Long id, Team team) {
         Project project = findById(id);
         project.setTeam(team);
@@ -43,6 +45,7 @@ public class ProjectServiceImpl {
     }
 
     /** Add Sprint to Project by id */
+    @Transactional
     public void addSprint(Long id, Sprint sprint) {
         Project project = findById(id);
         project.addSprint(sprint);

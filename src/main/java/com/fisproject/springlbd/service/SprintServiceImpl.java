@@ -6,9 +6,11 @@ import com.fisproject.springlbd.entity.Team;
 import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.repository.ProjectRepository;
 import com.fisproject.springlbd.repository.SprintRepository;
+import com.fisproject.springlbd.repository.UserStoryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,7 @@ import java.util.List;
 public class SprintServiceImpl {
 
     private SprintRepository sprintRepository;
+    private UserStoryRepository userStoryRepository;
 
     /** Private
      * */
@@ -37,12 +40,16 @@ public class SprintServiceImpl {
     }
 
 
-    /** Add UserStory to Sprint by id */
-    public void addSprint(Long id, UserStory userStory) {
+    /** UserStory to Sprint by id */
+    @Transactional
+    public void addUserStory(Long id, UserStory userStory) {
+        if (userStory == null)
+            throw new RuntimeException("UserStory cannot be null!");
         Sprint sprint = findById(id);
         sprint.addUserStory(userStory);
+        userStoryRepository.save(userStory);
+
         sprintRepository.save(sprint);
     }
-
 
 }

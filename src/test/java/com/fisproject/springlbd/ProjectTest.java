@@ -23,6 +23,8 @@ public class ProjectTest {
     @Autowired TeamServiceImpl teamService;
     @Autowired EmployeeServiceImpl employeeService;
     @Autowired EmployeeWithRoleServiceImpl employeeWithRoleService;
+    @Autowired SprintServiceImpl sprintService;
+    @Autowired UserStoryServiceImpl userStoryService;
 
     @Autowired ClientRepository clientRepository;
     @Autowired ProjectRepository projectRepository;
@@ -110,6 +112,16 @@ public class ProjectTest {
         teamService.addEmployee(1L, employeeService.getById(1L), EmployeeRole.DESIGNER);
         teamService.addEmployee(1L, employeeService.getById(2L), EmployeeRole.PROGRAMMER);
 
+        // --
+        Sprint sprint = new Sprint();
+        sprint.setName("Sprint 1");
+        projectService.addSprint(1L, sprint);
+
+        UserStory userStory = new UserStory();
+        userStory.setName("UserStory 1");
+        sprintService.addUserStory(1L, userStory);
+
+        userStoryService.removeById(1L);
 
 
     }
