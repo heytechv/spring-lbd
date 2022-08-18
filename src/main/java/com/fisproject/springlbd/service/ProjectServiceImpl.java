@@ -1,9 +1,6 @@
 package com.fisproject.springlbd.service;
 
-import com.fisproject.springlbd.entity.Client;
-import com.fisproject.springlbd.entity.Project;
-import com.fisproject.springlbd.entity.Sprint;
-import com.fisproject.springlbd.entity.Team;
+import com.fisproject.springlbd.entity.*;
 import com.fisproject.springlbd.repository.ClientRepository;
 import com.fisproject.springlbd.repository.ProjectRepository;
 import lombok.AllArgsConstructor;
@@ -45,6 +42,13 @@ public class ProjectServiceImpl {
     @Transactional public void addSprint(Long id, Sprint sprint) {
         Project project = findById(id);
         project.addSprint(sprint);
+        projectRepository.save(project);
+    }
+
+    /** Add Invoice to Project by id */
+    @Transactional public void addInvoice(Long id, Invoice invoice) {
+        Project project = findById(id);
+        project.addInvoice(invoice);
         projectRepository.save(project);
     }
 

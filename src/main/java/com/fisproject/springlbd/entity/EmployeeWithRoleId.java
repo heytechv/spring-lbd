@@ -12,11 +12,11 @@ import java.util.Objects;
 @Setter @Getter
 public class EmployeeWithRoleId implements Serializable {
 
-    @Column(name = "team_id") private Long teamId;
+    @Column(name = "team_id")     private Long teamId;
     @Column(name = "employee_id") private Long employeeId;
 
-    @Override
-    public boolean equals(Object o) {
+    // --
+    @Override public boolean equals(Object o) {
         if (this == o)
             return true;
         if (o == null || getClass() != o.getClass())
@@ -24,10 +24,7 @@ public class EmployeeWithRoleId implements Serializable {
         EmployeeWithRoleId that = (EmployeeWithRoleId) o;
         return Objects.equals(teamId, that.teamId) && Objects.equals(employeeId, that.employeeId);
     }
-    @Override
-    public int hashCode() {
-        return Objects.hash(teamId, employeeId);
-    }
+    @Override public int hashCode() { return Objects.hash(teamId, employeeId); }
 
 
 }

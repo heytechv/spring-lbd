@@ -1,13 +1,11 @@
 package com.fisproject.springlbd.service;
 
 import com.fisproject.springlbd.entity.*;
-import com.fisproject.springlbd.entity.enums.EmployeeRole;
 import com.fisproject.springlbd.repository.TeamRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -34,7 +32,7 @@ public class TeamServiceImpl {
     }
 
     /** Add Employee to Team by id */
-    @Transactional public void addEmployee(Long id, Employee employee, EmployeeRole employeeRole) {
+    @Transactional public void addEmployee(Long id, Employee employee, Employee.Role employeeRole) {
         Team team = findById(id);
 
         EmployeeWithRole employeeWithRole = new EmployeeWithRole();

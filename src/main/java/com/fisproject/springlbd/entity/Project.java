@@ -19,30 +19,24 @@ public class Project {
     @JoinColumn(name = "team_id", referencedColumnName = "id")
     private Team team;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Sprint> sprintList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "projectX", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Invoice> invoiceList = new ArrayList<>();
 
     // --
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
 
+    //--
+    public void setTeam(Team team) { this.team = team; team.setProject(this); }
 
-    public void setTeam(Team team) {
-        this.team = team;
-        team.setProject(this);
-    }
+    public void addSprint   (Sprint sprint) { sprintList.add(sprint); sprint.setProject(this); }
+    public void removeSprint(Sprint sprint) { sprintList.remove(sprint); sprint.setProject(null); }
 
-    public void addSprint(Sprint sprint) {
-        sprintList.add(sprint);
-        sprint.setProject(this);
-    }
-
-    public void removeSprint(Sprint sprint) {
-        sprintList.remove(sprint);
-        sprint.setProject(null);
-    }
-
+    public void addInvoice   (Invoice invoice) { invoiceList.add(invoice); invoice.setProjectX(this); }
+    public void removeInvoice(Invoice invoice) { invoiceList.remove(invoice); invoice.setProjectX(null); }
 
 }
