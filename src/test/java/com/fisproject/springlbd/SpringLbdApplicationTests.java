@@ -31,6 +31,8 @@ class SpringLbdApplicationTests {
     @Autowired SprintService sprintService;
     @Autowired UserStoryService userStoryService;
     @Autowired ApplicationContext context;
+    @Autowired CreateRandomSprints createRandomSprints;
+    @Autowired CreateRandomUserStories createRandomUserStories;
 
     /** Zad 8 Test */
     @Test void test_zad8_SprintServiceOK() throws IllegalArgumentException {
@@ -121,13 +123,13 @@ class SpringLbdApplicationTests {
 
     /** Zad 12 Test */
     @Test void test_zad12_createRandom() {
-        new CreateRandomUserStories().create(context, 100);
+        createRandomUserStories.create(100);
         userStoryService.getAll().forEach(us -> System.out.println(us.getId()+"\t|\t"+us.getName()+"\t|\t"+us.getStatus()));
     }
 
-    /** Zad 14 Test */
+    /** Zad 13 Test */
     @Test void test_zad13_pagination() {
-        new CreateRandomUserStories().create(context, 100);
+        createRandomUserStories.create(100);
 
         Page<UserStory> userStories = userStoryService.getAllByPage(1, 10);
 
@@ -140,7 +142,7 @@ class SpringLbdApplicationTests {
 
     /** Zad 15 Test */
     @Test void test_zad15_paginationSort() {
-        new CreateRandomSprints().create(context, 100);
+        createRandomSprints.create(100);
 
         Page<Sprint> sprints = sprintService.getAllPageAndSortByDate(0, 10);
         sprints.forEach(s -> System.out.println(s.getId() + "\t|\t" + s.getName() + "\t|\t" + s.getStartDate() + "\t|\t" + s.getStatus()));

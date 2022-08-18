@@ -12,10 +12,10 @@ import javax.persistence.PrePersist;
 @SpringBootApplication
 public class SpringLbdApplication {
 
-    @Autowired ApplicationContext context;
+    @Autowired CreateRandomSprints createRandomSprints;
 
     @PostConstruct void init() {
-        new CreateRandomSprints().create(context,5);
+        createRandomSprints.create(5);
     }
 
     public static void main(String[] args) {

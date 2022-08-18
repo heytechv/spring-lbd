@@ -16,6 +16,7 @@ import java.util.List;
 public interface SprintService {
 
     void add(@Valid SprintDto sprintDto);
+    void addAll(List<@Valid SprintDto> sprintDtoList);
     void addSprintWithUserStoryZad16(String sprintName) throws IllegalArgumentException;
     UserStory addUserStory(Long id, @Valid UserStoryDto userStoryDto);
 

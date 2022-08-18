@@ -62,13 +62,20 @@ public class SprintServiceImpl implements SprintService {
         sprintRepository.save(universalMapper.sprintDtoToSprint(sprintDto));
     }
 
+    @Override @Transactional public void addAll(List<@Valid SprintDto> sprintDtoList) {
+        if (sprintDtoList == null)
+            throw new RuntimeException("SprintList cannot be null!");
+        sprintRepository.saveAll(universalMapper.sprintDtoListToList(sprintDtoList));
+    }
+
+
     @Override public List<SprintDto> getAll(boolean showUserStories) {
         /* (stworzone do Zad 2) */
         List<Sprint> sprints = findAll();
         return sprints.stream().map(sprint -> {
-            SprintDto sprintDto = universalMapper.sprintToSprintDto(sprint);
+            SprintDto sprintDto = universalMapper.sprintToDto(sprint);
             if (showUserStories)
-                sprintDto.setUserStoryList(universalMapper.listToListDto(new ArrayList<>(sprint.getUserStorySet())));
+                sprintDto.setUserStoryList(universalMapper.userStoryListToListDto(new ArrayList<>(sprint.getUserStorySet())));
             return sprintDto;
         }).collect(Collectors.toList());
     }
@@ -76,9 +83,9 @@ public class SprintServiceImpl implements SprintService {
     @Override public SprintDto getById(Long id, boolean showUserStories) {
         Sprint sprint = findById(id);
 
-        SprintDto sprintDto = universalMapper.sprintToSprintDto(sprint);
+        SprintDto sprintDto = universalMapper.sprintToDto(sprint);
         if (showUserStories)
-            sprintDto.setUserStoryList(universalMapper.listToListDto(new ArrayList<>(sprint.getUserStorySet())));
+            sprintDto.setUserStoryList(universalMapper.userStoryListToListDto(new ArrayList<>(sprint.getUserStorySet())));
         return sprintDto;
     }
 
@@ -110,7 +117,7 @@ public class SprintServiceImpl implements SprintService {
         // find Sprint by id
         Sprint sprint = findById(id);
         // save UserStory
-        UserStory userStory = universalMapper.dtoToUserStory(userStoryDto);
+        UserStory userStory = universalMapper.userStoryDtoToUserStory(userStoryDto);
         userStoryRepository.save(userStory);
         // add UserStory to Sprint (and save automatically @Transactional)
         sprint.addUserStory(userStory);
@@ -175,7 +182,7 @@ public class SprintServiceImpl implements SprintService {
             throw new EntityNotFoundException("Sprints not found in this date range!");
 
         return new ArrayList<>(optionalSprints.get().stream().map(sprint ->
-                universalMapper.sprintToSprintDto(sprint)).collect(Collectors.toList()));
+                universalMapper.sprintToDto(sprint)).collect(Collectors.toList()));
     }
 
     /**

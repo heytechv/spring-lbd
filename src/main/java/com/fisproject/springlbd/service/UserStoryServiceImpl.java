@@ -3,7 +3,6 @@ package com.fisproject.springlbd.service;
 import com.fisproject.springlbd.dto.AttachmentDto;
 import com.fisproject.springlbd.dto.UserStoryDto;
 import com.fisproject.springlbd.entity.Attachment;
-import com.fisproject.springlbd.entity.Sprint;
 import com.fisproject.springlbd.entity.UserStory;
 import com.fisproject.springlbd.mapper.UniversalMapper;
 import com.fisproject.springlbd.repository.AttachmentRepository;
@@ -56,7 +55,13 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Override @Transactional public void add(@Valid UserStoryDto userStoryDto) {
         if (userStoryDto == null)
             throw new RuntimeException("UserStory cannot be null!");
-        userStoryRepository.save(universalMapper.dtoToUserStory(userStoryDto));
+        userStoryRepository.save(universalMapper.userStoryDtoToUserStory(userStoryDto));
+    }
+
+    @Override @Transactional public void addAll(List<@Valid UserStoryDto> userStoryDtoList) {
+        if (userStoryDtoList == null)
+            throw new RuntimeException("UserStory cannot be null!");
+        userStoryRepository.saveAll(universalMapper.userStoryDtoListToList(userStoryDtoList));
     }
 
     @Override public List<UserStory> getAll() {

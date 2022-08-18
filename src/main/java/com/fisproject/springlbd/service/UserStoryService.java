@@ -15,6 +15,7 @@ import java.util.List;
 public interface UserStoryService {
 
     void add(@Valid UserStoryDto userStoryDto);
+    void addAll(List<@Valid UserStoryDto> userStoryDtoList);
 
     List<UserStory> getAll();
     Page<UserStory> getAllByPage(Integer page, Integer size);

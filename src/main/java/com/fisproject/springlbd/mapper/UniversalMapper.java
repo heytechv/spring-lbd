@@ -16,16 +16,26 @@ public interface UniversalMapper {
 
     /** Sprint <-> SprintDto */
     @Mapping(target = "id", source = "id")  // we want to map id (which is disabled? by default)
-    SprintDto sprintToSprintDto(Sprint sprint);
+    SprintDto sprintToDto(Sprint sprint);
+
+    @Named("sprintDtoToSprint")
     Sprint sprintDtoToSprint(SprintDto sprintDto);
 
-    /** UserStory <-> UserStoryDto */
-    @Named("dtoToUserStory")
-    UserStory dtoToUserStory(UserStoryDto userStoryDto);
+    @Named("sprintDtoListToList")
+    @IterableMapping(qualifiedByName = "sprintDtoToSprint")
+    List<Sprint> sprintDtoListToList(List<SprintDto> sprintDtoList);
 
-    @Named("listToListDto")
+    /** UserStory <-> UserStoryDto */
+    @Named("userStoryDtoToUserStory")
+    UserStory userStoryDtoToUserStory(UserStoryDto userStoryDto);
+
+    @Named("userStoryListToListDto")
     @IterableMapping(qualifiedByName = "userStoryToDto")
-    List<UserStoryDto> listToListDto(List<UserStory> userStoryList);
+    List<UserStoryDto> userStoryListToListDto(List<UserStory> userStoryList);
+
+    @Named("userStoryDtoListToList")
+    @IterableMapping(qualifiedByName = "userStoryDtoToUserStory")
+    List<UserStory> userStoryDtoListToList(List<UserStoryDto> userStoryDtoList);
 
     @Named("userStoryToDtoWithoutAttachmentSet")
     @Mapping(target = "id", source = "id")  // we want to map id (which is disabled? by default)
