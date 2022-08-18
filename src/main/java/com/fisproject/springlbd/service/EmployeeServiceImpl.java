@@ -33,8 +33,7 @@ public class EmployeeServiceImpl {
 
     /** Public
      * */
-    @Transactional
-    public void add(Employee employee) {
+    @Transactional public void add(Employee employee) {
         save(employee);
     }
 

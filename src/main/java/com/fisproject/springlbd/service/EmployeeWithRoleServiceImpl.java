@@ -31,12 +31,6 @@ public class EmployeeWithRoleServiceImpl {
 
     /** Public
      * */
-//    @Transactional
-//    public void addEmployee(Long id, Employee employee) {
-//        EmployeeWithRole employeeWithRole = findById(id);
-//        employeeWithRole.setEmployee(employee);
-//    }
-
     public EmployeeWithRole getById(Long id) {
         return findById(id);
     }

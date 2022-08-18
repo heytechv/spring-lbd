@@ -25,8 +25,7 @@ public class ClientServiceImpl {
 
     /** Public
      * */
-    @Transactional
-    public void add(Client client) {
+    @Transactional public void add(Client client) {
         if (client == null)
             throw new RuntimeException("Client cannot be null!");
         clientRepository.save(client);
@@ -41,8 +40,7 @@ public class ClientServiceImpl {
     }
 
     /** Add Project to Client by id */
-    @Transactional
-    public void addProject(Long id, Project project) {
+    @Transactional public void addProject(Long id, Project project) {
         Client client = findById(id);
         client.addProject(project);
         clientRepository.save(client);

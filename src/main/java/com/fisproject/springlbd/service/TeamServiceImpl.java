@@ -27,7 +27,6 @@ public class TeamServiceImpl {
         teamRepository.save(team);
     }
 
-
     /** Public
      * */
     public Team getById(Long id) {
@@ -35,8 +34,7 @@ public class TeamServiceImpl {
     }
 
     /** Add Employee to Team by id */
-    @Transactional
-    public void addEmployee(Long id, Employee employee, EmployeeRole employeeRole) {
+    @Transactional public void addEmployee(Long id, Employee employee, EmployeeRole employeeRole) {
         Team team = findById(id);
 
         EmployeeWithRole employeeWithRole = new EmployeeWithRole();

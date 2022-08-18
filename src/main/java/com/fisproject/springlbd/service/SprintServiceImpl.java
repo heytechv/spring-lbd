@@ -27,8 +27,6 @@ public class SprintServiceImpl {
         return sprintRepository.findById(id).orElseThrow(() -> new RuntimeException("Id not found!"));
     }
 
-
-
     /** Public
      * */
     public Sprint getById(Long id) {
@@ -39,10 +37,8 @@ public class SprintServiceImpl {
         return new ArrayList<>(findById(id).getUserStorySet());
     }
 
-
     /** UserStory to Sprint by id */
-    @Transactional
-    public void addUserStory(Long id, UserStory userStory) {
+    @Transactional public void addUserStory(Long id, UserStory userStory) {
         if (userStory == null)
             throw new RuntimeException("UserStory cannot be null!");
         Sprint sprint = findById(id);

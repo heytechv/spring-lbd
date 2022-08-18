@@ -24,8 +24,6 @@ public class ProjectServiceImpl {
         return projectRepository.findById(id).orElseThrow(() -> new RuntimeException("Id not found!"));
     }
 
-
-
     /** Public
      * */
     public Project getById(Long id) {
@@ -37,16 +35,14 @@ public class ProjectServiceImpl {
     }
 
     /** Add Team to Project by id */
-    @Transactional
-    public void addTeam(Long id, Team team) {
+    @Transactional public void addTeam(Long id, Team team) {
         Project project = findById(id);
         project.setTeam(team);
         projectRepository.save(project);
     }
 
     /** Add Sprint to Project by id */
-    @Transactional
-    public void addSprint(Long id, Sprint sprint) {
+    @Transactional public void addSprint(Long id, Sprint sprint) {
         Project project = findById(id);
         project.addSprint(sprint);
         projectRepository.save(project);

@@ -24,7 +24,6 @@ public class UserStoryServiceImpl {
         return userStoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Id not found!"));
     }
 
-
     private void remove(UserStory userStory) {
         if (userStory == null)
             throw new RuntimeException("UserStory cannot be null!");
@@ -32,14 +31,11 @@ public class UserStoryServiceImpl {
         userStoryRepository.delete(userStory);
     }
 
-
-
     /** Public
      * */
     public UserStory getById(Long id) {
         return findById(id);
     }
-
 
     @Transactional public void removeById(Long id) {
         remove(findById(id));
