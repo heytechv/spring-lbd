@@ -46,13 +46,26 @@ public class BankRestAPILiveTest {
 
         LocalDateTime today = LocalDateTime.now();
         String todayStr = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        String tenDaysAgoStr = today.minusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+//        String tenDaysAgoStr = today.minusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String tenDaysAgoStr = subtractDaysSkippingWeekends(today, 10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         ResponseEntity<NBPTableDto> response = restTemplate.getForEntity(baseURL+"exchangerates/rates/a/usd/"+tenDaysAgoStr+"/"+todayStr+"?format=json", NBPTableDto.class);
 
         assert response.getBody() != null;
 
         System.out.println(response.getBody().getPrintableFormatSingle());
+    }
+
+    public static LocalDateTime subtractDaysSkippingWeekends(LocalDateTime date, int days) {
+        LocalDateTime result = date;
+        int subtractedDays = 0;
+        while (subtractedDays < days) {
+            result = result.minusDays(1);
+            if (!(result.getDayOfWeek() == DayOfWeek.SATURDAY || result.getDayOfWeek() == DayOfWeek.SUNDAY)) {
+                ++subtractedDays;
+            }
+        }
+        return result;
     }
 
 }
